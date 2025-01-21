@@ -1,7 +1,7 @@
 ---
 title: "Geospatial Analysis Made Easy: A Beginner's Guide to RStudio"
-author: "**Om Prakash Bhandari**"
-date: "_MS Geoinformatics_"
+author: "**Desmond Lartey**"
+date: "_Researcher_"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
