@@ -1,5 +1,5 @@
 ---
-title: "Geospatial Analysis Made Easy: A Beginner's Guide to RStudio"
+title: "Application of the Conceptual model: A step-by-step Guide for implementation"
 author: "**Desmond Lartey**"
 date: "_Researcher_"
 site: workflowr::wflow_site
