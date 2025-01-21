@@ -1,8 +1,8 @@
-name: "R_tutorial"
+name: "nbs-workflow"
 output_dir: ../docs
 
 navbar:
-  title: "Geospatial Analysis with R"
+  title: "Applied Desirmed Framework"
   left:
     - text: Home
       href: index.html
@@ -12,7 +12,7 @@ navbar:
       href: Download_Resources.html
   right:
     - icon: fab fa-github fa-lg
-      href: https://github.com/Ohm-Np/R_tutorial
+      href: https://github.com/deltares-desirmed/nbs-workflow
 
 output:
   workflowr::wflow_html:
