@@ -352,7 +352,7 @@ Advantages of mapview:
 - Works with Multiple Data Types
 - Built-in Integration
 
-**For this tutorial, this concludes the coverage of Interactive Visualizations in R. If you would like to explore additional packages for interactive maps, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [R_tutorial](https://github.com/Ohm-Np/R_tutorial) and feel free to open an issue.**
+**For this tutorial, this concludes the coverage of Interactive Visualizations in R. If you would like to explore additional packages for interactive maps, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [nbs-workflow](https://github.com/deltares-desirmed/nbs-workflow) and feel free to open an issue.**
 
 
 

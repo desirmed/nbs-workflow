@@ -272,7 +272,7 @@ zonal_operation(aoi = zones,
 
 In conclusion, mastering functions in R is essential for writing efficient, reusable, and organized code. Functions allow you to streamline complex tasks, avoid redundancy, and improve the readability and maintainability of your scripts. By understanding how to define and use functions, you can perform a wide range of data manipulation, statistical analysis, and visualization tasks more effectively. With the ability to build custom functions and leverage the vast array of built-in functions in R, you can significantly enhance your data analysis workflow, making your code more modular and adaptable to different challenges. Functions are a powerful tool that, once mastered, will elevate your R programming skills to the next level.
 
-**For this tutorial, this concludes the coverage of functions in R. If you would like to explore additional functions, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [R_tutorial](https://github.com/Ohm-Np/R_tutorial) and feel free to open an issue.**
+**For this tutorial, this concludes the coverage of functions in R. If you would like to explore additional functions, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [nbs-workflow](https://github.com/deltares-desirmed/nbs-workflow) and feel free to open an issue.**
 
 
 

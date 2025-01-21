@@ -57,7 +57,7 @@ Geometric operations modify the spatial geometry of vector features and are inte
 
 The **buffer** operation creates a zone around a feature at a specified distance. It is often used for proximity analysis, such as determining areas within a certain distance of a road or river.
 
-For this specific function, we are going to use subset polygon of Kanchanpur district (Sreepur VDC) which you can download by clicking [this link](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/sreepur.gpkg).
+For this specific function, we are going to use subset polygon of Kanchanpur district (Sreepur VDC) which you can download by clicking [this link](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/vector/sreepur.gpkg).
 
 ```{r buffer, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -81,7 +81,7 @@ From the plot above, we can see that a buffer zone of 10 km around Sreepur has b
 
 The **intersection** operation identifies the spatial overlap between two layers. It is used to find common areas or features shared by two datasets.
 
-Here in this tutorial, we will use the data from WDPA (World Database on Protected Areas) of Nepal and see the intersection between wdpa datasets and the Sreepur VDC, if theres any. For this, please download the wdpa data by clicking on [this link](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/protected_areas.gpkg).
+Here in this tutorial, we will use the data from WDPA (World Database on Protected Areas) of Nepal and see the intersection between wdpa datasets and the Sreepur VDC, if theres any. For this, please download the wdpa data by clicking on [this link](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/vector/protected_areas.gpkg).
 
 ```{r intersection, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -319,5 +319,5 @@ Exporting data every time I knit the R Markdown document is tiresome. Therefore,
 
 
 
-**_For this tutorial, this concludes the coverage of vector data operations. If you would like to explore additional operations, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [R_tutorial](https://github.com/Ohm-Np/R_tutorial) and feel free to open an issue._**
+**_For this tutorial, this concludes the coverage of vector data operations. If you would like to explore additional operations, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [nbs-workflow](https://github.com/deltares-desirmed/nbs-workflow) and feel free to open an issue._**
 

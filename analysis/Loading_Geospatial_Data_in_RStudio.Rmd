@@ -17,7 +17,7 @@ The sf (Simple Features) package is the go-to tool for working with vector data 
 
 To load vector data using the sf package, you typically use either _st_read()_ or _read_sf()_ function.
 
-In this tutorial, I am using a .gpkg file which is made available on GitHub. You can download it by clicking [this link](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/kanchanpur.gpkg).
+In this tutorial, I am using a .gpkg file which is made available on GitHub. You can download it by clicking [this link](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/vector/kanchanpur.gpkg).
 
 ```{r importing vector data, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -41,7 +41,7 @@ In this example, **read_sf()** reads the GeoPackage and loads into an _sf_ objec
 
 The terra package is specifically designed for raster data and provides improved performance and easier handling of large datasets compared to the _raster_ package. The _terra_ package supports a wide variety of raster formats, including GeoTIFF (.tif), ASCII, and more.
 
-To load raster data using **terra**, you use the _rast()_ function. In this tutorial, I am using .tif files which are available on GitHub. You can download it by clicking here: [Land Cover 2015](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/landcover_2015.tif) & [Land Cover 2019](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/landcover_2019.tif).
+To load raster data using **terra**, you use the _rast()_ function. In this tutorial, I am using .tif files which are available on GitHub. You can download it by clicking here: [Land Cover 2015](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/landcover_2015.tif) & [Land Cover 2019](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/landcover_2019.tif).
 
 ```{r importing raster data, message=FALSE, warning=FALSE, include=TRUE}
 

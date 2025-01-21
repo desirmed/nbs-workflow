@@ -233,7 +233,7 @@ Geospatial data frames bridge the gap between tabular data and spatial analysis,
 
 You have already been introduced to several operations that can be performed on vector data. Since sf objects are a type of data frame, many of the operations covered in earlier chapters will also be useful in this subsection. However, our focus here will be on the **tabular properties** of sf objects rather than their spatial properties.
 
-This subsection will guide you in working with an **sf** object, using geospatial data for the Kanchanpur district in Nepal, extracted from GADM website. To access the data in `.gpkg` format, visit the [Downloads](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/kanchanpur.gpkg) section of this tutorial. The sf package in R seamlessly integrates geospatial data with data frame functionality, enabling both spatial and tabular operations.
+This subsection will guide you in working with an **sf** object, using geospatial data for the Kanchanpur district in Nepal, extracted from GADM website. To access the data in `.gpkg` format, visit the [Downloads](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/vector/kanchanpur.gpkg) section of this tutorial. The sf package in R seamlessly integrates geospatial data with data frame functionality, enabling both spatial and tabular operations.
 
 ### **Structure** 
 
@@ -427,7 +427,7 @@ head(df_with_coords)
 
 ### **Summarize Raster Values**
 
-In this subsection, we will load the Population Count raster data for the year 2020, which can be accessed in the [Downloads](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/popCount_2020.tif) section of this tutorial.
+In this subsection, we will load the Population Count raster data for the year 2020, which can be accessed in the [Downloads](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/popCount_2020.tif) section of this tutorial.
 
 ```{r sr_load, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -506,7 +506,7 @@ head(df_classified)
 
 If you have multiple rasters representing population data over different time periods, you can compute the changes in population between two periods.
 
-Let's load the Population Count raster data for the year 2000 as well, so we can compute the changes in population over a 20-year period. This data can be accessed in the [Downloads](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/popCount_2000.tif) section of this tutorial.
+Let's load the Population Count raster data for the year 2000 as well, so we can compute the changes in population over a 20-year period. This data can be accessed in the [Downloads](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/popCount_2000.tif) section of this tutorial.
 
 ```{r sr_change, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -544,7 +544,7 @@ par(mfrow = c(1, 1))
 
 These are just a few ways you can manipulate raster data for insights into population distribution. The flexibility of raster data combined with tabular operations makes it a powerful tool for spatial and non-spatial analysis.
 
-**For this tutorial, this concludes the coverage of Data Frames in R. If you would like to explore additional examples, or need clarification on any of the steps covered, please visit the GitHub repository: [R_tutorial](https://github.com/Ohm-Np/R_tutorial) and feel free to open an issue.**
+**For this tutorial, this concludes the coverage of Data Frames in R. If you would like to explore additional examples, or need clarification on any of the steps covered, please visit the GitHub repository: [nbs-workflow](https://github.com/deltares-desirmed/nbs-workflow) and feel free to open an issue.**
 
 
 

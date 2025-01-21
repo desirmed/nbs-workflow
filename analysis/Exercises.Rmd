@@ -29,4 +29,4 @@ At the end of this tutorial, you should have a solid understanding of key geospa
 
 These exercises will provide you with hands-on practice in performing common geospatial operations in R, ensuring you're well-prepared to handle spatial datasets and solve real-world geographic problems using R and its geospatial packages.
 
-**If you have any questions or encounter any difficulties while solving these exercises, feel free to visit my [GitHub page](https://github.com/Ohm-Np/R_tutorial) and open an issue.**
+**If you have any questions or encounter any difficulties while solving these exercises, feel free to visit my [GitHub page](https://github.com/deltares-desirmed/nbs-workflow) and open an issue.**

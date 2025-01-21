@@ -13,7 +13,7 @@ Raster data represents continuous spatial information such as elevation, tempera
 
 ## **Plotting**
 
-Visualizing raster data is often the first step in understanding its structure and distribution. With terra, the plot() function can be used to quickly render raster layers. It creates intuitive visualizations, often with automatically chosen color palettes that reflect the range of values in the data. For this section, we will use ESA Land Cover raster data from year 2015, which can be downloaded by clicking [this link](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/landcover_2015.tif).
+Visualizing raster data is often the first step in understanding its structure and distribution. With terra, the plot() function can be used to quickly render raster layers. It creates intuitive visualizations, often with automatically chosen color palettes that reflect the range of values in the data. For this section, we will use ESA Land Cover raster data from year 2015, which can be downloaded by clicking [this link](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/landcover_2015.tif).
 
 ```{r plotting, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -152,7 +152,7 @@ Some of the common applications of zonal statistics are:
 
 With the terra package, you can compute various statistics, such as: *mean*, *sum*, *min/max*, *majority*, *variance*, and *standard deviation*.
 
-In this section, we will calculate the total population count across the various zones of Kanchanpur district using **sum** function. Download the population count raster from year 2020 by clicking [this link](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/popCount_2020.tif).
+In this section, we will calculate the total population count across the various zones of Kanchanpur district using **sum** function. Download the population count raster from year 2020 by clicking [this link](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/popCount_2020.tif).
 
 ```{r zonal, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -211,7 +211,7 @@ From the barplot above, we can see that **Laxmipur** is the most densely populat
 |Focuses on simple features and integrates seamlessly with other R packages for spatial analysis (e.g., tidyverse).|Built for efficient handling of large spatial datasets, especially when working with both raster and vector layers.|
 |Outputs objects of class sf.|Outputs objects of class SpatVector.|
 
-**For this tutorial, this concludes the coverage of raster data operations. If you would like to explore additional operations, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [R_tutorial](https://github.com/Ohm-Np/R_tutorial) and feel free to open an issue.**
+**For this tutorial, this concludes the coverage of raster data operations. If you would like to explore additional operations, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [nbs-workflow](https://github.com/deltares-desirmed/nbs-workflow) and feel free to open an issue.**
 
 
 
