@@ -18,7 +18,7 @@ You can download all the geospatial data used in this tutorial from the provided
 
 ### Raster
 
-- [Land Cover 2015](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/landcover_2015.tif)
+- [Land Cover 2015](https://github.com/deltares-desirmed/nbs-workflow/blob/main/data/raster/landcover_2015.tif)
 - [Land Cover 2019](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/landcover_2019.tif)
 - [Population Count 2000](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/popCount_2000.tif)
 - [Population Count 2020](https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/popCount_2020.tif)
