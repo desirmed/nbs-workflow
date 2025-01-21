@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Om Prakash Bhandari" />
+
+
+<title>Geospatial Analysis Made Easy: A Beginner’s Guide to RStudio</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Geospatial Analysis with R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="How_To.html">How to?</a>
+</li>
+<li>
+  <a href="Download_Resources.html">Downloads</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/Ohm-Np/R_tutorial">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Geospatial Analysis Made Easy: A Beginner’s
+Guide to RStudio</h1>
+<h4 class="author"><strong>Om Prakash Bhandari</strong></h4>
+<h4 class="date"><em>MS Geoinformatics</em></h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-01-03
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>R_tutorial/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomOhmNpRtutorialtree0967002feb65c1415a1285d6af8ae480ee06e004targetblank0967002a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/Ohm-Np/R_tutorial/tree/0967002feb65c1415a1285d6af8ae480ee06e004" target="_blank">0967002</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomOhmNpRtutorialtree0967002feb65c1415a1285d6af8ae480ee06e004targetblank0967002a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/Ohm-Np/R_tutorial/tree/0967002feb65c1415a1285d6af8ae480ee06e004" target="_blank">0967002</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Unstaged changes:
+    Deleted:    analysis/Resources.Rmd
+    Modified:   analysis/_site.yml
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/index.Rmd</code>) and HTML
+(<code>docs/index.html</code>) files. If you’ve configured a remote Git
+repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
+in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/0967002feb65c1415a1285d6af8ae480ee06e004/analysis/index.Rmd" target="_blank">0967002</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2025-01-03
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/e52cc8b6b8661b2a3c518f0b489334cc12a52df8/docs/index.html" target="_blank">e52cc8b</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2025-01-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/3c7e2a61ef3d0d360d8bfa01a50e7c345004ae92/analysis/index.Rmd" target="_blank">3c7e2a6</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2025-01-03
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/119e6f437b2039bbc1872f194b9bc449db5ad4da/docs/index.html" target="_blank">119e6f4</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2025-01-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/27da7875cdc88227fff1baa6153bda70a4647080/analysis/index.Rmd" target="_blank">27da787</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2025-01-03
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/d7cb308a8eecd47f382767484c8403401c9fdc77/docs/index.html" target="_blank">d7cb308</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2025-01-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/7d72025ff778b893980a6fa77f56bd75430d7469/analysis/index.Rmd" target="_blank">7d72025</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2025-01-01
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/bf7ef1016ad081439bd59e0de6b85fd9a462929c/docs/index.html" target="_blank">bf7ef10</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/fcfeff0ff187b2ed74e438410ba2516d7d4520b4/analysis/index.Rmd" target="_blank">fcfeff0</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-31
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/c7dc3b92fe23be63241044ee884b467e4e70561b/docs/index.html" target="_blank">c7dc3b9</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-30
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/50e55b655a133bd55f7e05ceafeaaf4486ec3cbb/analysis/index.Rmd" target="_blank">50e55b6</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-30
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/f507d0a9ff756cc6a7b177b646357b319738374b/docs/index.html" target="_blank">f507d0a</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/a688e54c70ebcac4dd37017fefbfdfee77eab720/analysis/index.Rmd" target="_blank">a688e54</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-28
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/ffa960e1ec43d507c077dcee4be7e9eb23c18904/docs/index.html" target="_blank">ffa960e</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/e72c7b5a58232a44ce7a8f87b278e161c6e9830b/analysis/index.Rmd" target="_blank">e72c7b5</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/6e0be45c343a69e0c67c03dcb791c198e706580a/docs/index.html" target="_blank">6e0be45</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/06edc1c527147b65f9ffc607b5458ceca7018fde/analysis/index.Rmd" target="_blank">06edc1c</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/a05a995626184d65099ab1a3815c762d5362c1aa/docs/index.html" target="_blank">a05a995</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/9692c715f119460c78da12155a31bc3b74fc5dcc/analysis/index.Rmd" target="_blank">9692c71</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/8aa1eae97bc071703fb792aad5f4e05f88533290/docs/index.html" target="_blank">8aa1eae</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/cc8478b3a85599c08eb7ad1b19be20c910541fe3/analysis/index.Rmd" target="_blank">cc8478b</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/69b5d86bb5e7cd3ce3d3e2ded83c8075834efcd7/docs/index.html" target="_blank">69b5d86</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/2d22929c3ba296cc791291011c516fd7d470923c/analysis/index.Rmd" target="_blank">2d22929</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/deeeec0f58cb53a426d36a3b58544aaf591edd9e/docs/index.html" target="_blank">deeeec0</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/750e580eafa279dc36c3ed06b9d159593332c871/docs/index.html" target="_blank">750e580</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/5fd4d0de5b6002d5ea28e598970ca7960d24bee4/analysis/index.Rmd" target="_blank">5fd4d0d</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-26
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/461fd69300b9a5da8f77c42997759437068f384b/docs/index.html" target="_blank">461fd69</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/4f1a9baede088171f3abd7b118e35113e46f2264/analysis/index.Rmd" target="_blank">4f1a9ba</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-26
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/32035b1012f3297271a5fd3450d3e1e1891532d3/docs/index.html" target="_blank">32035b1</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/6eaf865a96657b810166567a491b69914b633992/docs/index.html" target="_blank">6eaf865</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/d00b9b63e1de34e98abe1f24f86d4092416e4c3f/analysis/index.Rmd" target="_blank">d00b9b6</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/c252c680b3a4b7b5af26dbf1e3011cd19035b633/docs/index.html" target="_blank">c252c68</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/9e848b993dcac8eae176913dd981ffdd28109f8e/analysis/index.Rmd" target="_blank">9e848b9</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/c4157b80089738ab2f8294e75395ec8886e3f3f8/docs/index.html" target="_blank">c4157b8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/b3894152ef01bd80af22f6790c8dca2e0136654c/analysis/index.Rmd" target="_blank">b389415</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/efa36433df30bd180449dbf7b28835dd19af7990/docs/index.html" target="_blank">efa3643</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/cf305d4211b275402639e36b291d528a20781eae/analysis/index.Rmd" target="_blank">cf305d4</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-24
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/56446d22301c878b97693c5528586eb3da9dfa98/docs/index.html" target="_blank">56446d2</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/12b0721618eff8b0c32acd28e7677eda3843431f/docs/index.html" target="_blank">12b0721</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/feea21c119386c278a44fd8cd6f35fb94e836b37/analysis/index.Rmd" target="_blank">feea21c</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-24
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/6293d9e5aec72cccba6d37c29cc61a3e2751e429/docs/index.html" target="_blank">6293d9e</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-24
+</td>
+<td>
+update readme
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/260d9b269fbfa54eb8082ed171899a93b15fe58c/docs/index.html" target="_blank">260d9b2</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-24
+</td>
+<td>
+Build site with workflowr
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/1cd14cc833c4160c2b53b745d8c6759f32348c2e/docs/index.html" target="_blank">1cd14cc</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/7ae888f9e98cd08acf1cb45e07de2a7ae0a94614/docs/index.html" target="_blank">7ae888f</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/458b1741af6b6016727dfcd7b13b1ef3c1e4a459/analysis/index.Rmd" target="_blank">458b174</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-23
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/ac908a3f4a9a524abeaff4e0f789c07eacc56294/analysis/index.Rmd" target="_blank">ac908a3</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-23
+</td>
+<td>
+Start workflowr project.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style> p { text-align: justify; } </style>
+<p>Welcome to this comprehensive guide on geospatial analysis with
+RStudio! This tutorial is designed to help you get acquainted with
+RStudio, a powerful open-source tool for spatial data analysis. You’ll
+learn how to work with both vector and raster data, perform essential
+geospatial operations, and create informative maps. Whether you’re just
+starting out or aiming to refine your geospatial skills, this resource
+will walk you through key techniques in data manipulation,
+visualization, and interactive mapping, giving you the skills you need
+to confidently work with spatial data in RStudio.</p>
+<div id="chapters" class="section level2">
+<h2><strong><em>Chapters</em></strong></h2>
+<p><a href="Introduction.html"><strong><em>1</em>.
+Introduction</strong></a></p>
+<p><a href="Getting_Started.html"><strong><em>2</em>. Getting
+Started</strong></a></p>
+<p><a href="Understanding_Geospatial_Data.html"><strong><em>3</em>.
+Understanding Geospatial Data</strong></a></p>
+<p><a href="Loading_Geospatial_Data_in_RStudio.html"><strong><em>4</em>.
+Loading Geospatial Data in RStudio</strong></a></p>
+<p><a href="Basic_Operations_with_Vector_Data.html"><strong><em>5</em>.
+Basic Operations with Vector Data</strong></a></p>
+<p><a href="Basic_Operations_with_Raster_Data.html"><strong><em>6</em>.
+Basic Operations with Raster Data</strong></a></p>
+<p><a href="Functions.html"><strong><em>7</em>. Functions in
+R</strong></a></p>
+<p><a href="Data_Frames.html"><strong><em>8</em>. Data Frames in
+R</strong></a></p>
+<p><a href="Interactive_Maps.html"><strong><em>9</em>. Interactive
+Visualizations</strong></a></p>
+<p><a href="Exercises.html"><strong>Exercises</strong></a></p>
+<p><a href="Additional_Resources.html"><strong>Additional
+Resources</strong></a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

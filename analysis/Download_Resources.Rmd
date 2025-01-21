@@ -1,0 +1,24 @@
+---
+title: "Download Resources"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+<style> p { text-align: justify; } </style>
+
+You can download all the geospatial data used in this tutorial from the provided link. The data includes two formats: Geopackage for vector data and GeoTIFF for raster data, both of which you will need to follow along with the tutorial. For your convenience, I have provided the download links in each chapter and sub-chapter. 
+
+### Vector
+
+- [Kanchanpur](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/kanchanpur.gpkg)
+- [Sreepur](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/sreepur.gpkg)
+- [Protected Areas](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/protected_areas.gpkg)
+
+### Raster
+
+- [Land Cover 2015](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/landcover_2015.tif)
+- [Land Cover 2019](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/landcover_2019.tif)
+- [Population Count 2000](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/popCount_2000.tif)
+- [Population Count 2020](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/popCount_2020.tif)

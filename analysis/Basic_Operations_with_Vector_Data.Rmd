@@ -1,0 +1,323 @@
+---
+title: "Basic Operations with Vector Data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style> p { text-align: justify; } </style>
+
+Once geospatial data is loaded into R, the next step is to explore and manipulate it to extract meaningful insights. Whether working with vector or raster data, R provides a rich set of tools for performing a variety of geospatial operations. These operations range from simple data viewing and subsetting to more complex geometric manipulations such as buffering and intersections. Mastering these fundamental tasks is crucial for conducting effective geospatial analysis.
+
+Vector data represents features as points, lines, or polygons and includes both geometric and attribute information. As already mentioned in previous chapter we will be using the **sf** package since it is an excellent tool for handling vector data, as it provides a seamless way to explore, manipulate, and analyze spatial features. Vector data operations often involve viewing and subsetting attributes, performing spatial queries, and conducting geometric transformations.
+
+## **Viewing and Subsetting**
+
+After loading vector data, the first step is usually to explore its structure. The sf package allows you to inspect both the attribute table and the geometries of spatial features. You can use standard R functions like _head()_ and _summary()_ to view the data.
+
+```{r viewing, message=FALSE, warning=FALSE, include=TRUE}
+library(sf)
+library(dplyr)
+
+# Import your downloaded gpkg file
+# don't forget to provide the path where you have downloaded it locally
+kpr <- 
+  read_sf("data/vector/kanchanpur.gpkg")
+
+# View the structure of the vector data
+head(kpr)
+summary(kpr)
+
+```
+
+From above, you can also see substantial difference on using _head()_ and _summary()_ functions.
+
+For subsetting, logical conditions can be applied to filter features based on their attributes. 
+
+```{r subsetting, message=FALSE, warning=FALSE, include=TRUE}
+
+# subset polygon with Name: Sreepur
+subset_data <- kpr %>%
+  dplyr::filter(NAME == "Sreepur")
+
+# Lets see if the subsetting worked fine by plotting the subset data
+plot(subset_data,
+     col = "lightblue",
+     border = "red",
+     main = "Sreepur")
+```
+
+Note: The **%>%** operator in _dplyr_ is called the "**pipe**" operator, and it allows you to pass the output of one function directly as the input to the next function in a readable, sequential manner. It helps streamline code by eliminating the need for intermediate variables, making it easier to write and read data manipulation workflows. For example, data %>% filter(condition) %>% select(column) means "take the data, filter it based on a condition, and then select specific columns."
+
+## **Buffer and Intersection**
+
+Geometric operations modify the spatial geometry of vector features and are integral to spatial analysis. Two common operations are buffering and intersection.
+
+The **buffer** operation creates a zone around a feature at a specified distance. It is often used for proximity analysis, such as determining areas within a certain distance of a road or river.
+
+For this specific function, we are going to use subset polygon of Kanchanpur district (Sreepur VDC) which you can download by clicking [this link](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/sreepur.gpkg).
+
+```{r buffer, message=FALSE, warning=FALSE, include=TRUE}
+
+# import your recently downloaded gpkg
+spr <- 
+  read_sf("data/vector/sreepur.gpkg")
+
+# Create a 10000-meter buffer around our area of interest i.e. spr
+buffered_data <- 
+  sf::st_buffer(spr, dist = 10000)
+
+# Lets see if the buffer function worked fine by plotting the buffered data
+plot(buffered_data,
+     col = "grey",
+     border = "darkblue",
+     pch = 16,
+     main = "Buffer Zone (10 Kms)")
+```
+
+From the plot above, we can see that a buffer zone of 10 km around Sreepur has been successfully created. You can adjust the buffer distance and also use point or line data as needed for your task.
+
+The **intersection** operation identifies the spatial overlap between two layers. It is used to find common areas or features shared by two datasets.
+
+Here in this tutorial, we will use the data from WDPA (World Database on Protected Areas) of Nepal and see the intersection between wdpa datasets and the Sreepur VDC, if theres any. For this, please download the wdpa data by clicking on [this link](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/protected_areas.gpkg).
+
+```{r intersection, message=FALSE, warning=FALSE, include=TRUE}
+
+# import protected areas gpkg
+wdpa <- 
+  read_sf("data/vector/protected_areas.gpkg")
+
+# Perform an intersection between two layers - wdpa and sreepur
+intersected_data <- 
+  sf::st_intersection(wdpa, spr)
+
+# View the structure of the intersected data
+head(intersected_data)
+
+# From the head() function, it is clear that the intersection function worked fine
+# Now, lets plot the intersected area
+plot(intersected_data[1],
+     col = "red",
+     pch = 16,
+     main = "Protected areas within Sreepur")
+```
+
+Here, _st_intersection()_ computes the geometric intersection of two spatial datasets ( _spr_ and _wdpa_), retaining only the overlapping portions.
+
+## **Area computation**
+
+The _sf_ package makes it easy to compute the area of spatial features within an sf object. Area computation is particularly useful for polygons, such as determining the size of administrative regions, lakes, or land parcels. The **st_area()** function is used to calculate the area of each geometry in an sf object. By default, the area is computed in the unit of the CRS (coordinate reference system) of the data.
+
+```{r areaVector, message=FALSE, warning=FALSE, include=TRUE}
+
+# Compute the area of the intersected data of wdpa and sreepur
+st_area(intersected_data)
+
+# Now, lets compute the area of sreepur 
+st_area(spr)
+
+# Also, check the area of Kanchanpur district
+st_area(kpr)
+
+# Since, there are 21 VDCs in kanchanpur district, we got the area of each polygons
+# Let's compute the total area of kanchanpur district using pipeline from dplyr and sum() function
+st_area(kpr) %>% 
+  sum()
+
+# All the areas displayed above are in square meters, lets convert them to square kilometers
+st_area(kpr) %>% 
+  sum() %>%
+  as.numeric()/1e6
+```
+
+## **Basic Vector Operations**
+
+In addition to viewing, subsetting, buffer creation, intersection, and area computation, here are other basic vector operations commonly used in geospatial analysis with R:
+
+### **Union**
+
+Combines two or more geometries into a single geometry using function _st_union()_.
+
+```{r union, message=FALSE, warning=FALSE, include=TRUE}
+
+# we already have Sreepur gpkg loaded as spr, lets subset one more polygon from kanchanpur district
+# subset polygon with Name: Tribhuwanbasti
+subset_data <- kpr %>%
+  dplyr::filter(NAME == "Tribhuwanbasti")
+
+# combine both geometries
+union_data <- 
+  st_union(subset_data, spr)
+
+# plot the union data using library 'ggplot2'
+library(ggplot2)
+ggplot() +
+  geom_sf(data = union_data, fill = "cyan", color = "magenta", alpha = 0.5) +
+  theme_minimal() +
+  ggtitle("Combined geometries")
+```
+
+**ggplot2** is a popular and powerful data visualization package in R, part of the tidyverse ecosystem. It implements the grammar of graphics, a systematic approach to building plots by layering components like data, aesthetics, geometric objects, and scales.
+
+Key features include its flexibility to create complex, multi-layered visualizations, support for a wide range of plot types (e.g., scatter plots, bar charts, maps, and more), and its ability to handle large datasets seamlessly. The syntax is intuitive and encourages a declarative approach to visualization, where you specify what you want to see rather than how to draw it.
+
+### **Difference**
+
+Computes the difference between two geometries (what's left after subtracting one from another) using _st_difference()_ function.
+
+```{r difference, message=FALSE, warning=FALSE, include=TRUE}
+
+# compute the difference between original kanchanpur data and union data
+diff <- 
+  st_difference(kpr, union_data)
+
+# Plot the geometry difference
+plot(diff[1],
+     col = "cyan",
+     border = "black",
+     main = "Resulting polygons")
+
+```
+
+ We can see from the plot above that, the resulting sf object after using _st_difference()_ function excludes two polygons i.e. Sreepur and Tribhuwanbasti.
+
+### **Centroid Calculation**
+
+Computes the centroid (geometric center) of a geometry using _st_centroid()_ function.
+
+```{r centroid, message=FALSE, warning=FALSE, include=TRUE}
+
+# compute the centroid of original kanchanpur data
+centroids <- 
+  st_centroid(kpr)
+
+# View centroids
+head(centroids)
+
+```
+
+We can see from the data above that centroids have been computed for all the polygons.
+
+### **Bounding Box**
+
+Extracts the bounding box (minimum enclosing rectangle) of a geometry using function _st_bbox()_.
+
+```{r bbox, message=FALSE, warning=FALSE, include=TRUE}
+
+# extract the bounding box of original kanchanpur data
+bbox <- 
+  st_bbox(kpr)
+
+# View bounding box
+head(bbox)
+```
+
+### **Length Computation**
+
+Computes the length of lines using _st_length()_ function or perimeters of polygons using _st_perimeter()_ function.
+
+```{r perimeter, message=FALSE, warning=FALSE, include=TRUE}
+
+# compute the perimeter of Sreepur data
+perimeter <- 
+  st_perimeter(spr)
+
+# View perimeter
+perimeter
+```
+
+In order to compute length of the line object, we will do some workaround here.
+
+```{r length, message=FALSE, warning=FALSE, include=TRUE}
+
+# convert polygon to line
+polygon_as_line <- 
+  st_cast(spr, "MULTILINESTRING")
+
+# Calculate perimeter using st_length() function
+perimeter <- 
+  st_length(polygon_as_line)
+  
+# View perimeter
+perimeter
+```
+
+Using both methods, we obtain the same result for the perimeter of the polygon. Choose the method you are most comfortable with.
+
+### **Reprojection/Transformation**
+
+Changes the Coordinate Reference System (CRS) of a spatial object. Use function _st_transform()_.
+
+```{r reproject, message=FALSE, warning=FALSE, include=TRUE}
+
+# Our original Kanchanpur data is in WGS84 
+# Change CRS to NAD83
+reprojected_data <- 
+  st_transform(kpr, crs = 4269)
+
+# Retrieve the updated CRS
+st_crs(reprojected_data)
+```
+
+### **Distance Calculation**
+
+Measures the distance between geometries.
+
+```{r distance, message=FALSE, warning=FALSE, include=TRUE}
+
+# compute distance between sreepur and Tribhuwanbasti polygon
+distances <- 
+  st_distance(spr, subset_data)
+
+# View distance
+distances
+```
+
+So, the distance between sreepur and Tribhuwanbasti is ~4523 meters.
+
+### **Sampling Points**
+
+Generates random or regular points within a geometry.
+
+```{r sample, message=FALSE, warning=FALSE, include=TRUE}
+
+# Generate 100 sampling points within Sreepur polygon
+sampled_points <- 
+  st_sample(spr, size = 100, type = "random")
+
+# Plot the sampled points within sreepur
+ggplot() +
+  geom_sf(data = spr, fill = "lightblue", color = "magenta", alpha = 0.5) +
+  geom_sf(data = sampled_points, color = "red", pch = 16) +
+  theme_minimal() +
+  ggtitle("Sampling points (Sreepur)")
+```
+
+
+### **Saving Data to file**
+
+To save vector data to a file in R using the sf package, we can use the **st_write()** function. This function allows us to write spatial data to various formats, including Shapefile, GeoPackage, GeoJSON, and more.
+
+Exporting data every time I knit the R Markdown document is tiresome. Therefore, please remember to remove the **#** from the script section and provide the absolute path where you want to export/save the sf object. Here's a basic example of how to save vector data:
+
+```{r export, message=FALSE, warning=FALSE, include=TRUE}
+
+# Assuming 'vector_data' is your sf object (e.g., a shapefile, GeoJSON, etc.)
+
+# Save to a shapefile
+# st_write(vector_data, "path/to/output_file.shp")
+
+# Save to a GeoPackage
+# st_write(vector_data, "path/to/output_file.gpkg")
+
+# Save to a GeoJSON file
+# st_write(vector_data, "path/to/output_file.geojson")
+
+```
+
+
+
+**_For this tutorial, this concludes the coverage of vector data operations. If you would like to explore additional operations, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [R_tutorial](https://github.com/Ohm-Np/R_tutorial) and feel free to open an issue._**
+

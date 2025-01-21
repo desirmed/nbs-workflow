@@ -1,0 +1,22 @@
+name: "R_tutorial"
+output_dir: ../docs
+
+navbar:
+  title: "Geospatial Analysis with R"
+  left:
+    - text: Home
+      href: index.html
+    - text: How to?
+      href: How_To.html
+    - text: Downloads
+      href: Download_Resources.html
+  right:
+    - icon: fab fa-github fa-lg
+      href: https://github.com/Ohm-Np/R_tutorial
+
+output:
+  workflowr::wflow_html:
+    toc: yes
+    toc_float: yes
+    theme: united
+    highlight: textmate

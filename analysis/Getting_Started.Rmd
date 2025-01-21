@@ -1,0 +1,53 @@
+---
+title: "Getting Started"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style> p { text-align: justify; } </style>
+
+Before diving into geospatial analysis, it’s important to set up your working environment and familiarize yourself with the essential tools. This chapter will guide you through the process of installing R and RStudio, as well as the key packages required for handling geospatial data. You'll also learn about the basic structure of geospatial datasets and how to prepare your system for efficient analysis. By the end of this chapter, you’ll have everything in place to start working with vector and raster data in RStudio.
+
+
+### **Installing R and RStudio**
+
+To begin your geospatial journey in R, you’ll need to install two key components: R and RStudio. R is the programming language that powers your analysis, while RStudio is a user-friendly integrated development environment (IDE) that makes working with R easier.
+
+_1. Install R:_
+
+  - Download the latest version of R from the [Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/bin/windows/base/).
+  - Choose the appropriate version for your operating system (Windows, macOS, or Linux) and follow the installation instructions.
+
+_2. Install RStudio:_
+
+  - Download RStudio Desktop from the [RStudio website](https://posit.co/download/rstudio-desktop/).
+  - Select the free version unless you require advanced features offered by RStudio Pro.
+
+
+### **Installing Required Packages**
+
+Once R and RStudio are installed, the next step is to set up the essential R packages for geospatial analysis. Packages like _sf_, _terra_, and _dplyr_ provide the tools needed to handle spatial data, perform geospatial operations, and streamline data manipulation. We also use package ggplot2 for visualization purpose. To install these packages, open RStudio and run the following command in the Console:
+
+```{r installing required packages, message=FALSE, warning=FALSE, include=TRUE}
+
+# set CRAN mirror
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+
+# packages are only installed when necessary, avoiding repeated output
+packages <- c("sf", "terra", "dplyr", "ggplot2", "tidyr")
+installed_packages <- rownames(installed.packages())
+missing_packages <- packages[!(packages %in% installed_packages)]
+if(length(missing_packages)) install.packages(missing_packages, quiet = TRUE)
+```
+
+This command will download and install the packages directly from CRAN. The **sf** package allows you to work with vector data using the Simple Features standard, while **terra** is designed for handling raster data. The **dplyr** package, part of the tidyverse, simplifies data manipulation with its intuitive functions. With these packages installed, you'll have a solid foundation for geospatial analysis in R.
+
+
+
+
+
+
+

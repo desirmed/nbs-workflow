@@ -1,0 +1,360 @@
+---
+title: "Interactive Visualizations"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style> p { text-align: justify; } </style>
+
+Up to this point, we have created several plots for vector data, raster data, and data frames. However, R also supports interactive visualizations through powerful packages such as **plotly**, **tmap**, **leaflet**, **mapview**, among others. These tools enable the creation of dynamic and engaging visual representations of data.
+
+In this chapter, we will explore various methods for creating visualizations in R, helping you communicate insights more effectively. To begin, we will install all the packages required for creating interactive maps in this chapter.
+
+```{r installing required packages, message=FALSE, warning=FALSE, include=TRUE}
+
+# set CRAN mirror
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+
+# packages are only installed when necessary, avoiding repeated output
+packages <- c("plotly", "leaflet", "mapview")
+installed_packages <- rownames(installed.packages())
+missing_packages <- packages[!(packages %in% installed_packages)]
+if(length(missing_packages)) install.packages(missing_packages, quiet = TRUE)
+```
+
+## **Plotly**
+
+Creating interactive maps with plotly in R is a great way to visualize geospatial data dynamically. Below is an example of how you can create interactive maps using plotly with vector data and raster data.
+
+### **Interactive Maps with Vector Data**
+
+The `plotly` library can visualize vector data (e.g., polygons or points) by converting it into a `sf` object and plotting it using `plot_ly`.
+
+```{r p_sf, message=FALSE, warning=FALSE, include=TRUE}
+
+# Load required libraries
+library(sf)
+library(dplyr)
+library(plotly)
+
+# Load vector data
+gadm_data <- read_sf("data/vector/kanchanpur.gpkg")
+
+# Create an interactive map
+fig <- plot_ly() %>%
+  add_sf(data = gadm_data,
+         type = "scatter",
+         color = ~NAME,
+         text = ~NAME,
+         hoverinfo = "text") %>%
+  layout(
+    annotations = list(
+      text = "Interactive Map of Kanchanpur District",
+      x = 0.5,                                       # Center align
+      y = -0.1,                                      # Position below the plot
+      showarrow = FALSE,                             # No arrow
+      xref = "paper",                                # Relative to the chart
+      yref = "paper",                                # Relative to the chart
+      font = list(size = 16)                         # Font size
+    )
+  )
+
+fig
+
+```
+
+- `color`: Use a column in your dataset to differentiate areas.
+- `hoverinfo`: Displays additional information when you hover over the map.
+
+This interactive plot provides several features to explore the data dynamically. You can hover over elements on the map to view detailed information displayed as tooltips. Use the legend to toggle the visibility of specific categories or data groups. Zoom in and out using the scroll wheel on your mouse or the touchpad, and pan across the map by clicking and dragging. Additionally, double-clicking on the plot resets it to its original view. These tools make it easy to explore and analyze the data visually.
+
+### **Interactive Maps with Raster Data**
+
+To visualize raster data interactively, you can convert it into a data frame with `terra` and then use `plot_ly` to plot it.
+
+```{r p_raster, message=FALSE, warning=FALSE, include=TRUE}
+
+library(terra)
+
+# Load raster data
+r <- rast("data/raster/landcover_2019.tif")
+
+# Convert raster to data frame
+r_df <- as.data.frame(r, xy = TRUE)
+colnames(r_df)
+
+# Rename the 3rd column
+colnames(r_df)[3] <- "layer"
+
+# Create an interactive heatmap
+fig <- plot_ly(
+  data = r_df,
+  x = ~x,
+  y = ~y,
+  z = ~layer,
+  type = "heatmap",
+  colors = "viridis",
+  hoverinfo = "x+y+z"
+) %>%
+  layout(title = "ESA Land Cover (2019)")
+
+fig
+  
+```
+
+- `type` = "heatmap": Creates a heatmap from raster data.
+- `z`: The raster value for each cell.
+- `hoverinfo`: Displays cell coordinates and values on hover.
+
+### **Interactive Maps with Combined Data**
+
+You can combine vector and raster data in a single interactive map. Combine the vector `gadm_data` and raster `r_df` from previous sections.
+
+```{r p_combine, message=FALSE, warning=FALSE, include=TRUE}
+
+# Create an interactive map with raster and vector layers
+fig <- plot_ly() %>%
+  add_trace(
+    data = r_df,
+    x = ~x,
+    y = ~y,
+    z = ~layer,
+    type = "heatmap",
+    colors = "viridis",
+    showscale = TRUE,
+    hoverinfo = "x+y+z"
+  ) %>%
+  add_sf(
+    data = gadm_data,
+    type = "scatter",
+    color = I("yellow"),
+    opacity = 0.5,
+    text = ~NAME,
+    hoverinfo = "text"
+  ) %>%
+  layout(title = "Combined Interactive Map")
+
+fig
+
+```
+
+- `add_trace()`: Adds raster data as a heatmap.
+- `add_sf()`: Overlays vector data (e.g., boundaries).
+- `layout()`: Adjusts the overall layout of the map.
+
+Advantages of Plotly for Maps:
+
+- User-friendly interactivity.
+- Easy to integrate with other plotly visualizations.
+- Highly customizable with tooltips, legends, and layout options.
+
+## **Leaflet**
+
+Interactive maps with the leaflet package in R provide an excellent way to create dynamic and interactive geospatial visualizations. The leaflet package is user-friendly and supports features like zooming, panning, popups, and markers.
+
+### **Basic Interactive Map**
+
+Here’s how to create a simple interactive map:
+
+```{r l_basic, message=FALSE, warning=FALSE, include=TRUE}
+
+library(leaflet)
+leaflet() %>%
+  addTiles() %>% # Add default openStreetMap tiles
+  addMarkers(
+    lng = 80.3547, lat = 28.6895,
+    popup = "Belauri Municipality, Nepal"
+  )
+
+```
+
+- `addTiles()`: Adds the default OpenStreetMap base layer.
+- `addMarkers()`: Places a marker at the specified longitude (lng) and latitude (lat).
+- `popup`: Text displayed when clicking the marker.
+
+### **Mapping Vector Data**
+
+You can map vector data, such as polygons or points, from an `sf` object.
+
+```{r l_vector, message=FALSE, warning=FALSE, include=TRUE}
+
+library(sf)
+
+# Load vector data
+gadm_data <- read_sf("data/vector/kanchanpur.gpkg")
+
+# Create a leaflet map
+leaflet(data = gadm_data) %>%
+  addTiles() %>%  # Add basemap
+  addPolygons(
+    color = "blue", 
+    weight = 2, 
+    opacity = 0.7,
+    popup = ~NAME
+  )
+
+```
+
+- `addPolygons()`: Plots polygon data.
+- `color`, `weight`, and `opacity`: Control the appearance of the polygons.
+- `popup`: Displays a specific column (NAME) as a popup.
+
+### **Mapping Raster Data**
+
+Raster data can also be visualized using the `leaflet` package.
+
+```{r l_raster, message=FALSE, warning=FALSE, include=TRUE}
+
+library(terra)
+
+# Load raster data
+raster_data <- rast("data/raster/landcover_2019.tif")
+
+# Convert raster to a leaflet-compatible format
+raster_leaflet <- projectRasterForLeaflet(raster_data, method = "bilinear")
+
+# Create a leaflet map with raster
+leaflet() %>%
+  addTiles() %>%  # Add basemap
+  addRasterImage(
+    raster_leaflet, 
+    colors = colorNumeric("viridis", values(raster_leaflet), na.color = "transparent"),
+    opacity = 0.8
+  ) %>%
+  addLegend(
+    pal = colorNumeric("viridis", values(raster_leaflet), na.color = "transparent"),
+    values = values(raster_leaflet),
+    title = "ESA Land Cover"
+  )
+
+```
+
+- `addRasterImage()`: Adds the raster layer.
+- `colorNumeric()`: Defines the color scale.
+- `addLegend()`: Adds a legend for the raster data.
+
+### **Customizing Leaflet Maps**
+
+You can add multiple layers and allow users to switch between them using `addLayersControl()` and also add circle markers using `addCircleMarkers()`. You can create popups that display information from your dataset dynamically.
+
+```{r l_custom, message=FALSE, warning=FALSE, include=TRUE}
+
+leaflet() %>%
+  addTiles(group = "OSM Default") %>%
+  addProviderTiles("CartoDB.Positron", group = "Carto Light") %>%
+  addPolygons(data = gadm_data,
+              color = "blue",
+              group = "NAME",
+              popup = ~paste("VDC:", NAME)) %>%
+  addLayersControl(
+    baseGroups = c("OSM Default", "Carto Light"),
+    overlayGroups = c("Regions"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addCircleMarkers(
+    lng = 80.3547, lat = 28.6895, 
+    radius = 8, color = "red", 
+    popup = "Belauri Municipality, Nepal"
+  )
+
+```
+
+Advantages of Leaflet:
+
+- Highly interactive and user-friendly.
+- Extensive customization options (basemaps, markers, popups, etc.).
+- Lightweight and suitable for web integration.
+
+## **Mapview**
+
+Creating interactive maps with `mapview` in R is a simple and effective way to visualize geospatial data interactively. The mapview package is designed to provide quick, easy, and interactive maps using leaflet internally, with minimal code. It works well with `sf`, and `SpatRaster` objects.
+
+Here’s how to use mapview to create interactive maps for various types of geospatial data:
+
+### **Basic Interactive Map**
+
+You can create a basic interactive map by simply calling mapview() on your geospatial object.
+
+```{r m_basic, message=FALSE, warning=FALSE, include=TRUE}
+
+library(sf)
+library(mapview)
+
+# Create a data frame with point data
+point_data <- data.frame(
+  lat = c(28.6895),
+  lon = c(80.3547),
+  popup = c("Belauri Municipality")
+)
+
+# Convert to an sf object
+point_sf <- st_as_sf(point_data, coords = c("lon", "lat"), crs = 4326)
+
+# Plot the point using mapview
+mapview(point_sf)
+
+```
+
+- `st_as_sf()`: Converts the data frame to an sf object, which is compatible with mapview.
+- `mapview()`: Plots the sf object interactively.
+
+### **Plotting Vector Data**
+
+You can plot vector data like polygons using mapview as well.
+
+```{r m_vector, message=FALSE, warning=FALSE, include=TRUE}
+
+# Load vector data
+gadm_data <- read_sf("data/vector/kanchanpur.gpkg")
+
+# Plot the polygon using mapview
+mapview(gadm_data)
+
+```
+
+- `mapview()` will display the polygons interactively.
+- You can adjust the colors, labels, and other aspects of the polygons with additional parameters (e.g., `color`, `popup`, etc.).
+
+### **Plotting Raster Data**
+
+`mapview` can also handle raster data. For instance, when you have a raster dataset representing Population Count, it can be plotted interactively.
+
+```{r m_raster, message=FALSE, warning=FALSE, include=TRUE}
+
+# Load vector data
+raster_data <- rast("data/raster/reclassified.tif")
+
+# Plot the polygon using mapview
+mapview(raster_data)
+
+```
+
+- `mapview()` automatically handles the rendering of raster layers and creates an interactive map.
+
+### **Combining Multiple Layers**
+
+You can combine vector and raster data layers in a single map view.
+
+```{r m_combine, message=FALSE, warning=FALSE, include=TRUE}
+
+# Create an interactive map with both vector and raster data
+mapview(gadm_data) + mapview(raster_data)
+
+```
+
+Advantages of mapview:
+
+- Quick and Easy
+- Customizable
+- Works with Multiple Data Types
+- Built-in Integration
+
+**For this tutorial, this concludes the coverage of Interactive Visualizations in R. If you would like to explore additional packages for interactive maps, examples, or need clarification on any of the steps covered, please visit the GitHub repository: [R_tutorial](https://github.com/Ohm-Np/R_tutorial) and feel free to open an issue.**
+
+
+
+
+

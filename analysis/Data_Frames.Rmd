@@ -1,0 +1,552 @@
+---
+title: "Data Frames in R"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style> p { text-align: justify; } </style>
+
+## **What is a Data Frame?**
+
+Data frames are a cornerstone of data manipulation and analysis in R, designed for handling tabular data efficiently. They are two-dimensional, rectangular structures where rows represent observations and columns represent variables. Each column is a vector of equal length, allowing for the storage of mixed data types such as numerical, character, or logical values. Analogous to spreadsheets or SQL tables, data frames are indispensable in tasks like statistical analysis, data visualization, and machine learning.
+
+Key characteristics of data frames:
+
+- Columns can contain different data types (e.g., numeric, character, factor).
+- Rows represent individual observations or cases.
+- Data frames can hold large datasets efficiently.
+
+## **Creating Data Frames**
+
+We can create a data frame in R using the `data.frame()` function from base R. Here's an example:
+
+```{r create_df, message=FALSE, warning=FALSE, include=TRUE}
+
+# Creating a data frame
+students <- data.frame(
+  Name = c("Amrit", "Ishwor", "Indra", "Rakshya"),
+  Age = c(27, 24, 21, 25),
+  Grade = c("A", "B", "A", "B"),
+  Major = c("Maths", "Science", "Maths", "Science")
+)
+
+# Display the data frame
+print(students)
+
+```
+
+## **Accessing and Modifying Data**
+
+#### **Selecting Rows and Columns**
+
+We can access elements of a data frame using indexing, column names, or logical conditions.
+
+```{r access, message=FALSE, warning=FALSE, include=TRUE}
+
+# Access a specific column
+students$Name
+
+# Access a specific row
+students[1, ]
+
+# Access a specific value
+students[2, "Grade"]
+
+```
+
+#### **Adding and Removing Columns**
+
+We can add a new column to a data frame dynamically or remove an existing column.
+
+```{r modify, message=FALSE, warning=FALSE, include=TRUE}
+
+# Adding a new column
+students$Passed <- c(TRUE, FALSE, TRUE, FALSE)
+# Display the data frame
+print(students)
+
+# Removing a column
+students$Grade <- NULL
+# Display the data frame
+print(students)
+
+```
+
+## **Data Frame Operations**
+
+#### **Filtering and Subsetting**
+
+We can filter rows based on conditions using logical operators.
+
+```{r filter, message=FALSE, warning=FALSE, include=TRUE}
+
+# Filter students with Age > 22
+students[students$Age > 22, ]
+```
+
+#### **Sorting and Reordering**
+
+Sorting a data frame is straightforward with the `order()` function.
+
+```{r reorder, message=FALSE, warning=FALSE, include=TRUE}
+
+# Sort by Age
+students <- students[order(students$Age), ]
+# Display the data frame
+print(students)
+
+```
+
+#### **Summary and Statistical Functions**
+
+R provides built-in functions to summarize and analyze data frames.
+
+```{r summary, message=FALSE, warning=FALSE, include=TRUE}
+
+# Summary statistics
+summary(students)
+
+# Number of rows and columns
+nrow(students)
+ncol(students)
+
+```
+
+#### **Aggregation and Grouping**
+
+The `dplyr` package functions enable grouping and summarization.
+
+```{r group, message=FALSE, warning=FALSE, include=TRUE}
+
+# Load dplyr package
+library(dplyr)
+
+# grouping
+students %>%
+  group_by(Major) %>%
+  summarise(Average_Age = mean(Age))
+
+```
+
+So far, this chapter has introduced you to the versatility and power of data frames in R, laying the foundation for data manipulation and analysis. Now, we will delve into data frames specifically designed for geospatial data.
+
+## **Geospatial Data Frames**
+
+A Geospatial Data Frame (*GDF*) extends a standard data frame by including a geometry column, which stores spatial data in formats such as points, lines, and polygons. This integration of spatial and attribute data makes geospatial data frames ideal for spatial analysis and mapping.
+
+The `sf` package represents geospatial data frames as `sf` objects, offering seamless compatibility with other R packages for geospatial and statistical analysis.
+
+Geometry is central to geospatial data frames, defining the spatial features associated with each observation. Each row corresponds to a spatial feature with related attributes, and the geometry column typically stores spatial data in Well-Known Text (WKT) or binary format.
+
+### **Creating GDF**
+
+You can create a geospatial data frame using the st_as_sf() function from the sf package. Here's an example:
+
+```{r sp_create, message=FALSE, warning=FALSE, include=TRUE}
+
+library(sf)
+
+# Create a data frame with spatial data
+data <- data.frame(
+  Name = c("Point A", "Point B", "Point C"),
+  Latitude = c(27.7, 28.2, 26.9),
+  Longitude = c(85.3, 84.9, 83.8)
+)
+
+# Convert to an sf object
+geo_data <- st_as_sf(
+  data,
+  coords = c("Longitude", "Latitude"),
+  crs = 4326  # WGS 84 Coordinate Reference System
+)
+
+print(geo_data)
+```
+
+### **Manipulating GDF**
+
+#### **Spatial Queries**
+
+Geospatial data frames support operations like spatial filtering and proximity analysis.
+
+```{r sp_query, message=FALSE, warning=FALSE, include=TRUE}
+
+# Define a bounding box and convert it to an sfc object
+bbox <- st_bbox(c(xmin = 84, ymin = 27, xmax = 86, ymax = 29),
+                crs = st_crs(geo_data))
+bbox_polygon <- 
+  st_as_sfc(bbox)
+
+# Filter points within a specific bounding box
+filtered_data <- 
+  geo_data[st_within(geo_data,
+                     bbox_polygon,
+                     sparse = FALSE),
+           ]
+
+print(filtered_data)
+```
+
+#### **Attribute-Based Operations**
+
+Just like standard data frames, we can manipulate attributes in geospatial data frames.
+
+```{r sp_attribute, message=FALSE, warning=FALSE, include=TRUE}
+
+# Add a new column
+geo_data$Elevation <- 
+  c(1500, 2000, 1700)
+
+print(geo_data)
+```
+
+#### **Visualization of GDF**
+
+Geospatial data frames can be visualized using the `plot()` function from the `sf` package or integrated with advanced visualization libraries such as `ggplot2`.
+
+```{r sp_viz, message=FALSE, warning=FALSE, include=TRUE}
+
+plot(geo_data["Name"],
+     main = "Geospatial Data Points")
+```
+
+For enhanced visualization, we can use `geom_sf()` in ggplot2.
+
+```{r sp_viz2, message=FALSE, warning=FALSE, include=TRUE}
+
+library(ggplot2)
+
+ggplot(data = geo_data) +
+  geom_sf(aes(color = Name), size = 3) +
+  labs(title = "Geospatial Data Points") +
+  theme_minimal()
+```
+
+This approach allows you to set individual colors based on the Name attribute or other properties and provides more control over styling.
+
+Geospatial data frames bridge the gap between tabular data and spatial analysis, making them indispensable for modern geospatial workflows. Their versatility, combined with R’s ecosystem of geospatial packages, provides an efficient and intuitive way to analyze and visualize spatial data.
+
+## **sf Object**
+
+You have already been introduced to several operations that can be performed on vector data. Since sf objects are a type of data frame, many of the operations covered in earlier chapters will also be useful in this subsection. However, our focus here will be on the **tabular properties** of sf objects rather than their spatial properties.
+
+This subsection will guide you in working with an **sf** object, using geospatial data for the Kanchanpur district in Nepal, extracted from GADM website. To access the data in `.gpkg` format, visit the [Downloads](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/kanchanpur.gpkg) section of this tutorial. The sf package in R seamlessly integrates geospatial data with data frame functionality, enabling both spatial and tabular operations.
+
+### **Structure** 
+
+The sf object contains both the geometry column and attribute data.
+
+```{r sf_view, message=FALSE, warning=FALSE, include=TRUE}
+
+library(sf)
+library(dplyr)
+
+# Import the sf object
+kpr <- read_sf("data/vector/kanchanpur.gpkg") 
+
+# View the structure of the sf object
+str(kpr)
+
+# Display the first few rows
+head(kpr)
+
+```
+
+This reveals both the geometry type (e.g., POLYGON) and the associated attributes if there's any.
+
+### **Adding New Columns**
+
+You can add columns to the sf object just like in a standard data frame:
+
+```{r sf_add, message=FALSE, warning=FALSE, include=TRUE}
+
+# Add a new column - Population
+kpr$Population <- 
+  c(37900, 46565, 72813, 49223, 52221, 64436, 40823,
+    97216, 36368, 277108, 51835, 38199, 46773, 44571,
+    48838, 11581, 131, 19211, 56755, 58257, 37573)
+
+```
+
+### **Arithmetic Computation**
+
+The sf object makes it easy to compute the area of geometries using `st_area()` and eases several other arithmetic operations.
+
+```{r sf_comp, message=FALSE, warning=FALSE, include=TRUE}
+
+# Calculate the area of the district
+kpr$area_km2 <- as.numeric(st_area(kpr)) / 1e6
+
+# Add a new column with density (population/area)
+kpr$density <- kpr$Population / kpr$area_km2
+
+```
+
+### **Selecting and Filtering**
+
+You can filter the data using standard data frame operations:
+
+```{r sf_select, message=FALSE, warning=FALSE, include=TRUE}
+
+# Select specific columns
+selected_data <- 
+  kpr[, c("NAME", "Population")]
+# Display the first few rows
+head(selected_data)
+
+# Filter rows based on attribute values
+filtered_data <- 
+  kpr[kpr$Population > 50000, ]
+# Display the filtered data
+tibble(filtered_data)
+
+```
+
+### **Grouping and Summarizing**
+
+Grouping and summarizing operations are common in data analysis. You can group data based on an attribute and calculate summary statistics for each group.
+
+```{r sf_summary, message=FALSE, warning=FALSE, include=TRUE}
+
+# Group by region and calculate total population
+region_summary <- kpr %>%
+  group_by(NAME) %>%
+  summarize(
+    total_population = sum(Population, na.rm = TRUE),
+    average_density = mean(density, na.rm = TRUE)
+  )
+
+print(region_summary)
+
+```
+
+- `group_by()`: Groups the data based on a specified column.
+- `summarize()`: Calculates summary statistics for each group.
+
+### **Pivoting and Reshaping**
+
+Use `pivot_longer()` or `pivot_wider()` from the **tidyr** package to reshape the sf object.
+
+```{r sf_pivot, message=FALSE, warning=FALSE, include=TRUE}
+
+library(tidyr)
+
+# Pivot attributes into long format
+long_format <- kpr %>%
+  st_drop_geometry() %>%
+  pivot_longer(cols = c("Population", "density"),
+               names_to = "attribute",
+               values_to = "value")
+
+head(long_format)
+
+```
+
+- `st_drop_geometry()`: Temporarily removes geometry to focus on tabular operations.
+
+### **Visualization**
+
+Use the `plot()` function for a quick visualization:
+
+```{r sf_plot, message=FALSE, warning=FALSE, include=TRUE}
+
+plot(kpr["density"],
+     main = "Population Density")
+
+```
+For advanced visualization:
+
+```{r sf_plot2, message=FALSE, warning=FALSE, include=TRUE}
+
+ggplot(kpr) +
+  geom_sf(aes(fill = density)) +
+  labs(title = "Population Density by Region", fill = "Density") +
+  theme_minimal()
+
+```
+
+## **SpatRaster Object**
+
+A `SpatRaster` object loaded through the `terra` package is not a data frame; it is a specialized data structure designed to store raster data efficiently. However, you can convert it into a data frame for analysis or integration with other data.
+
+### **Converting SpatRaster to a DF**
+
+You can use the as.data.frame() function to convert a SpatRaster object into a data frame. By default, this creates a data frame with the raster cell values. Optionally, you can include the spatial coordinates of each cell.
+
+_**Example 1**: Conversion Without Coordinates_
+
+If you only need the raster cell values:
+
+```{r sr_convert, message=FALSE, warning=FALSE, include=TRUE}
+
+library(terra)
+
+# Create a SpatRaster
+r <- rast(nrows = 10, ncols = 10)
+
+# Assign random values to each cell (e.g., random values between 0 and 200)
+values(r) <- 
+  runif(ncell(r), min = 0, max = 200)
+
+# View our raster
+plot(r, 
+     main = "SpatRaster")
+
+# Convert to data frame
+df <- as.data.frame(r, na.rm = FALSE)
+head(df)
+
+```
+ 
+In this example:
+
+- `ncell(r)` gives the total number of cells in the raster.
+- `runif()` generates random values between the specified min (0) and max (100) for each cell.
+
+This results in a data frame where each column corresponds to a layer in the `SpatRaster`.
+
+_**Example 2**: Conversion with Coordinates_
+
+To include the spatial coordinates for each cell:
+
+```{r sr_convert2, message=FALSE, warning=FALSE, include=TRUE}
+
+# Convert to data frame with coordinates
+df_with_coords <- as.data.frame(r,
+                                xy = TRUE,
+                                na.rm = FALSE)
+head(df_with_coords)
+
+```
+
+- `xy = TRUE`: Adds the x and y columns for the coordinates of each cell.
+- `na.rm = FALSE`: Includes cells with NA values.
+
+### **Summarize Raster Values**
+
+In this subsection, we will load the Population Count raster data for the year 2020, which can be accessed in the [Downloads](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/popCount_2020.tif) section of this tutorial.
+
+```{r sr_load, message=FALSE, warning=FALSE, include=TRUE}
+
+# Load the SpatRaster
+r <- 
+  rast("data/raster/popCount_2020.tif")
+
+# Plot the raster
+plot(r,
+     main = "Population Count - SpatRaster")
+
+```
+
+We can calculate basic summary statistics (mean, median, min, max) to get an overview of the population distribution across the region.
+
+_**Example 1**: Summarize Population Count_
+
+```{r sr_summarize, message=FALSE, warning=FALSE, include=TRUE}
+
+summary_stats <- summary(values(r))
+print(summary_stats)
+
+```
+
+_**Example 2**: Calculating Mean Population Density_
+
+```{r sr_calc, message=FALSE, warning=FALSE, include=TRUE}
+
+mean_population <- mean(values(r),
+                        na.rm = TRUE)
+print(mean_population)
+
+```
+
+### **Identify High-Density Regions**
+
+You can extract specific regions of the raster where the population is above a certain threshold, which could be useful for identifying high-density areas.
+
+```{r sr_identify, message=FALSE, warning=FALSE, include=TRUE}
+
+# Identify cells where population is higher than a threshold
+threshold <- 100
+high_density_cells <- which(values(r) > threshold)
+coordinates_high_density <- xyFromCell(r, high_density_cells)
+
+# Number of cells having High-Density
+length(high_density_cells)
+
+# View few cells with coordinates with High-Density
+head(coordinates_high_density)
+
+# Plot High_density cells
+plot(coordinates_high_density,
+     main = "High Density Regions")
+
+```
+
+### **Classify Raster Data**
+
+If you want to categorize population counts (e.g., low, medium, high), you can reclassify the raster into classes.
+
+```{r sr_classify, message=FALSE, warning=FALSE, include=TRUE}
+
+# Reclassify the raster values
+r_classified <- r
+values(r_classified) <- cut(values(r), breaks = c(0, 1, 5, 20, 100, Inf), 
+                            labels = c("Very Low", "Low", "Medium", "High", "Very High"))
+
+# Convert to a data frame with classification
+df_classified <- as.data.frame(r_classified, xy = TRUE)
+head(df_classified)
+
+```
+
+### **Change Identification**
+
+If you have multiple rasters representing population data over different time periods, you can compute the changes in population between two periods.
+
+Let's load the Population Count raster data for the year 2000 as well, so we can compute the changes in population over a 20-year period. This data can be accessed in the [Downloads](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/popCount_2000.tif) section of this tutorial.
+
+```{r sr_change, message=FALSE, warning=FALSE, include=TRUE}
+
+# Load population count raster for year 2000
+r2 <- 
+  rast("data/raster/popCount_2000.tif")
+
+# Population change between years 2020 and 2000
+population_change <- r - r2
+summary(values(population_change))
+
+# View the reclassified raster
+plot(r_classified, main = "Reclassification (2020)")
+
+```
+
+### **Visualization**
+
+To plot multiple rasters side by side in R, you can use the `terra` package with `par()` to set up a grid of plots. Here's an example using the terra package and base R plotting:
+
+```{r sr_plot, message=FALSE, warning=FALSE, include=TRUE}
+
+# Set up a plotting layout: 2 rows, 2 columns
+par(mfrow = c(2, 2))  # 2 rows, 2 columns
+
+# Plot each raster
+plot(r2, main = "Population 2000")
+plot(r, main = "Population 2020")
+plot(population_change, main = "Population Change")
+
+# Reset the plotting layout to default (1 plot)
+par(mfrow = c(1, 1))
+
+```
+
+These are just a few ways you can manipulate raster data for insights into population distribution. The flexibility of raster data combined with tabular operations makes it a powerful tool for spatial and non-spatial analysis.
+
+**For this tutorial, this concludes the coverage of Data Frames in R. If you would like to explore additional examples, or need clarification on any of the steps covered, please visit the GitHub repository: [R_tutorial](https://github.com/Ohm-Np/R_tutorial) and feel free to open an issue.**
+
+
+
+
+

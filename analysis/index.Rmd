@@ -1,0 +1,39 @@
+---
+title: "Geospatial Analysis Made Easy: A Beginner's Guide to RStudio"
+author: "**Om Prakash Bhandari**"
+date: "_MS Geoinformatics_"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+<style> p { text-align: justify; } </style>
+
+Welcome to this comprehensive guide on geospatial analysis with RStudio! This tutorial is designed to help you get acquainted with RStudio, a powerful open-source tool for spatial data analysis. You'll learn how to work with both vector and raster data, perform essential geospatial operations, and create informative maps. Whether you’re just starting out or aiming to refine your geospatial skills, this resource will walk you through key techniques in data manipulation, visualization, and interactive mapping, giving you the skills you need to confidently work with spatial data in RStudio.
+
+## **_Chapters_**
+
+[**_1_. Introduction**](Introduction.html)
+
+[**_2_. Getting Started**](Getting_Started.html)
+
+[**_3_. Understanding Geospatial Data**](Understanding_Geospatial_Data.html)
+
+[**_4_. Loading Geospatial Data in RStudio**](Loading_Geospatial_Data_in_RStudio.html)
+
+[**_5_. Basic Operations with Vector Data**](Basic_Operations_with_Vector_Data.html)
+
+[**_6_. Basic Operations with Raster Data**](Basic_Operations_with_Raster_Data.html)
+
+[**_7_. Functions in R**](Functions.html)
+
+[**_8_. Data Frames in R**](Data_Frames.html)
+
+[**_9_. Interactive Visualizations**](Interactive_Maps.html)
+
+[**Exercises**](Exercises.html)
+
+[**Additional Resources**](Additional_Resources.html)

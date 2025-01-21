@@ -1,0 +1,67 @@
+---
+title: "Loading Geospatial Data in RStudio"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style> p { text-align: justify; } </style>
+
+Once you have RStudio set up and the required packages installed, the next step is to load your geospatial data into R. R provides several powerful packages for importing, manipulating, and analyzing spatial data. Two of the most commonly used packages for handling vector and raster data are **sf** and **terra**, respectively. These packages make it easy to work with geospatial data within RStudio, allowing you to perform spatial analysis, visualization, and data manipulation seamlessly.
+
+### **Importing Vector Data**
+
+The sf (Simple Features) package is the go-to tool for working with vector data in R. It supports various vector file formats such as Shapefile (.shp), GeoJSON, and GeoPackage (.gpkg). One of the advantages of using sf is that it provides a simple and consistent interface for working with vector data, making it easy to import, manipulate, and analyze geospatial features. Additionally, sf integrates well with the tidyverse ecosystem, allowing for smooth workflows in data manipulation and visualization.
+
+To load vector data using the sf package, you typically use either _st_read()_ or _read_sf()_ function.
+
+In this tutorial, I am using a .gpkg file which is made available on GitHub. You can download it by clicking [this link](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/kanchanpur.gpkg).
+
+```{r importing vector data, message=FALSE, warning=FALSE, include=TRUE}
+
+# Load the sf package
+library(sf)
+
+# Import your downloaded gpkg file
+# don't forget to provide the path where you have downloaded it locally
+vector_data <- read_sf("data/vector/kanchanpur.gpkg")
+
+# View the first few rows of the data
+head(vector_data)
+
+# Lets plot the data to see how it looks
+plot(vector_data, main = "Kanchanpur district (Nepal)")
+```
+
+In this example, **read_sf()** reads the GeoPackage and loads into an _sf_ object. The _sf_ object contains both the geometric data (polygons in this case) and the any associated attribute data (names of VDCs, Municipalities). As you can see from the data and plot above, this _gpkg_ file is of Kanchanpur dictrict from Nepal. Once the data is loaded, you can perform a wide range of operations, such as subsetting, transforming projections, and performing spatial queries.
+
+### **Importing Raster Data**
+
+The terra package is specifically designed for raster data and provides improved performance and easier handling of large datasets compared to the _raster_ package. The _terra_ package supports a wide variety of raster formats, including GeoTIFF (.tif), ASCII, and more.
+
+To load raster data using **terra**, you use the _rast()_ function. In this tutorial, I am using .tif files which are available on GitHub. You can download it by clicking here: [Land Cover 2015](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/landcover_2015.tif) & [Land Cover 2019](https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/raster/landcover_2019.tif).
+
+```{r importing raster data, message=FALSE, warning=FALSE, include=TRUE}
+
+# Load the terra package
+library(terra)
+
+# Import your downloaded tif file
+# don't forget to provide the path where you have downloaded it locally
+raster_data <- rast("data/raster/landcover_2015.tif")
+
+# View basic information about the raster
+raster_data
+
+# Lets plot the data to see how it looks
+plot(raster_data)
+```
+
+In this example, rast() loads a raster file into a SpatRaster object. This object contains both the spatial grid (array of pixels) and the values for each pixel. The terra package makes it easier to manipulate raster data, offering functions to crop, mask, reclassify, and perform raster algebra operations.
+
+Now that we are familiar with R, RStudio, the essential R packages for geospatial analysis, and the process of importing vector and raster data, it's time to dive deeper into basic geospatial operations.
+
+
+

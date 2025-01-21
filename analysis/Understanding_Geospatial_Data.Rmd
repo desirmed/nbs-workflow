@@ -1,0 +1,56 @@
+---
+title: "Understanding Geospatial Data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style> p { text-align: justify; } </style>
+
+Geospatial data refers to data that is associated with a specific location on the Earth's surface. This data often includes both geographic coordinates (e.g., latitude and longitude) and information about the features or phenomena at those locations. Understanding geospatial data is essential for performing spatial analysis, as it helps you examine patterns, relationships, and distributions across geographical areas. Geospatial data can be represented in two main forms: **vector data** and **raster data**, each serving different purposes and requiring different approaches for analysis.
+
+### **Types of Geospatial Data**
+
+_1. Vector Data:_
+
+Vector data represents geographical features as points, lines, and polygons. These features are defined by their precise coordinates, making vector data ideal for representing discrete geographic objects like roads, rivers, cities, or boundaries. Vector data is highly efficient for modeling complex shapes with detailed attributes (e.g., a city boundary with population data). The most common types of vector data are:
+
+- Points: Represent specific locations, such as a city or a well.
+- Lines: Represent linear features, such as rivers, roads, or railway tracks.
+- Polygons: Represent areas, such as countries, lakes, or land parcels.
+
+_2. Raster Data:_
+
+Raster data represents geographical features using a grid of cells or pixels, where each cell holds a value representing some characteristic (e.g., temperature, elevation, or land cover). Each pixel in the raster corresponds to a specific area of the Earth's surface. Raster data is ideal for continuous data, such as satellite imagery, climate data, or elevation models. Raster datasets are commonly used in environmental studies, remote sensing, and terrain analysis, as they can capture large-scale phenomena over broad regions.
+
+### **Common File Formats**
+
+Geospatial data is stored in various file formats, depending on the type of data and the software being used. Some of the most common file formats for vector and raster data include:
+
+_1. Shapefile:_ 
+
+The Shapefile format (.shp) is one of the most widely used formats for storing vector data. It stores geometric shapes (points, lines, or polygons) and their associated attribute data in separate files, which must be used together. The Shapefile format consists of a set of files with extensions like _.shp_ (geometry), _.shx_ (shape index), and _.dbf_ (attribute data). Shapefiles are supported by most GIS software, making them highly interoperable.
+
+_2. GeoPackage:_ 
+
+The GeoPackage (.gpkg) is an open, standardized format for storing both vector and raster data. Unlike Shapefiles, which require multiple files to store different data types, GeoPackages store all the data in a single SQLite database file. This makes GeoPackage a more compact and efficient format for managing complex datasets. It supports spatial data types and is becoming increasingly popular due to its flexibility and ability to handle both types of geospatial data in one file.
+
+_3. GeoTIFF:_ 
+
+The GeoTIFF (.tif) format is a raster data format that stores geospatial information (such as coordinates, projection, and resolution) along with pixel values. This format is commonly used for satellite imagery, elevation models, and other geospatial raster data. The GeoTIFF format preserves spatial reference information, which is crucial for accurate geospatial analysis. It is widely supported by both open-source and commercial GIS tools, making it a go-to format for working with raster data.
+
+
+These formats, along with the understanding of vector and raster data, provide a solid foundation for conducting geospatial analysis. Depending on the type of data you work with and the analysis you wish to perform, you may choose the appropriate file format to suit your needs. 
+
+However, in this tutorial, we will primarily work with geopackage and tiff format.
+
+
+
+
+
+
+
+
+

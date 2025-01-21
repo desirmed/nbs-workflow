@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Basic Operations with Vector Data</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Geospatial Analysis with R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="How_To.html">How to?</a>
+</li>
+<li>
+  <a href="Resources.html">Downloads</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/Ohm-Np/R_tutorial">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Basic Operations with Vector Data</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-12-27
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>R_tutorial/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20241223code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20241223)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20241223code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20241223)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomOhmNpRtutorialtree62e8b40ba7251e8d9a6d5d45905fb9f209a179batargetblank62e8b40a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/Ohm-Np/R_tutorial/tree/62e8b40ba7251e8d9a6d5d45905fb9f209a179ba" target="_blank">62e8b40</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomOhmNpRtutorialtree62e8b40ba7251e8d9a6d5d45905fb9f209a179batargetblank62e8b40a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/Ohm-Np/R_tutorial/tree/62e8b40ba7251e8d9a6d5d45905fb9f209a179ba" target="_blank">62e8b40</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/Basic_Operations_with_Raster_Data.Rmd
+    Untracked:  analysis/How_To.Rmd
+    Untracked:  analysis/Resources.Rmd
+
+Unstaged changes:
+    Modified:   analysis/Getting_Started.Rmd
+    Modified:   analysis/Introduction.Rmd
+    Modified:   analysis/Loading_Geospatial_Data_in_RStudio.Rmd
+    Modified:   analysis/Understanding_Geospatial_Data.Rmd
+    Modified:   analysis/_site.yml
+    Deleted:    analysis/about.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/Basic_Operations_with_Vector_Data.Rmd</code>) and HTML
+(<code>docs/Basic_Operations_with_Vector_Data.html</code>) files. If
+you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/62e8b40ba7251e8d9a6d5d45905fb9f209a179ba/analysis/Basic_Operations_with_Vector_Data.Rmd" target="_blank">62e8b40</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+wflow_publish("analysis/Basic_Operations_with_Vector_Data.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/98793a8c5cb79486cbfa490059fac5ceb95cd452/docs/Basic_Operations_with_Vector_Data.html" target="_blank">98793a8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Ohm-Np/R_tutorial/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/Basic_Operations_with_Vector_Data.html" target="_blank">3978bc8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/4c71739e0c47ca6c2293cdd64b03bfa5b6e73f4e/analysis/Basic_Operations_with_Vector_Data.Rmd" target="_blank">4c71739</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+<td>
+wflow_publish("analysis/Basic_Operations_with_Vector_Data.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style> p { text-align: justify; } </style>
+<p>Once geospatial data is loaded into R, the next step is to explore
+and manipulate it to extract meaningful insights. Whether working with
+vector or raster data, R provides a rich set of tools for performing a
+variety of geospatial operations. These operations range from simple
+data viewing and subsetting to more complex geometric manipulations such
+as buffering and intersections. Mastering these fundamental tasks is
+crucial for conducting effective geospatial analysis.</p>
+<p>Vector data represents features as points, lines, or polygons and
+includes both geometric and attribute information. As already mentioned
+in previous chapter we will be using the <strong>sf</strong> package
+since it is an excellent tool for handling vector data, as it provides a
+seamless way to explore, manipulate, and analyze spatial features.
+Vector data operations often involve viewing and subsetting attributes,
+performing spatial queries, and conducting geometric
+transformations.</p>
+<div id="viewing-and-subsetting" class="section level2">
+<h2><strong>Viewing and Subsetting</strong></h2>
+<p>After loading vector data, the first step is usually to explore its
+structure. The sf package allows you to inspect both the attribute table
+and the geometries of spatial features. You can use standard R functions
+like <em>head()</em> and <em>summary()</em> to view the data.</p>
+<pre class="r"><code>library(sf)
+library(dplyr)
+
+# Import your downloaded gpkg file
+# don&#39;t forget to provide the path where you have downloaded it locally
+kpr &lt;- 
+  read_sf(&quot;data/vector/kanchanpur.gpkg&quot;)
+
+# View the structure of the vector data
+head(kpr)</code></pre>
+<pre><code>Simple feature collection with 6 features and 1 field
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 80.06014 ymin: 28.64567 xmax: 80.55588 ymax: 29.05851
+Geodetic CRS:  WGS 84
+# A tibble: 6 × 2
+  NAME                                                                      geom
+  &lt;chr&gt;                                                       &lt;MULTIPOLYGON [°]&gt;
+1 BaisiBichawa (((80.49934 28.64667, 80.49709 28.64866, 80.49709 28.65089, 80.4…
+2 Beldandi     (((80.25229 28.75782, 80.25377 28.7646, 80.25588 28.76808, 80.25…
+3 Chandani     (((80.10973 28.98432, 80.10986 28.97376, 80.10738 28.96319, 80.1…
+4 Daijee       (((80.34424 29.05416, 80.34449 29.04956, 80.34698 29.04397, 80.3…
+5 Dekhatbhuli  (((80.44701 28.78921, 80.43608 28.78623, 80.4316 28.78623, 80.42…
+6 Dodhara      (((80.10042 28.88838, 80.09917 28.87645, 80.10327 28.87297, 80.1…</code></pre>
+<pre class="r"><code>summary(kpr)</code></pre>
+<pre><code>     NAME                      geom   
+ Length:21          MULTIPOLYGON :21  
+ Class :character   epsg:4326    : 0  
+ Mode  :character   +proj=long...: 0  </code></pre>
+<p>From above, you can also see substantial difference on using
+<em>head()</em> and <em>summary()</em> functions.</p>
+<p>For subsetting, logical conditions can be applied to filter features
+based on their attributes.</p>
+<pre class="r"><code># subset polygon with Name: Sreepur
+subset_data &lt;- kpr %&gt;%
+  dplyr::filter(NAME == &quot;Sreepur&quot;)
+
+# Lets see if the subsetting worked fine by plotting the subset data
+plot(subset_data,
+     col = &quot;lightblue&quot;,
+     border = &quot;red&quot;,
+     main = &quot;Sreepur&quot;)</code></pre>
+<p><img src="figure/Basic_Operations_with_Vector_Data.Rmd/subsetting-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-subsetting-1">
+Past versions of subsetting-1.png
+</button>
+</p>
+<div id="fig-subsetting-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/Basic_Operations_with_Vector_Data.Rmd/subsetting-1.png" target="_blank">3978bc8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Note: The <strong>%&gt;%</strong> operator in <em>dplyr</em> is
+called the “<strong>pipe</strong>” operator, and it allows you to pass
+the output of one function directly as the input to the next function in
+a readable, sequential manner. It helps streamline code by eliminating
+the need for intermediate variables, making it easier to write and read
+data manipulation workflows. For example, data %&gt;% filter(condition)
+%&gt;% select(column) means “take the data, filter it based on a
+condition, and then select specific columns.”</p>
+</div>
+<div id="buffer-and-intersection" class="section level2">
+<h2><strong>Buffer and Intersection</strong></h2>
+<p>Geometric operations modify the spatial geometry of vector features
+and are integral to spatial analysis. Two common operations are
+buffering and intersection.</p>
+<p>The <strong>buffer</strong> operation creates a zone around a feature
+at a specified distance. It is often used for proximity analysis, such
+as determining areas within a certain distance of a road or river.</p>
+<p>For this specific function, we are going to use subset polygon of
+Kanchanpur district (Sreepur VDC) which you can download by clicking <a
+href="https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/sreepur.gpkg">this
+link</a>.</p>
+<pre class="r"><code># import your recently downloaded gpkg
+spr &lt;- 
+  read_sf(&quot;data/vector/sreepur.gpkg&quot;)
+
+# Create a 10000-meter buffer around our area of interest i.e. spr
+buffered_data &lt;- 
+  sf::st_buffer(spr, dist = 10000)
+
+# Lets see if the buffer function worked fine by plotting the buffered data
+plot(buffered_data,
+     col = &quot;grey&quot;,
+     border = &quot;darkblue&quot;,
+     pch = 16,
+     main = &quot;Buffer Zone (10 Kms)&quot;)</code></pre>
+<p><img src="figure/Basic_Operations_with_Vector_Data.Rmd/buffer-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-buffer-1">
+Past versions of buffer-1.png
+</button>
+</p>
+<div id="fig-buffer-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/Basic_Operations_with_Vector_Data.Rmd/buffer-1.png" target="_blank">3978bc8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>From the plot above, we can see that a buffer zone of 10 km around
+Sreepur has been successfully created. You can adjust the buffer
+distance and also use point or line data as needed for your task.</p>
+<p>The <strong>intersection</strong> operation identifies the spatial
+overlap between two layers. It is used to find common areas or features
+shared by two datasets.</p>
+<p>Here in this tutorial, we will use the data from WDPA (World Database
+on Protected Areas) of Nepal and see the intersection between wdpa
+datasets and the Sreepur VDC, if theres any. For this, please download
+the wdpa data by clicking on <a
+href="https://github.com/Ohm-Np/R_tutorial/raw/refs/heads/master/data/vector/protected_areas.gpkg">this
+link</a>.</p>
+<pre class="r"><code># import protected areas gpkg
+wdpa &lt;- 
+  read_sf(&quot;data/vector/protected_areas.gpkg&quot;)
+
+# Perform an intersection between two layers - wdpa and sreepur
+intersected_data &lt;- 
+  sf::st_intersection(wdpa, spr)
+
+# View the structure of the intersected data
+head(intersected_data)</code></pre>
+<pre><code>Simple feature collection with 1 feature and 31 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 80.34765 ymin: 28.72094 xmax: 80.38773 ymax: 28.76198
+Geodetic CRS:  WGS 84
+# A tibble: 1 × 32
+     WDPAID WDPA_PID  PA_DEF NAME  ORIG_NAME DESIG DESIG_ENG DESIG_TYPE IUCN_CAT
+      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;   
+1 555569941 555569941 1      Sukl… शुक्लाफाँटा… मध्यव… Wildlife… National   VI      
+# ℹ 23 more variables: INT_CRIT &lt;chr&gt;, MARINE &lt;chr&gt;, REP_M_AREA &lt;dbl&gt;,
+#   GIS_M_AREA &lt;dbl&gt;, REP_AREA &lt;dbl&gt;, GIS_AREA &lt;dbl&gt;, NO_TAKE &lt;chr&gt;,
+#   NO_TK_AREA &lt;dbl&gt;, STATUS &lt;chr&gt;, STATUS_YR &lt;int&gt;, GOV_TYPE &lt;chr&gt;,
+#   OWN_TYPE &lt;chr&gt;, MANG_AUTH &lt;chr&gt;, MANG_PLAN &lt;chr&gt;, VERIF &lt;chr&gt;,
+#   METADATAID &lt;int&gt;, SUB_LOC &lt;chr&gt;, PARENT_ISO &lt;chr&gt;, ISO3 &lt;chr&gt;,
+#   SUPP_INFO &lt;chr&gt;, CONS_OBJ &lt;chr&gt;, NAME.1 &lt;chr&gt;, geom &lt;MULTIPOLYGON [°]&gt;</code></pre>
+<pre class="r"><code># From the head() function, it is clear that the intersection function worked fine
+# Now, lets plot the intersected area
+plot(intersected_data[1],
+     col = &quot;red&quot;,
+     pch = 16,
+     main = &quot;Protected areas within Sreepur&quot;)</code></pre>
+<p><img src="figure/Basic_Operations_with_Vector_Data.Rmd/intersection-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-intersection-1">
+Past versions of intersection-1.png
+</button>
+</p>
+<div id="fig-intersection-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/Basic_Operations_with_Vector_Data.Rmd/intersection-1.png" target="_blank">3978bc8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Here, <em>st_intersection()</em> computes the geometric intersection
+of two spatial datasets ( <em>spr</em> and <em>wdpa</em>), retaining
+only the overlapping portions.</p>
+</div>
+<div id="area-computation" class="section level2">
+<h2><strong>Area computation</strong></h2>
+<p>The <em>sf</em> package makes it easy to compute the area of spatial
+features within an sf object. Area computation is particularly useful
+for polygons, such as determining the size of administrative regions,
+lakes, or land parcels. The <strong>st_area()</strong> function is used
+to calculate the area of each geometry in an sf object. By default, the
+area is computed in the unit of the CRS (coordinate reference system) of
+the data.</p>
+<pre class="r"><code># Compute the area of the intersected data of wdpa and sreepur
+st_area(intersected_data)</code></pre>
+<pre><code>69422.06 [m^2]</code></pre>
+<pre class="r"><code># Now, lets compute the area of sreepur 
+st_area(spr)</code></pre>
+<pre><code>55613977 [m^2]</code></pre>
+<pre class="r"><code># Also, check the area of Kanchanpur district
+st_area(kpr)</code></pre>
+<pre><code>Units: [m^2]
+ [1]  73895607  24696276  32223907 101961917  90376492  24642977 121915343
+ [8]  25452382 165351541  28876857 171357287  37749257  42644436  81013967
+[15]  39162470  30053069 360362343  35356757  55613977  57692908  19506734</code></pre>
+<pre class="r"><code># Since, there are 21 VDCs in kanchanpur district, we got the area of each polygons
+# Let&#39;s compute the total area of kanchanpur district using pipeline from dplyr and sum() function
+st_area(kpr) %&gt;% 
+  sum()</code></pre>
+<pre><code>1619906505 [m^2]</code></pre>
+<pre class="r"><code># All the areas displayed above are in square meters, lets convert them to square kilometers
+st_area(kpr) %&gt;% 
+  sum() %&gt;%
+  as.numeric()/1e6</code></pre>
+<pre><code>[1] 1619.907</code></pre>
+</div>
+<div id="basic-vector-operations" class="section level2">
+<h2><strong>Basic Vector Operations</strong></h2>
+<p>In addition to viewing, subsetting, buffer creation, intersection,
+and area computation, here are other basic vector operations commonly
+used in geospatial analysis with R:</p>
+<div id="union" class="section level3">
+<h3><strong>Union</strong></h3>
+<p>Combines two or more geometries into a single geometry using function
+<em>st_union()</em>.</p>
+<pre class="r"><code># we already have Sreepur gpkg loaded as spr, lets subset one more polygon from kanchanpur district
+# subset polygon with Name: Tribhuwanbasti
+subset_data &lt;- kpr %&gt;%
+  dplyr::filter(NAME == &quot;Tribhuwanbasti&quot;)
+
+# combine both geometries
+union_data &lt;- 
+  st_union(subset_data, spr)
+
+# plot the union data using library &#39;ggplot2&#39;
+library(ggplot2)
+ggplot() +
+  geom_sf(data = union_data, fill = &quot;cyan&quot;, color = &quot;magenta&quot;, alpha = 0.5) +
+  theme_minimal() +
+  ggtitle(&quot;Combined geometries&quot;)</code></pre>
+<p><img src="figure/Basic_Operations_with_Vector_Data.Rmd/union-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-union-1">
+Past versions of union-1.png
+</button>
+</p>
+<div id="fig-union-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/Basic_Operations_with_Vector_Data.Rmd/union-1.png" target="_blank">3978bc8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>ggplot2</strong> is a popular and powerful data visualization
+package in R, part of the tidyverse ecosystem. It implements the grammar
+of graphics, a systematic approach to building plots by layering
+components like data, aesthetics, geometric objects, and scales.</p>
+<p>Key features include its flexibility to create complex, multi-layered
+visualizations, support for a wide range of plot types (e.g., scatter
+plots, bar charts, maps, and more), and its ability to handle large
+datasets seamlessly. The syntax is intuitive and encourages a
+declarative approach to visualization, where you specify what you want
+to see rather than how to draw it.</p>
+</div>
+<div id="difference" class="section level3">
+<h3><strong>Difference</strong></h3>
+<p>Computes the difference between two geometries (what’s left after
+subtracting one from another) using <em>st_difference()</em>
+function.</p>
+<pre class="r"><code># compute the difference between original kanchanpur data and union data
+diff &lt;- 
+  st_difference(kpr, union_data)
+
+# Plot the geometry difference
+plot(diff[1],
+     col = &quot;cyan&quot;,
+     border = &quot;black&quot;,
+     main = &quot;Resulting polygons&quot;)</code></pre>
+<p><img src="figure/Basic_Operations_with_Vector_Data.Rmd/difference-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-difference-1">
+Past versions of difference-1.png
+</button>
+</p>
+<div id="fig-difference-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/Basic_Operations_with_Vector_Data.Rmd/difference-1.png" target="_blank">3978bc8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We can see from the plot above that, the resulting sf object after
+using <em>st_difference()</em> function excludes two polygons
+i.e. Sreepur and Tribhuwanbasti.</p>
+</div>
+<div id="centroid-calculation" class="section level3">
+<h3><strong>Centroid Calculation</strong></h3>
+<p>Computes the centroid (geometric center) of a geometry using
+<em>st_centroid()</em> function.</p>
+<pre class="r"><code># compute the centroid of original kanchanpur data
+centroids &lt;- 
+  st_centroid(kpr)
+
+# View centroids
+head(centroids)</code></pre>
+<pre><code>Simple feature collection with 6 features and 1 field
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 80.0846 ymin: 28.70415 xmax: 80.48038 ymax: 28.99553
+Geodetic CRS:  WGS 84
+# A tibble: 6 × 2
+  NAME                        geom
+  &lt;chr&gt;                &lt;POINT [°]&gt;
+1 BaisiBichawa (80.48038 28.70415)
+2 Beldandi     (80.27784 28.77144)
+3 Chandani     (80.08745 28.92563)
+4 Daijee       (80.29327 28.99553)
+5 Dekhatbhuli  (80.39995 28.81342)
+6 Dodhara       (80.0846 28.85747)</code></pre>
+<p>We can see from the data above that centroids have been computed for
+all the polygons.</p>
+</div>
+<div id="bounding-box" class="section level3">
+<h3><strong>Bounding Box</strong></h3>
+<p>Extracts the bounding box (minimum enclosing rectangle) of a geometry
+using function <em>st_bbox()</em>.</p>
+<pre class="r"><code># extract the bounding box of original kanchanpur data
+bbox &lt;- 
+  st_bbox(kpr)
+
+# View bounding box
+head(bbox)</code></pre>
+<pre><code>    xmin     ymin     xmax     ymax 
+80.06014 28.55172 80.56110 29.13732 </code></pre>
+</div>
+<div id="length-computation" class="section level3">
+<h3><strong>Length Computation</strong></h3>
+<p>Computes the length of lines using <em>st_length()</em> function or
+perimeters of polygons using <em>st_perimeter()</em> function.</p>
+<pre class="r"><code># compute the perimeter of Sreepur data
+perimeter &lt;- 
+  st_perimeter(spr)
+
+# View perimeter
+perimeter</code></pre>
+<pre><code>43591.21 [m]</code></pre>
+<p>In order to compute length of the line object, we will do some
+workaround here.</p>
+<pre class="r"><code># convert polygon to line
+polygon_as_line &lt;- 
+  st_cast(spr, &quot;MULTILINESTRING&quot;)
+
+# Calculate perimeter using st_length() function
+perimeter &lt;- 
+  st_length(polygon_as_line)
+  
+# View perimeter
+perimeter</code></pre>
+<pre><code>43591.21 [m]</code></pre>
+<p>Using both methods, we obtain the same result for the perimeter of
+the polygon. Choose the method you are most comfortable with.</p>
+</div>
+<div id="reprojectiontransformation" class="section level3">
+<h3><strong>Reprojection/Transformation</strong></h3>
+<p>Changes the Coordinate Reference System (CRS) of a spatial object.
+Use function <em>st_transform()</em>.</p>
+<pre class="r"><code># Our original Kanchanpur data is in WGS84 
+# Change CRS to NAD83
+reprojected_data &lt;- 
+  st_transform(kpr, crs = 4269)
+
+# Retrieve the updated CRS
+st_crs(reprojected_data)</code></pre>
+<pre><code>Coordinate Reference System:
+  User input: EPSG:4269 
+  wkt:
+GEOGCRS[&quot;NAD83&quot;,
+    DATUM[&quot;North American Datum 1983&quot;,
+        ELLIPSOID[&quot;GRS 1980&quot;,6378137,298.257222101,
+            LENGTHUNIT[&quot;metre&quot;,1]]],
+    PRIMEM[&quot;Greenwich&quot;,0,
+        ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS[&quot;geodetic latitude (Lat)&quot;,north,
+            ORDER[1],
+            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+        AXIS[&quot;geodetic longitude (Lon)&quot;,east,
+            ORDER[2],
+            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+    USAGE[
+        SCOPE[&quot;Geodesy.&quot;],
+        AREA[&quot;North America - onshore and offshore: Canada - Alberta; British Columbia; Manitoba; New Brunswick; Newfoundland and Labrador; Northwest Territories; Nova Scotia; Nunavut; Ontario; Prince Edward Island; Quebec; Saskatchewan; Yukon. Puerto Rico. United States (USA) - Alabama; Alaska; Arizona; Arkansas; California; Colorado; Connecticut; Delaware; Florida; Georgia; Hawaii; Idaho; Illinois; Indiana; Iowa; Kansas; Kentucky; Louisiana; Maine; Maryland; Massachusetts; Michigan; Minnesota; Mississippi; Missouri; Montana; Nebraska; Nevada; New Hampshire; New Jersey; New Mexico; New York; North Carolina; North Dakota; Ohio; Oklahoma; Oregon; Pennsylvania; Rhode Island; South Carolina; South Dakota; Tennessee; Texas; Utah; Vermont; Virginia; Washington; West Virginia; Wisconsin; Wyoming. US Virgin Islands. British Virgin Islands.&quot;],
+        BBOX[14.92,167.65,86.45,-40.73]],
+    ID[&quot;EPSG&quot;,4269]]</code></pre>
+</div>
+<div id="distance-calculation" class="section level3">
+<h3><strong>Distance Calculation</strong></h3>
+<p>Measures the distance between geometries.</p>
+<pre class="r"><code># compute distance between sreepur and Tribhuwanbasti polygon
+distances &lt;- 
+  st_distance(spr, subset_data)
+
+# View distance
+distances</code></pre>
+<pre><code>Units: [m]
+         [,1]
+[1,] 4522.424</code></pre>
+<p>So, the distance between sreepur and Tribhuwanbasti is ~4523
+meters.</p>
+</div>
+<div id="sampling-points" class="section level3">
+<h3><strong>Sampling Points</strong></h3>
+<p>Generates random or regular points within a geometry.</p>
+<pre class="r"><code># Generate 100 sampling points within Sreepur polygon
+sampled_points &lt;- 
+  st_sample(spr, size = 100, type = &quot;random&quot;)
+
+# Plot the sampled points within sreepur
+ggplot() +
+  geom_sf(data = spr, fill = &quot;lightblue&quot;, color = &quot;magenta&quot;, alpha = 0.5) +
+  geom_sf(data = sampled_points, color = &quot;red&quot;, pch = 16) +
+  theme_minimal() +
+  ggtitle(&quot;Sampling points (Sreepur)&quot;)</code></pre>
+<p><img src="figure/Basic_Operations_with_Vector_Data.Rmd/sample-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sample-1">
+Past versions of sample-1.png
+</button>
+</p>
+<div id="fig-sample-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Ohm-Np/R_tutorial/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/Basic_Operations_with_Vector_Data.Rmd/sample-1.png" target="_blank">3978bc8</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2024-12-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="saving-data-to-file" class="section level3">
+<h3><strong>Saving Data to file</strong></h3>
+<p>To save vector data to a file in R using the sf package, we can use
+the <strong>st_write()</strong> function. This function allows us to
+write spatial data to various formats, including Shapefile, GeoPackage,
+GeoJSON, and more.</p>
+<p>Exporting data every time I knit the R Markdown document is tiresome.
+Therefore, please remember to remove the <strong>#</strong> from the
+script section and provide the absolute path where you want to
+export/save the sf object. Here’s a basic example of how to save vector
+data:</p>
+<pre class="r"><code># Assuming &#39;vector_data&#39; is your sf object (e.g., a shapefile, GeoJSON, etc.)
+
+# Save to a shapefile
+# st_write(vector_data, &quot;path/to/output_file.shp&quot;)
+
+# Save to a GeoPackage
+# st_write(vector_data, &quot;path/to/output_file.gpkg&quot;)
+
+# Save to a GeoJSON file
+# st_write(vector_data, &quot;path/to/output_file.geojson&quot;)</code></pre>
+<p><strong><em>For this tutorial, this concludes the coverage of vector
+data operations. If you would like to explore additional operations,
+examples, or need clarification on any of the steps covered, please
+visit the GitHub repository: <a
+href="https://github.com/Ohm-Np/R_tutorial">R_tutorial</a> and feel free
+to open an issue.</em></strong></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.0 (2024-04-24 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 22631)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_Germany.utf8  LC_CTYPE=English_Germany.utf8   
+[3] LC_MONETARY=English_Germany.utf8 LC_NUMERIC=C                    
+[5] LC_TIME=English_Germany.utf8    
+
+time zone: Europe/Berlin
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] ggplot2_3.5.1   dplyr_1.1.4     sf_1.0-19       workflowr_1.7.1
+
+loaded via a namespace (and not attached):
+ [1] s2_1.1.7           sass_0.4.9         utf8_1.2.4         generics_0.1.3    
+ [5] lwgeom_0.2-14      class_7.3-22       KernSmooth_2.23-22 stringi_1.8.4     
+ [9] digest_0.6.36      magrittr_2.0.3     evaluate_0.24.0    grid_4.4.0        
+[13] fastmap_1.2.0      rprojroot_2.0.4    jsonlite_1.8.8     processx_3.8.4    
+[17] whisker_0.4.1      e1071_1.7-16       DBI_1.2.3          ps_1.8.1          
+[21] promises_1.3.0     httr_1.4.7         fansi_1.0.6        scales_1.3.0      
+[25] jquerylib_0.1.4    cli_3.6.3          rlang_1.1.4        units_0.8-5       
+[29] munsell_0.5.1      withr_3.0.2        cachem_1.1.0       yaml_2.3.10       
+[33] tools_4.4.0        colorspace_2.1-1   httpuv_1.6.15      vctrs_0.6.5       
+[37] R6_2.5.1           proxy_0.4-27       lifecycle_1.0.4    classInt_0.4-10   
+[41] git2r_0.33.0       stringr_1.5.1      fs_1.6.4           pkgconfig_2.0.3   
+[45] callr_3.7.6        gtable_0.3.5       pillar_1.9.0       bslib_0.8.0       
+[49] later_1.3.2        glue_1.7.0         Rcpp_1.0.13        xfun_0.47         
+[53] tibble_3.2.1       tidyselect_1.2.1   highr_0.11         rstudioapi_0.16.0 
+[57] knitr_1.48         farver_2.1.2       htmltools_0.5.8.1  rmarkdown_2.28    
+[61] wk_0.9.4           compiler_4.4.0     getPass_0.2-4     </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
