@@ -730,82 +730,69 @@ wflow_publish("analysis/Understanding_Geospatial_Data.Rmd")
 </div>
 </div>
 <style> p { text-align: justify; } </style>
-<p>Geospatial data refers to data that is associated with a specific
-location on the Earth’s surface. This data often includes both
-geographic coordinates (e.g., latitude and longitude) and information
-about the features or phenomena at those locations. Understanding
-geospatial data is essential for performing spatial analysis, as it
-helps you examine patterns, relationships, and distributions across
-geographical areas. Geospatial data can be represented in two main
-forms: <strong>vector data</strong> and <strong>raster data</strong>,
-each serving different purposes and requiring different approaches for
-analysis.</p>
+<p>Geospatial data refers to data that is associated with a specific location on the Earth's surface. This data often includes both geographic coordinates (e.g., latitude and longitude) and information about the features or phenomena at those locations. Understanding geospatial data is essential for performing spatial analysis, as it helps you examine patterns, relationships, and distributions across geographical areas. Geospatial data can be represented in two main forms: <strong>vector data</strong> and <strong>raster data</strong>, each serving different purposes and requiring different approaches for analysis.</p>
+
 <div id="types-of-geospatial-data" class="section level3">
 <h3><strong>Types of Geospatial Data</strong></h3>
 <p><em>1. Vector Data:</em></p>
-<p>Vector data represents geographical features as points, lines, and
-polygons. These features are defined by their precise coordinates,
-making vector data ideal for representing discrete geographic objects
-like roads, rivers, cities, or boundaries. Vector data is highly
-efficient for modeling complex shapes with detailed attributes (e.g., a
-city boundary with population data). The most common types of vector
-data are:</p>
+<p>Vector data represents geographical features as points, lines, and polygons. These features are defined by their precise coordinates, making vector data ideal for representing discrete geographic objects like roads, rivers, cities, or boundaries. Vector data is highly efficient for modeling complex shapes with detailed attributes (e.g., a city boundary with population data). The most common types of vector data are:</p>
 <ul>
 <li>Points: Represent specific locations, such as a city or a well.</li>
-<li>Lines: Represent linear features, such as rivers, roads, or railway
-tracks.</li>
-<li>Polygons: Represent areas, such as countries, lakes, or land
-parcels.</li>
+<li>Lines: Represent linear features, such as rivers, roads, or railway tracks.</li>
+<li>Polygons: Represent areas, such as countries, lakes, or land parcels.</li>
 </ul>
 <p><em>2. Raster Data:</em></p>
-<p>Raster data represents geographical features using a grid of cells or
-pixels, where each cell holds a value representing some characteristic
-(e.g., temperature, elevation, or land cover). Each pixel in the raster
-corresponds to a specific area of the Earth’s surface. Raster data is
-ideal for continuous data, such as satellite imagery, climate data, or
-elevation models. Raster datasets are commonly used in environmental
-studies, remote sensing, and terrain analysis, as they can capture
-large-scale phenomena over broad regions.</p>
+<p>Raster data represents geographical features using a grid of cells or pixels, where each cell holds a value representing some characteristic (e.g., temperature, elevation, or land cover). Each pixel in the raster corresponds to a specific area of the Earth's surface. Raster data is ideal for continuous data, such as satellite imagery, climate data, or elevation models. Raster datasets are commonly used in environmental studies, remote sensing, and terrain analysis, as they can capture large-scale phenomena over broad regions.</p>
 </div>
+
 <div id="common-file-formats" class="section level3">
 <h3><strong>Common File Formats</strong></h3>
-<p>Geospatial data is stored in various file formats, depending on the
-type of data and the software being used. Some of the most common file
-formats for vector and raster data include:</p>
+<p>Geospatial data is stored in various file formats, depending on the type of data and the software being used. Some of the most common file formats for vector and raster data include:</p>
 <p><em>1. Shapefile:</em></p>
-<p>The Shapefile format (.shp) is one of the most widely used formats
-for storing vector data. It stores geometric shapes (points, lines, or
-polygons) and their associated attribute data in separate files, which
-must be used together. The Shapefile format consists of a set of files
-with extensions like <em>.shp</em> (geometry), <em>.shx</em> (shape
-index), and <em>.dbf</em> (attribute data). Shapefiles are supported by
-most GIS software, making them highly interoperable.</p>
+<p>The Shapefile format (.shp) is one of the most widely used formats for storing vector data. It stores geometric shapes (points, lines, or polygons) and their associated attribute data in separate files, which must be used together. The Shapefile format consists of a set of files with extensions like <em>.shp</em> (geometry), <em>.shx</em> (shape index), and <em>.dbf</em> (attribute data). Shapefiles are supported by most GIS software, making them highly interoperable. Learn more about Shapefiles <a href="https://desktop.arcgis.com/en/arcmap/latest/manage-data/shapefiles/what-is-a-shapefile.htm">here</a>.</p>
 <p><em>2. GeoPackage:</em></p>
-<p>The GeoPackage (.gpkg) is an open, standardized format for storing
-both vector and raster data. Unlike Shapefiles, which require multiple
-files to store different data types, GeoPackages store all the data in a
-single SQLite database file. This makes GeoPackage a more compact and
-efficient format for managing complex datasets. It supports spatial data
-types and is becoming increasingly popular due to its flexibility and
-ability to handle both types of geospatial data in one file.</p>
+<p>The GeoPackage (.gpkg) is an open, standardized format for storing both vector and raster data. Unlike Shapefiles, which require multiple files to store different data types, GeoPackages store all the data in a single SQLite database file. This makes GeoPackage a more compact and efficient format for managing complex datasets. Learn more about GeoPackage <a href="https://www.geopackage.org/">here</a>.</p>
 <p><em>3. GeoTIFF:</em></p>
-<p>The GeoTIFF (.tif) format is a raster data format that stores
-geospatial information (such as coordinates, projection, and resolution)
-along with pixel values. This format is commonly used for satellite
-imagery, elevation models, and other geospatial raster data. The GeoTIFF
-format preserves spatial reference information, which is crucial for
-accurate geospatial analysis. It is widely supported by both open-source
-and commercial GIS tools, making it a go-to format for working with
-raster data.</p>
-<p>These formats, along with the understanding of vector and raster
-data, provide a solid foundation for conducting geospatial analysis.
-Depending on the type of data you work with and the analysis you wish to
-perform, you may choose the appropriate file format to suit your
-needs.</p>
-<p>However, in this tutorial, we will primarily work with geopackage and
-tiff format.</p>
-<br>
-<p>
+<p>The GeoTIFF (.tif) format is a raster data format that stores geospatial information (such as coordinates, projection, and resolution) along with pixel values. This format is commonly used for satellite imagery, elevation models, and other geospatial raster data. Learn more about GeoTIFF <a href="https://gdal.org/drivers/raster/gtiff.html">here</a>.</p>
+</div>
+
+<div id="overview-of-relevant-data-layers" class="section level3">
+<h3><strong>Overview of Relevant Data Layers</strong></h3>
+<p>To apply our desired conceptual framework, it is essential to identify and align data layers with project needs. The datasets used in this workflow include:</p>
+
+<p><strong>1. Flood Hazard Data:</strong></p>
+<ul>
+<li><strong>High Probability Floods (HP):</strong> Used to identify areas frequently at risk. Download instructions and resources: <a href="https://example.com/flood_hp">Download Flood HP Data</a></li>
+<li><strong>Medium Probability Floods (MP):</strong> Areas occasionally impacted by flooding. Download instructions and resources: <a href="https://example.com/flood_mp">Download Flood MP Data</a></li>
+<li><strong>Low Probability Floods (LP):</strong> Rarely impacted but crucial for extreme risk assessments. Download instructions and resources: <a href="https://example.com/flood_lp">Download Flood LP Data</a></li>
+</ul>
+
+<p><strong>2. Population Data:</strong></p>
+<ul>
+<li>Contains demographic breakdowns (gender, age) for settlements. Learn more and access the data: <a href="https://example.com/population_data">Population Dataset</a></li>
+</ul>
+
+<p><strong>3. Ecosystem Services Data:</strong></p>
+<ul>
+<li>Rasterized dataset showing ecosystem service classifications. Download instructions: <a href="https://example.com/ecosystem_services">Ecosystem Services Data</a></li>
+</ul>
+
+<p><strong>4. Landscape Archetypes:</strong></p>
+<ul>
+<li>Represent different land use and ecological archetypes. Access resources and images: <a href="https://example.com/landscape_archetypes">Landscape Archetypes</a></li>
+</ul>
+
+<p><strong>5. Points of Interest (POI):</strong></p>
+<ul>
+<li>Includes infrastructure like schools, hospitals, and parks. Download from: <a href="https://example.com/poi">POI Dataset</a></li>
+</ul>
+</div>
+
+<div id="moving-forward" class="section level3">
+<h3><strong>Moving Forward</strong></h3>
+<p>Now that we’ve discussed the types of data and where to source them, let’s dive deeper into the datasets used for our application. It is critical to select data layers that align with the specific needs of the project. In the next section, we will explore how to use these datasets effectively to implement the impact chain assessment framework.</p>
+
+
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
 Session information
