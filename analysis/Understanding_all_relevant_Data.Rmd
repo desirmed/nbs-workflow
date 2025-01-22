@@ -1,5 +1,5 @@
 ---
-title: "Understanding Geospatial Data"
+title: "Understanding all relevant Data"
 output: html_document
 ---
 

@@ -20,7 +20,7 @@ Welcome to this comprehensive guide on geospatial analysis with RStudio! This tu
 
 [**_2_. Getting Started**](Getting_Started.html)
 
-[**_3_. Downloading all relevant Data**](Downloading_all_relevant_Data.html)
+[**_3_. Understanding all relevant Data**](Understanding_all_relevant_Data.html)
 
 <!-- [**_4_. Loading Geospatial Data in RStudio**](Loading_Geospatial_Data_in_RStudio.html) -->
 
