@@ -22,7 +22,7 @@ Welcome to this comprehensive guide on geospatial analysis with RStudio! This tu
 
 [**_3_. Understanding Geospatial Data**](Understanding_Geospatial_Data.html)
 
-[**_4_. Loading Geospatial Data in RStudio**](Loading_Geospatial_Data_in_RStudio.html)
+<!-- [**_4_. Loading Geospatial Data in RStudio**](Loading_Geospatial_Data_in_RStudio.html)
 
 [**_5_. Basic Operations with Vector Data**](Basic_Operations_with_Vector_Data.html)
 
