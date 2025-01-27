@@ -1076,23 +1076,23 @@ Export.image.toAsset({
 </div>
 
 <h3><strong>EUNIS Dataset Creation</strong></h3>
-<p>The <a href="https://eunis.eea.europa.eu/">EUNIS habitat classification system</a> is a vital tool for understanding habitat types across Europe, supporting biodiversity monitoring, conservation planning, and ecosystem-based management. By standardizing habitat classification, EUNIS provides a framework for consistent ecological assessments. While official EUNIS maps exist, they are often based on older datasets (e.g., 2012) and may not reflect recent land use changes or provide adequate detail for dynamic coastal regions.</p>
+<p>The <a href="https://eunis.eea.europa.eu/">EUNIS habitat classification system</a> is a vital tool for understanding habitat types across Europe, supporting biodiversity monitoring, conservation planning, and ecosystem-based management. By standardizing habitat classification, EUNIS provides a framework for consistent ecological assessments. To our knowledge, there isnt a unified EUNIS habitat map for the entire europe except smaller polygon shapes that exist as properties in other datasets. This is why we create one for the purpose of this study. While some EUNIS maps exist, they are often based on older datasets and may not reflect recent land use changes or provide adequate detail for dynamic regions.</p>
 
-<p>Our workflow builds upon the foundational work conducted in the <a href="https://www.rest-coast.eu/">RESTCOAST project</a>. Their innovative use of land use data to derive EUNIS classifications highlighted key methodologies but also revealed some limitations that we aim to address using the latest 2021/2022 land use/land cover (LULC) datasets.</p>
+<p>Our workflow builds upon the foundational work conducted in the <a href="https://www.rest-coast.eu/">RESTCOAST project</a>. In Resct-coast, researchers used corine land cover data to derive EUNIS classifications using 1-to-1 tabular translation. But this create some limitations that we aim to address using a more detailed landuse/cover classes at higher resolution.</p>
 
 <h4><strong>Shortcomings of the RESTCOAST Approach</strong></h4>
 <ul>
-  <li>**Outdated Classifications:** Reliance on datasets from 2012 limited the ability to capture recent changes in land use.</li>
+  <li>**Outdated Classifications:** Reliance on classification code from 2012 limit the ability to capture recent habitats.</li>
   <li>**Overlapping Geometries:** Challenges in addressing overlapping polygons resulted in ambiguities in habitat delineations and area calculations.</li>
-  <li>**Limited EUNIS Class Translation:** Not all available LULC classes were fully mapped to the comprehensive 71 EUNIS habitat types, potentially leaving some habitats underrepresented.</li>
+  <li>**Limited EUNIS Class Translation:** Not all available LULC classes were fully mapped to the comprehensive list of EUNIS habitat types, potentially leaving some habitats underrepresented.</li>
 </ul>
 
 <h4><strong>Improvements in This Workflow</strong></h4>
 <p>To overcome these limitations, this workflow incorporates the following enhancements:</p>
 <ul>
-  <li>**Use of the Latest Datasets:** The 2021/2022 coastal LULC datasets provide better alignment with current ecological realities and landscape changes.</li>
-  <li>**Refined Crosswalk Mapping:** A complete translation table, including all 71 EUNIS habitat types, ensures thorough and accurate habitat mapping. Access the full translation table <a href="https://deltares-my.sharepoint.com/:x:/r/personal/desmond_lartey_deltares_nl/Documents/Desktop/DesirMED%20Work_Together/2%20Project%20Documents/3%20Landscape%20Characterisation%20ACTIONS/LandUse_to_EUNIS_Mapping.xlsx?d=w3e15aebd15e747e7ba1c2ab8e9754670&csf=1&web=1&e=Beb9Oy">here</a>.</li>
-  <li>**Advanced Handling of Overlaps:** Overlapping geometries are resolved using Google Earth Engine (GEE) tools, ensuring consistency in habitat delineation.</li>
+  <li>**Use of the detailed and higher resolution Datasets:** The 2018 coastal LULC datasets provide better alignment with current ecological realities and landscape changes.</li>
+  <li>**Refined Crosswalk Mapping:** A complete translation table, including all 71 land use/cover types, ensures thorough and accurate habitat mapping. Access the full translation table <a href="https://deltares-my.sharepoint.com/:x:/r/personal/desmond_lartey_deltares_nl/Documents/Desktop/DesirMED%20Work_Together/2%20Project%20Documents/3%20Landscape%20Characterisation%20ACTIONS/LandUse_to_EUNIS_Mapping.xlsx?d=w3e15aebd15e747e7ba1c2ab8e9754670&csf=1&web=1&e=Beb9Oy">here</a>.</li>
+  <li>**Advanced Handling of Overlaps:** Overlapping geometries are resolved ensuring consistency in habitat delineation.</li>
   <li>**Scalability and Flexibility:** Leveraging GEE allows us to handle large datasets, perform complex spatial analyses, and generate high-resolution EUNIS maps dynamically.</li>
 </ul>
 
