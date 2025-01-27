@@ -862,10 +862,10 @@ knitr::opts_chunk$set(echo = TRUE)
 var landUseDataset = ee.FeatureCollection('users/your_username/your_asset_id');
 
 // Display the dataset on the map
-Map.centerObject(landUseDataset, 10);
+Map.centerObject(landUseDataset, 10); //You can comment out this part if your browser freezes or get an error like "Collection.geometry: Geometry has too many edges (13318505 > 2000000)."
 Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 </code></pre>
-<p><img src="https://example.com/verify_in_gee.png" alt="Verifying in GEE" style="display: block; margin: auto;" /></p>
+<p><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/11.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 <p>This step ensures that the dataset is correctly ingested, properly visualized, and ready for further analysis in Google Earth Engine.</p>
 
 
