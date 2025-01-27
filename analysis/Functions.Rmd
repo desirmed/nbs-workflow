@@ -72,7 +72,7 @@ rectangle_area(5, 3)
 
 In the above example, the argument width has a default value of 2. If you don't provide a value, R will use this default.
 
-## **Downloading Geospatial Data in R**
+## **Downloads and Geoprocessing**
 
 In geospatial analysis, it is often necessary to obtain datasets from online sources for analysis. R provides a straightforward way to automate the process of downloading data from URLs and saving it to a specific path on your local machine. This can save time, ensure consistency, and allow seamless integration of data acquisition into oour analysis workflows.
 
