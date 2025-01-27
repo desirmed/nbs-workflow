@@ -988,7 +988,280 @@ Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 ---
 
 <h4><strong>Next Steps</strong></h4>
-<p>We will proceed to outline the step-by-step process for creating a EUNIS habitat map, detailing the preprocessing, reclassification, and validation stages. This workflow ensures a comprehensive and ecologically relevant mapping of coastal habitats, leveraging the latest data and geospatial tools.</p>
+<p>We will proceed to outline the step-by-step process for creating a EUNIS habitat map.</p>
+
+<h3><strong>Step 1: Define Land Cover Datasets</strong></h3>
+<p>To start, we need to define the datasets that represent land cover for the years 2012 and 2018. These datasets will form the basis of our EUNIS habitat classification.</p>
+
+<pre>
+<code>// Define the land cover datasets
+var landCoverYears = {
+  '2012': ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal'),
+  '2018': ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal')
+};
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> This step initializes an object containing the FeatureCollections for the two datasets. Each dataset represents the land cover of Croatia for a specific year.</p>
+
+<h3><strong>Step 2: Define the Crosswalk Mapping</strong></h3>
+<p>In this step, we define how land cover classes from the datasets are translated into EUNIS habitat codes. This mapping is essential for accurate reclassification.</p>
+
+<pre>
+<code>// Define the crosswalk mapping from land cover classes to EUNIS habitats
+var landCoverToEunisNumeric = {
+  11110: 1,  // J1 - Buildings of cities, towns, and villages
+  11120: 2,  // J1.2 - Residential buildings of villages and urban peripheries
+  11130: 3,  // J2 - Low density buildings
+  11210: 4,  // J4 - Transport networks and other hard-surfaced areas
+  11220: 5,  // J4.5 - Hard-surfaced areas of ports
+  12100: 6,  // J4.4 - Airport runways and aprons
+  12200: 7,  // J3 - Extractive industrial sites
+  12310: 5,  // J4.5 - Hard-surfaced areas of ports
+  12320: 5,  // J4.5 - Hard-surfaced areas of ports
+  12330: 5,  // J4.5 - Hard-surfaced areas of ports
+  12340: 5,  // J4.5 - Hard-surfaced areas of ports
+  // ... Add the remaining mappings here
+};
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> This object maps numeric land cover codes to their corresponding EUNIS numeric codes. Each mapping represents a habitat type, allowing us to translate land cover data into the EUNIS classification system.</p>
+
+<h3><strong>Step 3: Define the EUNIS Properties</strong></h3>
+<p>Here, we assign properties like color and descriptions to EUNIS habitat types. This enhances visualization and understanding of the output.</p>
+
+<pre>
+<code>// Define the EUNIS properties mapping
+var eunisNumericMapping = {
+  1: {eunisCode: 'J1', color: '#b22222', description: 'Buildings of cities, towns, and villages'},
+  2: {eunisCode: 'J1.2', color: '#ff4500', description: 'Residential buildings of villages and urban peripheries'},
+  3: {eunisCode: 'J2', color: '#ffa07a', description: 'Low density buildings'},
+  4: {eunisCode: 'J4', color: '#8b4513', description: 'Transport networks and other hard-surfaced areas'},
+  // ... Add more EUNIS properties here
+};
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> Each EUNIS code is assigned a color and description. This is useful for visualization and interpretation of the classified datasets.</p>
+
+<h3><strong>Step 4: Reclassify Land Cover to EUNIS</strong></h3>
+<p>Now, we write a function to reclassify the land cover dataset into EUNIS habitats based on the mapping we defined earlier.</p>
+
+<pre>
+<code>// Function to reclassify land cover data into EUNIS numeric codes
+var reclassifyToEunis = function(dataset, codeField, mapping) {
+  var mappingKeys = Object.keys(mapping).map(Number); // Input land cover class codes as numbers
+  var mappingValues = Object.keys(mapping).map(function(key) {
+    return mapping[key]; // Extract corresponding EUNIS numeric codes
+  });
+
+  return dataset.remap(
+    mappingKeys,  // CORINE codes as input
+    mappingValues // Corresponding EUNIS numeric codes
+  );
+};
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> This function accepts a dataset, a code field, and the mapping object. It uses the <code>remap</code> function to reclassify the dataset based on the mapping.</p>
+
+<h3><strong>Step 5: Visualize the Reclassified Dataset</strong></h3>
+<p>We create another function to style the reclassified EUNIS image for visualization in Google Earth Engine.</p>
+
+<pre>
+<code>// Function to style the reclassified EUNIS image
+var styleEunisImage = function(image) {
+  var palette = Object.keys(eunisNumericMapping).map(function(key) {
+    return eunisNumericMapping[key].color; // Extract EUNIS color values
+  });
+
+  return image.visualize({
+    min: 1,
+    max: 58, // Adjust range based on EUNIS numeric codes
+    palette: palette // Apply palette for EUNIS visualization
+  });
+};
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> This function applies a color palette to the reclassified dataset for better visualization. The palette is derived from the EUNIS properties defined earlier.</p>
+
+<h3><strong>Step 6: Define Croatia Coastal Boundaries</strong></h3>
+<p>We define the geographic bounds of Croatia's coastal regions to limit the analysis to the relevant area.</p>
+
+<pre>
+<code>// Define Croatia's coastal bounds
+var croatiaCoastalBounds = ee.Geometry.Polygon([
+  [13.5, 44.0], [18.5, 44.0], [18.5, 42.0], [13.5, 42.0], [13.5, 44.0]
+]);
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> This polygon defines the region of interest, focusing the analysis on Croatia's coastal area and excluding inland or irrelevant regions.</p>
+
+<h3><strong>Step 7: Reclassify and Style the 2012 Dataset</strong></h3>
+<p>Using the reclassification and visualization functions, we process the 2012 land cover dataset.</p>
+
+<pre>
+<code>// Reclassify and style 2012 dataset
+var reclassified2012 = reclassifyToEunis(
+  landCoverYears['2012'].filterBounds(croatiaCoastalBounds).reduceToImage(['CODE_5_12'], ee.Reducer.first()),
+  'CODE_5_12',
+  landCoverToEunisNumeric
+);
+
+Map.addLayer(reclassified2012, {
+  min: 1,
+  max: 58,
+  palette: Object.keys(eunisNumericMapping).map(function(key) {
+    return eunisNumericMapping[key].color;
+  })
+}, 'EUNIS 2012');
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> This step filters, reclassifies, and visualizes the 2012 dataset for Croatia's coastal regions.</p>
+
+<h3><strong>Step 8: Reclassify and Style the 2018 Dataset</strong></h3>
+<p>We repeat the process for the 2018 dataset, ensuring consistency in approach and visualization.</p>
+
+<pre>
+<code>// Reclassify and style 2018 dataset
+var reclassified2018 = reclassifyToEunis(
+  landCoverYears['2018'].filterBounds(croatiaCoastalBounds).reduceToImage(['CODE_5_18'], ee.Reducer.first()),
+  'CODE_5_18',
+  landCoverToEunisNumeric
+);
+
+Map.addLayer(reclassified2018, {
+  min: 1,
+  max: 58,
+  palette: Object.keys(eunisNumericMapping).map(function(key) {
+    return eunisNumericMapping[key].color;
+  })
+}, 'EUNIS 2018');
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> The 2018 dataset is processed in the same way, enabling direct comparison with the 2012 dataset.</p>
+
+<p>Now that the 2018 dataset is visualized, comparisons between 2012 and 2018 are possible.</p>
+
+<h3><strong>Step 9: Create a Chart for Comparing EUNIS Areas</h3>strong></strong></h3>
+<p><strong>Explanation:</strong> Comparing habitat areas across years provides insights into ecological changes. This is done by computing areas of each EUNIS class and displaying them in bar and pie charts for better visualization.</p>
+
+<pre><code>// Function to compute EUNIS areas
+var computeEunisAreas = function(image, year, geometry) {
+  var areaImage = ee.Image.pixelArea().divide(1e6).addBands(image.rename('class')); // Area in km²
+  var areas = areaImage.reduceRegion({
+    reducer: ee.Reducer.sum().group({
+      groupField: 1,
+      groupName: 'class'
+    }),
+    geometry: geometry,
+    scale: 100,
+    maxPixels: 1e13
+  });
+  return ee.List(areas.get('groups')).map(function(item) {
+    var areaDict = ee.Dictionary(item);
+    return ee.Feature(null, {
+      'class': ee.Number(areaDict.get('class')),
+      'area': ee.Number(areaDict.get('sum')),
+      'year': year
+    });
+  });
+};</code></pre>
+
+<p>The computed areas for both 2012 and 2018 datasets are visualized in a bar chart for direct comparison.</p>
+
+<h3><strong>Step 10: Export the Reclassified Data</strong></h3>
+<p><strong>Explanation:</strong> To facilitate further analysis or sharing, the reclassified datasets for 2012 and 2018 are exported in raster and vector formats. These exports allow users to inspect and validate the data in desktop GIS tools.</p>
+
+<pre><code>// Export reclassified 2018 dataset as raster
+Export.image.toDrive({
+  image: reclassified2018,
+  description: 'EUNIS_2018_TIFF',
+  fileNamePrefix: 'EUNIS_2018_TIFF',
+  region: croatiaCoastalBounds,
+  scale: 30,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});</code></pre>
+
+<pre><code>// Export reclassified 2018 dataset as vector
+var vectorEunis2018 = reclassified2018.reduceToVectors({
+  geometryType: 'polygon',
+  reducer: ee.Reducer.countEvery(),
+  scale: 30,
+  maxPixels: 1e13,
+  geometry: croatiaCoastalBounds
+});
+
+Export.table.toDrive({
+  collection: vectorEunis2018,
+  description: 'EUNIS_2018_Shapefile',
+  fileFormat: 'SHP',
+  folder: 'GEE',
+  fileNamePrefix: 'EUNIS_2018_Shapefile'
+});</code></pre>
+
+<p>These outputs can now be used for detailed GIS-based analysis and validation.</p>
+
+<h3><strong>Step 11: Add User Interaction for Drawing Analysis</strong></h3>
+<p><strong>Explanation:</strong> Drawing tools allow users to interactively analyze specific areas on the map. The drawn geometry serves as the input for computing EUNIS class areas.</p>
+
+<pre><code>// Enable drawing tools on the map
+var drawingTools = ui.Map.DrawingTools();
+drawingTools.setShown(true);
+drawingTools.setDrawModes(['polygon']);
+Map.add(drawingTools);
+
+// Analyze drawn geometry
+drawingTools.onDraw(function(geometry) {
+  var eunisAreas = computeEunisAreas(reclassified2018, '2018', geometry);
+  print('EUNIS Areas:', eunisAreas);
+});</code></pre>
+
+<p>This interactive feature enhances user engagement by allowing custom area analysis.</p>
+
+<h3><strong>Step 12: Create a Legend</strong></h3>
+<p><strong>Explanation:</strong> A legend helps users understand the mapping of EUNIS classes to colors. This is essential for interpreting the visualized data accurately.</p>
+
+<pre><code>// Create a legend panel
+var legend = ui.Panel({
+  style: { position: 'bottom-left', padding: '8px' }
+});
+legend.add(ui.Label('EUNIS Habitat Classes'));
+
+Object.keys(eunisNumericMapping).forEach(function(key) {
+  legend.add(ui.Panel({
+    widgets: [
+      ui.Label({
+        style: {
+          backgroundColor: eunisNumericMapping[key].color,
+          padding: '8px',
+          margin: '4px'
+        }
+      }),
+      ui.Label(eunisNumericMapping[key].description)
+    ],
+    layout: ui.Panel.Layout.Flow('horizontal')
+  }));
+});
+
+Map.add(legend);</code></pre>
+
+<p>Now users can reference the legend to understand the visualized classifications.</p>
+
+<h3><strong>Step 14: Finalize and Share the Workflow</strong></h3>
+<p><strong>Explanation:</strong> The completed workflow can now be shared with stakeholders or team members. This step involves documenting the methodology and ensuring all data outputs are correctly exported and stored.</p>
+
+<pre><code>// Save the script and export as needed
+print('Workflow completed successfully.');</code></pre>
+
+<p>At this stage, the habitat classification workflow is finalized and ready for application.</p>
+
 
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
