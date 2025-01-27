@@ -732,190 +732,62 @@ wflow_publish("analysis/Downloads_and_Geoprocessing.Rmd")
 </div>
 </div>
 <style> p { text-align: justify; } </style>
-<p>Once you have RStudio set up and the required packages installed, the
-next step is to load your geospatial data into R. R provides several
-powerful packages for importing, manipulating, and analyzing spatial
-data. Two of the most commonly used packages for handling vector and
-raster data are <strong>sf</strong> and <strong>terra</strong>,
-respectively. These packages make it easy to work with geospatial data
-within RStudio, allowing you to perform spatial analysis, visualization,
-and data manipulation seamlessly.</p>
-<div id="importing-vector-data" class="section level3">
-<h3><strong>Importing Vector Data</strong></h3>
-<p>The sf (Simple Features) package is the go-to tool for working with
-vector data in R. It supports various vector file formats such as
-Shapefile (.shp), GeoJSON, and GeoPackage (.gpkg). One of the advantages
-of using sf is that it provides a simple and consistent interface for
-working with vector data, making it easy to import, manipulate, and
-analyze geospatial features. Additionally, sf integrates well with the
-tidyverse ecosystem, allowing for smooth workflows in data manipulation
-and visualization.</p>
-<p>To load vector data using the sf package, you typically use either
-<em>st_read()</em> or <em>read_sf()</em> function.</p>
-<p>In this tutorial, I am using a .gpkg file which is made available on
-GitHub. You can download it by clicking <a
-href="https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/vector/kanchanpur.gpkg">this
-link</a>.</p>
-<pre class="r"><code># Load the sf package
-library(sf)
+---
+title: "Understanding and Downloading Relevant Data"
+output: html_document
+---
 
-# Import your downloaded gpkg file
-# don&#39;t forget to provide the path where you have downloaded it locally
-vector_data &lt;- read_sf(&quot;data/vector/kanchanpur.gpkg&quot;)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-# View the first few rows of the data
-head(vector_data)</code></pre>
-<pre><code>Simple feature collection with 6 features and 1 field
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: 80.06014 ymin: 28.64567 xmax: 80.55588 ymax: 29.05851
-Geodetic CRS:  WGS 84
-# A tibble: 6 × 2
-  NAME                                                                      geom
-  &lt;chr&gt;                                                       &lt;MULTIPOLYGON [°]&gt;
-1 BaisiBichawa (((80.49934 28.64667, 80.49709 28.64866, 80.49709 28.65089, 80.4…
-2 Beldandi     (((80.25229 28.75782, 80.25377 28.7646, 80.25588 28.76808, 80.25…
-3 Chandani     (((80.10973 28.98432, 80.10986 28.97376, 80.10738 28.96319, 80.1…
-4 Daijee       (((80.34424 29.05416, 80.34449 29.04956, 80.34698 29.04397, 80.3…
-5 Dekhatbhuli  (((80.44701 28.78921, 80.43608 28.78623, 80.4316 28.78623, 80.42…
-6 Dodhara      (((80.10042 28.88838, 80.09917 28.87645, 80.10327 28.87297, 80.1…</code></pre>
-<pre class="r"><code># Lets plot the data to see how it looks
-plot(vector_data, main = &quot;Kanchanpur district (Nepal)&quot;)</code></pre>
-<p><img src="figure/Downloads_and_Geoprocessing.Rmd/importing%20vector%20data-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-importing-vector-data-1">
-Past versions of "importing vector data-1.png"
-</button>
+<style> p { text-align: justify; } </style>
+
+<p>Functional units of the landscape form the basis for understanding and analyzing the interaction between natural and human systems. Land use and land cover data are critical in delineating these units, providing insights into spatial distribution, land patterns, and ecosystem functionality. The selection of appropriate datasets ensures accurate characterization and reliable impact assessments for Nature-based Solutions (NbS) portfolios.</p>
+
+<div id="land-use-data" class="section level3">
+<h3><strong>Land Use Data</strong></h3>
+<p>Copernicus provides comprehensive datasets on land use at various scales and resolutions. These datasets are crucial for understanding spatial heterogeneity and characterizing landscape types. In this section, we focus on three primary datasets widely used for land use classification:</p>
+
+<h4><strong>1. Urban Atlas</strong></h4>
+<p>The Urban Atlas provides detailed land use data for Functional Urban Areas (FUAs) across Europe. This dataset is particularly useful for urban studies and planning. Although its spatial coverage is limited to urban zones, its high resolution (0.25 ha for urban and 1 ha for rural areas) makes it a preferred choice for fine-scale urban analyses.</p>
+<ul>
+<li>Dataset description: <a href="https://land.copernicus.eu/local/urban-atlas">Urban Atlas Overview</a></li>
+<li>Download link: <a href="https://land.copernicus.eu/local/urban-atlas/access">Urban Atlas Data Access</a></li>
+</ul>
+<p><img src="/mnt/data/image.png" alt="Urban Atlas Download Steps" style="display: block; margin: auto;" /></p>
+
+<h4><strong>2. CORINE Land Cover (CLC)</strong></h4>
+<p>Covering rural and urban areas, the CORINE dataset provides pan-European coverage with thematic detail spanning 44 land cover classes. This dataset is updated every six years and supports large-scale landscape analyses. While its resolution is coarser than Urban Atlas, CORINE excels in thematic coverage and integration of rural areas.</p>
+<ul>
+<li>Dataset description: <a href="https://land.copernicus.eu/pan-european/corine-land-cover">CORINE Land Cover Overview</a></li>
+<li>Download link: <a href="https://land.copernicus.eu/pan-european/corine-land-cover/clc2018">CORINE Land Cover Data Access</a></li>
+</ul>
+<p><img src="/mnt/data/image.png" alt="CORINE Land Cover Download Steps" style="display: block; margin: auto;" /></p>
+
+<h4><strong>3. Coastal Zones</strong></h4>
+<p>The Coastal Zones dataset focuses on detailed spatial coverage of coastal areas, which is essential for addressing coastal management and conservation needs. With a high resolution of 0.5 ha, this dataset supports precise delineation of coastal features and processes.</p>
+<ul>
+<li>Dataset description: <a href="https://land.copernicus.eu/local/coastal-zones">Coastal Zones Overview</a></li>
+<li>Download link: <a href="https://land.copernicus.eu/local/coastal-zones/access">Coastal Zones Data Access</a></li>
+</ul>
+<p><img src="/mnt/data/image.png" alt="Coastal Zones Download Steps" style="display: block; margin: auto;" /></p>
+
+<h4><strong>Scientific References</strong></h4>
+<p>For deeper understanding and to provide scientific context, refer to the following articles:
+<ul>
+<li><a href="https://doi.org/10.1016/j.landusepol.2021.105574">Article on Land Use Patterns</a></li>
+<li><a href="https://doi.org/10.1016/j.envsoft.2021.104974">Study on Landscape Functional Units</a></li>
+</ul>
 </p>
-<div id="fig-no-spaces-importing-vector-data-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/c7cee438abde30017ba7d1c7dc44df42909dc05e/docs/figure/Downloads_and_Geoprocessing.Rmd/importing vector data-1.png" target="_blank">c7cee43</a>
-</td>
-<td>
-Ohm-Np
-</td>
-<td>
-2024-12-25
-</td>
-</tr>
-</tbody>
-</table>
 </div>
-</div>
-<p>In this example, <strong>read_sf()</strong> reads the GeoPackage and
-loads into an <em>sf</em> object. The <em>sf</em> object contains both
-the geometric data (polygons in this case) and the any associated
-attribute data (names of VDCs, Municipalities). As you can see from the
-data and plot above, this <em>gpkg</em> file is of Kanchanpur dictrict
-from Nepal. Once the data is loaded, you can perform a wide range of
-operations, such as subsetting, transforming projections, and performing
-spatial queries.</p>
-</div>
-<div id="importing-raster-data" class="section level3">
-<h3><strong>Importing Raster Data</strong></h3>
-<p>The terra package is specifically designed for raster data and
-provides improved performance and easier handling of large datasets
-compared to the <em>raster</em> package. The <em>terra</em> package
-supports a wide variety of raster formats, including GeoTIFF (.tif),
-ASCII, and more.</p>
-<p>To load raster data using <strong>terra</strong>, you use the
-<em>rast()</em> function. In this tutorial, I am using .tif files which
-are available on GitHub. You can download it by clicking here: <a
-href="https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/landcover_2015.tif">Land
-Cover 2015</a> &amp; <a
-href="https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/raster/landcover_2019.tif">Land
-Cover 2019</a>.</p>
-<pre class="r"><code># Load the terra package
-library(terra)
 
-# Import your downloaded tif file
-# don&#39;t forget to provide the path where you have downloaded it locally
-raster_data &lt;- rast(&quot;data/raster/landcover_2015.tif&quot;)
+<div id="next-steps" class="section level3">
+<h3><strong>Next Steps</strong></h3>
+<p>Understanding and sourcing the right data are critical for reliable analyses. In the next section, we will delve deeper into additional datasets such as EUNIS, Points of Interest (POI), population, river basins, hydrosheds, and flood probability data. For each dataset, we will guide you through the process of downloading, geoprocessing, and integrating it into the conceptual framework for Nature-based Solutions.</p>
+</div>
 
-# View basic information about the raster
-raster_data</code></pre>
-<pre><code>class       : SpatRaster 
-dimensions  : 590, 505, 1  (nrow, ncol, nlyr)
-resolution  : 0.0009920635, 0.0009920635  (x, y)
-extent      : 80.06052, 80.56151, 28.55159, 29.1369  (xmin, xmax, ymin, ymax)
-coord. ref. : lon/lat WGS 84 
-source      : landcover_2015.tif 
-name        : E080N40_PROBAV_LC100_global_v3~e-Classification-map_EPSG-4326 
-min value   :                                                            20 
-max value   :                                                           126 
-unit        :                                                          None </code></pre>
-<pre class="r"><code># Lets plot the data to see how it looks
-plot(raster_data)</code></pre>
-<p><img src="figure/Downloads_and_Geoprocessing.Rmd/importing%20raster%20data-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-importing-raster-data-1">
-Past versions of "importing raster data-1.png"
-</button>
-</p>
-<div id="fig-no-spaces-importing-raster-data-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/c7cee438abde30017ba7d1c7dc44df42909dc05e/docs/figure/Downloads_and_Geoprocessing.Rmd/importing raster data-1.png" target="_blank">c7cee43</a>
-</td>
-<td>
-Ohm-Np
-</td>
-<td>
-2024-12-25
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>In this example, rast() loads a raster file into a SpatRaster object.
-This object contains both the spatial grid (array of pixels) and the
-values for each pixel. The terra package makes it easier to manipulate
-raster data, offering functions to crop, mask, reclassify, and perform
-raster algebra operations.</p>
-<p>Now that we are familiar with R, RStudio, the essential R packages
-for geospatial analysis, and the process of importing vector and raster
-data, it’s time to dive deeper into basic geospatial operations.</p>
-<br>
-<p>
-<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
-<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-Session information
-</button>
-</p>
+
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.4.0 (2024-04-24 ucrt)
