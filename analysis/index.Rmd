@@ -26,7 +26,7 @@ This project focuses on the development of region-specific NbS portfolios that a
 
 [**_3_. Understanding all relevant Data**](Understanding_all_relevant_Data.html)
 
-<[**_4_. Downloads and Geoprocessing**](Downloads-and-Geoprocessing.html)
+[**_4_. Downloads and Geoprocessing**](Downloads_and_Geoprocessing.html)
 
 <!-- [**_5_. Basic Operations with Vector Data**](Basic_Operations_with_Vector_Data.html) -->
 
