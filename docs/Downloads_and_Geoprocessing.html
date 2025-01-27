@@ -773,18 +773,77 @@ knitr::opts_chunk$set(echo = TRUE)
 </ul>
 <p><img src="/mnt/data/image.png" alt="Coastal Zones Download Steps" style="display: block; margin: auto;" /></p>
 
-<h4><strong>Scientific References</strong></h4>
-<p>For deeper understanding and to provide scientific context, refer to the following articles:
-<ul>
-<li><a href="https://doi.org/10.1016/j.landusepol.2021.105574">Article on Land Use Patterns</a></li>
-<li><a href="https://doi.org/10.1016/j.envsoft.2021.104974">Study on Landscape Functional Units</a></li>
-</ul>
-</p>
+<h4><strong>Comparison of Datasets</strong></h4>
+<p>The table below provides a comparative overview of the three datasets based on various characteristics:</p>
+<table>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>Urban Atlas</th>
+<th>CORINE Land Cover</th>
+<th>Coastal Zones</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spatial Coverage</td>
+<td>Limited to FUAs</td>
+<td>Pan-European</td>
+<td>Focused on coastal areas</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td>High (0.25 ha urban, 1 ha rural)</td>
+<td>Moderate (25 ha for areal phenomena)</td>
+<td>High (0.5 ha)</td>
+</tr>
+<tr>
+<td>Thematic Detail</td>
+<td>17 urban and 10 rural classes</td>
+<td>44 thematic classes</td>
+<td>71 detailed classes</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>Urban planning</td>
+<td>Broad landscape characterization</td>
+<td>Coastal zone management</td>
+</tr>
+</tbody>
+</table>
+<p>Based on the needs of this workflow, the Coastal Zones dataset will be used for further analyses due to its high resolution and relevance to coastal landscapes.</p>
+
+<h4><strong>Step-by-Step Download and Processing</strong></h4>
+<p>The following steps outline the process to download, inspect, and integrate the Coastal Zones dataset into the workflow:</p>
+
+<h5><strong>Step 1: Visit the Copernicus Coastal Zones Data Portal</strong></h5>
+<p>Access the Coastal Zones dataset by visiting the <a href="https://land.copernicus.eu/local/coastal-zones">Copernicus Coastal Zones Portal</a>. Navigate to the data access section and select the relevant dataset.</p>
+<p><img src="/mnt/data/image.png" alt="Coastal Zones Portal" style="display: block; margin: auto;" /></p>
+
+<h5><strong>Step 2: Select and Download the Dataset</strong></h5>
+<p>Choose the required dataset based on the region and time period of interest. Follow the download instructions provided on the portal.</p>
+<p><img src="/mnt/data/image.png" alt="Download Steps" style="display: block; margin: auto;" /></p>
+
+<h5><strong>Step 3: Unzip and Inspect the Data</strong></h5>
+<p>After downloading, unzip the dataset and load it into QGIS to inspect the spatial coverage and attributes. Ensure that the dataset aligns with your region of interest.</p>
+<p><img src="/mnt/data/image.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+
+<h5><strong>Step 4: Preprocess for Earth Engine</strong></h5>
+<p>Convert the dataset into a format compatible with Google Earth Engine (GEE), such as GeoTIFF or GeoJSON. Use QGIS or a similar GIS tool for this step.</p>
+<p><img src="/mnt/data/image.png" alt="Preprocessing Data" style="display: block; margin: auto;" /></p>
+
+<h5><strong>Step 5: Upload to Google Earth Engine</strong></h5>
+<p>Log in to your GEE account and upload the preprocessed dataset. Use the GEE Data Manager to ensure successful ingestion.</p>
+<p><img src="/mnt/data/image.png" alt="Uploading to GEE" style="display: block; margin: auto;" /></p>
+
+<h5><strong>Step 6: Verify Dataset in GEE</strong></h5>
+<p>Once uploaded, visualize the dataset in the GEE Code Editor to verify its accuracy and alignment. This step ensures that the data is ready for analysis.</p>
+<p><img src="/mnt/data/image.png" alt="Verifying in GEE" style="display: block; margin: auto;" /></p>
 </div>
 
-<div id="next-steps" class="section level3">
-<h3><strong>Next Steps</strong></h3>
-<p>Understanding and sourcing the right data are critical for reliable analyses. In the next section, we will delve deeper into additional datasets such as EUNIS, Points of Interest (POI), population, river basins, hydrosheds, and flood probability data. For each dataset, we will guide you through the process of downloading, geoprocessing, and integrating it into the conceptual framework for Nature-based Solutions.</p>
+<div id="other-datasets" class="section level3">
+<h3><strong>Other Datasets</strong></h3>
+<p>Following the land use data, we will explore additional datasets such as EUNIS, Points of Interest (POI), population, river basins, hydrosheds, and flood probability data. Similar detailed steps will be provided to guide you through the download, preprocessing, and integration of these datasets.</p>
 </div>
 
 
