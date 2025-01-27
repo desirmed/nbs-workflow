@@ -1,7 +1,7 @@
 ---
 title: "Application of the Conceptual model: A step-by-step Guide for implementation"
-author: "**Desmond Lartey**"
-date: "_Researcher_"
+author: "**Deltares**"
+date: "_Researchers_"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
