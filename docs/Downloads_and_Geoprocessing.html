@@ -827,11 +827,19 @@ knitr::opts_chunk$set(echo = TRUE)
 <p><img src="/mnt/data/image.png" alt="Download Steps" style="display: block; margin: auto;" /></p>
 
 <h5><strong>Step 3: Unzip and Inspect the Data</strong></h5>
-<p>After downloading, unzip the dataset and load it into QGIS to inspect the spatial coverage and attributes. Ensure that the dataset aligns with your region of interest.</p>
-<p><img src="/mnt/data/image.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+<p>After downloading, unzip the dataset. You will realise that the dataset comes in different format, i.e the gpkg file and the qml for visualising. Add the gpkg file in QGIS or any prefered Dekstop GIS. I will use QGIS here.Inspect the spatial coverage and attributes. You can see that it has a redicoulsly large amount of shapes (>400,000). Once you load it, you can now add the qml file to visualise and inspect the various functional units. Before this, better zoom to your area of interest. We will not cover how to add the qml file to visualise the land use. For a hands-on guide on how to do it <a href="INSERT_VIDEO_LINK_HERE" target="_blank">watch this video</a></p>
+<p><img src="https://github.com/deltares-desirmed/nbs-workflow/blob/main/img/1.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+<p><img src="https://github.com/deltares-desirmed/nbs-workflow/blob/main/img/2.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+<p><img src="https://github.com/deltares-desirmed/nbs-workflow/blob/main/img/3.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+<p><img src="https://github.com/deltares-desirmed/nbs-workflow/blob/main/img/4.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+<p><img src="https://github.com/deltares-desirmed/nbs-workflow/blob/main/img/5.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+<p><img src="https://github.com/deltares-desirmed/nbs-workflow/blob/main/img/6.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+<p><img src="/https://github.com/deltares-desirmed/nbs-workflow/blob/main/img7.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 
 <h5><strong>Step 4: Preprocess for Earth Engine</strong></h5>
-<p>Convert the dataset into a format compatible with Google Earth Engine (GEE), such as GeoTIFF or GeoJSON. Use QGIS or a similar GIS tool for this step.</p>
+<p>Convert the dataset into a format compatible with Google Earth Engine (GEE), such as GeoTIFF or GeoJSON. Use QGIS or a similar GIS tool for this step. Because the GPKG format often contains a large number of shapes, which can make it cumbersome to work with in desktop software like ArcGIS, transitioning to a cloud computing platform like GEE is beneficial. These days, cloud platforms provide unparalleled processing power, scalability, and accessibility for handling large geospatial datasets, making them ideal for projects like this.
+
+  GEE does not directly support GPKG files. Therefore, we need to export the data from GPKG into shapefiles, which are accepted by GEE. Shapefiles are more lightweight and manageable for this transition. This step ensures that the dataset is accessible and can be efficiently processed within the GEE environment..</p>
 <p><img src="/mnt/data/image.png" alt="Preprocessing Data" style="display: block; margin: auto;" /></p>
 
 <h5><strong>Step 5: Upload to Google Earth Engine</strong></h5>
