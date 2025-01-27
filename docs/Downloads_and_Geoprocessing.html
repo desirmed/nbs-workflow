@@ -864,94 +864,131 @@ Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 </div>
 
 <h3><strong>EUNIS Dataset Creation</strong></h3>
-<p>The EUNIS habitat classification system is a vital tool for understanding habitat types across Europe, supporting biodiversity monitoring, conservation planning, and ecosystem-based management. While previous efforts, such as those by colleagues in the RESTCOAST project, provided valuable insights into habitat classification, their approach relied on older datasets (e.g., from 2012) and faced challenges such as outdated class translations and handling overlapping geometries. Our workflow builds upon this foundation, improving the methodology with the most recent 2021/2022 land use/land cover (LULC) datasets.</p>
+<p>The <a href="https://eunis.eea.europa.eu/">EUNIS habitat classification system</a> is a vital tool for understanding habitat types across Europe, supporting biodiversity monitoring, conservation planning, and ecosystem-based management. By standardizing habitat classification, EUNIS provides a framework for consistent ecological assessments. While official EUNIS maps exist, they are often based on older datasets (e.g., 2012) and may not reflect recent land use changes or provide adequate detail for dynamic coastal regions.</p>
 
-<p>In RESTCOAST, notable progress was made using land use data to derive EUNIS classifications. However, certain limitations emerged, including challenges in addressing overlapping habitat types and ambiguities when translating newer land use classes into EUNIS habitats. Our workflow mitigates these issues by adopting a refined crosswalk mapping strategy and leveraging advanced geospatial tools in Google Earth Engine (GEE). This approach ensures higher accuracy, better alignment with coastal ecosystem dynamics, and the ability to handle large datasets effectively.</p>
+<p>Our workflow builds upon the foundational work conducted in the <a href="https://www.rest-coast.eu/">RESTCOAST project</a>. Their innovative use of land use data to derive EUNIS classifications highlighted key methodologies but also revealed some limitations that we aim to address using the latest 2021/2022 land use/land cover (LULC) datasets.</p>
+
+<h4><strong>Shortcomings of the RESTCOAST Approach</strong></h4>
+<ul>
+  <li>**Outdated Classifications:** Reliance on datasets from 2012 limited the ability to capture recent changes in land use.</li>
+  <li>**Overlapping Geometries:** Challenges in addressing overlapping polygons resulted in ambiguities in habitat delineations and area calculations.</li>
+  <li>**Limited EUNIS Class Translation:** Not all available LULC classes were fully mapped to the comprehensive 71 EUNIS habitat types, potentially leaving some habitats underrepresented.</li>
+</ul>
+
+<h4><strong>Improvements in This Workflow</strong></h4>
+<p>To overcome these limitations, this workflow incorporates the following enhancements:</p>
+<ul>
+  <li>**Use of the Latest Datasets:** The 2021/2022 coastal LULC datasets provide better alignment with current ecological realities and landscape changes.</li>
+  <li>**Refined Crosswalk Mapping:** A complete translation table, including all 71 EUNIS habitat types, ensures thorough and accurate habitat mapping. Access the full translation table <a href="https://deltares-my.sharepoint.com/:x:/r/personal/desmond_lartey_deltares_nl/Documents/Desktop/DesirMED%20Work_Together/2%20Project%20Documents/3%20Landscape%20Characterisation%20ACTIONS/LandUse_to_EUNIS_Mapping.xlsx?d=w3e15aebd15e747e7ba1c2ab8e9754670&csf=1&web=1&e=Beb9Oy">here</a>.</li>
+  <li>**Advanced Handling of Overlaps:** Overlapping geometries are resolved using Google Earth Engine (GEE) tools, ensuring consistency in habitat delineation.</li>
+  <li>**Scalability and Flexibility:** Leveraging GEE allows us to handle large datasets, perform complex spatial analyses, and generate high-resolution EUNIS maps dynamically.</li>
+</ul>
+
+<p>Our methodology ensures a more robust and comprehensive EUNIS dataset, addressing past limitations and providing better support for conservation efforts.</p>
 
 <h4><strong>Land Use to EUNIS Crosswalk</strong></h4>
-<p>To facilitate the mapping of LULC data to EUNIS habitat classes, we use a crosswalk table that establishes direct relationships between land use codes and EUNIS numeric codes. This table not only simplifies the translation process but also highlights instances where multiple LULC classes correspond to the same EUNIS habitat, reflecting the ecological similarities among land use types. Below is the crosswalk table used in this workflow:</p>
+<p>To translate LULC data into EUNIS habitat types, a crosswalk table is employed. This table maps each LULC class to its corresponding EUNIS code, ensuring consistency and ecological relevance. Below is a snippet of the translation:</p>
 
 <table style="width:100%; border-collapse: collapse; text-align: left;">
 <thead>
 <tr style="border-bottom: 2px solid #ddd;">
-  <th style="padding: 8px;"><strong>Land Use Code</strong></th>
-  <th style="padding: 8px;"><strong>Land Use Description</strong></th>
-  <th style="padding: 8px;"><strong>EUNIS Numeric</strong></th>
-  <th style="padding: 8px;"><strong>EUNIS Code</strong></th>
-  <th style="padding: 8px;"><strong>EUNIS Description</strong></th>
+  <th style="padding: 8px; text-align: center;"><strong>Land Use Code</strong></th>
+  <th style="padding: 8px; text-align: center;"><strong>Land Use Description</strong></th>
+  <th style="padding: 8px; text-align: center;"><strong>EUNIS Numeric</strong></th>
+  <th style="padding: 8px; text-align: center;"><strong>EUNIS Code</strong></th>
+  <th style="padding: 8px; text-align: center;"><strong>EUNIS Description</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td style="padding: 8px;">11110</td>
+  <td style="padding: 8px; text-align: center;">11110</td>
   <td style="padding: 8px;">Continuous urban fabric (IMD >= 80%)</td>
-  <td style="padding: 8px;">1</td>
-  <td style="padding: 8px;">J1</td>
+  <td style="padding: 8px; text-align: center;">1</td>
+  <td style="padding: 8px; text-align: center;">J1</td>
   <td style="padding: 8px;">Buildings of cities, towns, and villages</td>
 </tr>
 <tr>
-  <td style="padding: 8px;">11120</td>
+  <td style="padding: 8px; text-align: center;">11120</td>
   <td style="padding: 8px;">Dense urban fabric (IMD >= 30-80%)</td>
-  <td style="padding: 8px;">2</td>
-  <td style="padding: 8px;">J1.2</td>
+  <td style="padding: 8px; text-align: center;">2</td>
+  <td style="padding: 8px; text-align: center;">J1.2</td>
   <td style="padding: 8px;">Residential buildings of villages and urban peripheries</td>
 </tr>
 <tr>
-  <td style="padding: 8px;">12310</td>
+  <td style="padding: 8px; text-align: center;">11130</td>
+  <td style="padding: 8px;">Low density fabric (IMD < 30%)</td>
+  <td style="padding: 8px; text-align: center;">3</td>
+  <td style="padding: 8px; text-align: center;">J2</td>
+  <td style="padding: 8px;">Low density buildings</td>
+</tr>
+<tr>
+  <td style="padding: 8px; text-align: center;">11210</td>
+  <td style="padding: 8px;">Industrial, commercial, public, and military units</td>
+  <td style="padding: 8px; text-align: center;">4</td>
+  <td style="padding: 8px; text-align: center;">J4</td>
+  <td style="padding: 8px;">Transport networks and other hard-surfaced areas</td>
+</tr>
+<tr>
+  <td style="padding: 8px; text-align: center;">11220</td>
+  <td style="padding: 8px;">Nuclear energy plants and associated land</td>
+  <td style="padding: 8px; text-align: center;">5</td>
+  <td style="padding: 8px; text-align: center;">J4.5</td>
+  <td style="padding: 8px;">Hard-surfaced areas of ports</td>
+</tr>
+<tr>
+  <td style="padding: 8px; text-align: center;">12100</td>
+  <td style="padding: 8px;">Road networks and associated land</td>
+  <td style="padding: 8px; text-align: center;">6</td>
+  <td style="padding: 8px; text-align: center;">J4.4</td>
+  <td style="padding: 8px;">Airport runways and aprons</td>
+</tr>
+<tr>
+  <td style="padding: 8px; text-align: center;">12310</td>
   <td style="padding: 8px;">Cargo port</td>
-  <td style="padding: 8px;">5</td>
-  <td style="padding: 8px;">J4.5</td>
+  <td style="padding: 8px; text-align: center;">5</td>
+  <td style="padding: 8px; text-align: center;">J4.5</td>
   <td style="padding: 8px;">Hard-surfaced areas of ports</td>
 </tr>
 <tr>
-  <td style="padding: 8px;">12320</td>
+  <td style="padding: 8px; text-align: center;">12320</td>
   <td style="padding: 8px;">Passenger port</td>
-  <td style="padding: 8px;">5</td>
-  <td style="padding: 8px;">J4.5</td>
+  <td style="padding: 8px; text-align: center;">5</td>
+  <td style="padding: 8px; text-align: center;">J4.5</td>
   <td style="padding: 8px;">Hard-surfaced areas of ports</td>
 </tr>
 <tr>
-  <td style="padding: 8px;">12330</td>
-  <td style="padding: 8px;">Fishing port</td>
-  <td style="padding: 8px;">5</td>
-  <td style="padding: 8px;">J4.5</td>
-  <td style="padding: 8px;">Hard-surfaced areas of ports</td>
+  <td style="padding: 8px; text-align: center;">31100</td>
+  <td style="padding: 8px;">Agro-forestry</td>
+  <td style="padding: 8px; text-align: center;">19</td>
+  <td style="padding: 8px; text-align: center;">V6</td>
+  <td style="padding: 8px;">Tree dominated man-made habitats</td>
 </tr>
 <tr>
-  <td style="padding: 8px;">31200</td>
-  <td style="padding: 8px;">Natural & semi-natural broadleaved forest</td>
-  <td style="padding: 8px;">20</td>
-  <td style="padding: 8px;">T1</td>
-  <td style="padding: 8px;">Deciduous broadleaved forest</td>
+  <td style="padding: 8px; text-align: center;">63200</td>
+  <td style="padding: 8px;">Burnt areas (except burnt forest)</td>
+  <td style="padding: 8px; text-align: center;">40</td>
+  <td style="padding: 8px; text-align: center;">U5</td>
+  <td style="padding: 8px;">Miscellaneous inland habitats usually with very sparse or no vegetation</td>
 </tr>
 <tr>
-  <td style="padding: 8px;">31300</td>
-  <td style="padding: 8px;">Highly artificial broadleaved plantations</td>
-  <td style="padding: 8px;">21</td>
-  <td style="padding: 8px;">T29</td>
-  <td style="padding: 8px;">Broadleaved evergreen plantation of non site-native trees</td>
+  <td style="padding: 8px; text-align: center;">84100</td>
+  <td style="padding: 8px;">Open sea</td>
+  <td style="padding: 8px; text-align: center;">57</td>
+  <td style="padding: 8px; text-align: center;">MC5</td>
+  <td style="padding: 8px;">Circalittoral sand</td>
 </tr>
 </tbody>
 </table>
 
-<p>In cases where multiple LULC classes map to the same EUNIS habitat (e.g., ports under J4.5), the overlap reflects shared ecological and functional characteristics. However, this can pose challenges in habitat delineation, particularly in areas with mixed land uses or fragmented landscapes. These nuances emphasize the importance of spatial validation and iterative refinement during the mapping process.</p>
+<p>Access the full list of <a href="https://eunis.eea.europa.eu/habitats-code-browser-revised.jsp?expand=#level_31916">EUNIS habitat classifications</a> for detailed descriptions and additional information on habitat types.</p>
 
-<h4><strong>Workflow for EUNIS Mapping</strong></h4>
-<h4><strong>Step 1: Preprocess Land Use Data</strong></h4>
-<p>We begin by filtering the 2021/2022 coastal LULC dataset to focus on the region of interest (e.g., Croatia’s coastal zone). Overlapping geometries are addressed by splitting polygons into non-overlapping units to ensure compatibility with GEE’s processing capabilities.</p>
-<p><img src="/path/to/image1.png" alt="Preprocessing Land Use Data" style="display: block; margin: auto;" /></p>
 
-<h4><strong>Step 2: Reclassify to EUNIS Habitat Classes</strong></h4>
-<p>The filtered dataset is reclassified into EUNIS habitat types using the crosswalk table. This reclassification leverages advanced GEE remap functions, ensuring an accurate translation of LULC classes into habitat categories.</p>
-<p><img src="/path/to/image2.png" alt="Reclassify Land Use Data" style="display: block; margin: auto;" /></p>
-
-<h4><strong>Step 3: Validate and Export</strong></h4>
-<p>The reclassified dataset is exported as GeoTIFF and Shapefile formats for validation in QGIS. This ensures that the spatial resolution and classification align with the ecological context of the region.</p>
-<p><img src="/path/to/image3.png" alt="Validate and Export" style="display: block; margin: auto;" /></p>
+<p>Some EUNIS codes repeat for different land use classes, such as port-related classes (e.g., cargo port, passenger port) mapping to J4.5. This repetition reflects the shared ecological characteristics of these land uses. However, it also underscores the need for careful validation to ensure that such overlaps do not introduce ambiguities into habitat assessments.</p>
 
 ---
 
-<p>By building on the work of RESTCOAST and addressing identified limitations, this workflow provides a more accurate and dynamic EUNIS mapping solution, leveraging the latest datasets and geospatial techniques to support conservation and biodiversity initiatives.</p>
+<h4><strong>Next Steps</strong></h4>
+<p>We will proceed to outline the step-by-step process for creating a EUNIS habitat map, detailing the preprocessing, reclassification, and validation stages. This workflow ensures a comprehensive and ecologically relevant mapping of coastal habitats, leveraging the latest data and geospatial tools.</p>
 
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
