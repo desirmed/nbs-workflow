@@ -855,11 +855,218 @@ Map.centerObject(landUseDataset, 10); //You can comment out this part if your br
 Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 </code></pre>
 <p><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/11.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+
+<h3><strong>Land Use Dataset Creation</strong></h3>
+<p>The creation of land use datasets is an essential step in analyzing spatial patterns and understanding land cover dynamics over time. These datasets serve as foundational inputs for various geospatial analyses, including habitat classification, urban planning, and environmental monitoring. Using Earth Engine, we can load, process, and export land use datasets efficiently while ensuring compatibility with large-scale applications.</p>
+
+<h4><strong>Step 1: Load Land Use Datasets</strong></h4>
+<p>We start by loading the land use datasets for 2012 and 2018. These datasets provide detailed land cover information for Croatia, which will be analyzed for changes over time.</p>
+
+<pre>
+<code>// Load the assetar lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal');
+var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal');
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>ee.FeatureCollection</code> function is used to load the datasets. Each dataset contains land use features for Croatia, which are stored in a structured format compatible with Earth Engine operations.</p>
+
+<h4><strong>Step 2: Define the Color Palette for Land Cover Classes</strong></h4>
+<p>To enhance visualization, we define a color palette and descriptions for each land cover class. This ensures that each class is visually distinct and easy to interpret.</p>
+
+<pre>
+<code>// Define the color palette for each land use class
+var landCoverClasses = {
+  11110: {color: '#d20000', description: 'Continuous urban fabric (IMD >= 80%)'},
+  11120: {color: '#f20000', description: 'Dense urban fabric (IMD >= 30-80%)'},
+  // ... Add the remaining classes here
+};
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>landCoverClasses</code> object maps class codes to their respective colors and descriptions. These properties are later used for styling the dataset in Earth Engine.</p>
+
+<h4><strong>Step 3: Define Croatia Coastal Boundaries</strong></h4>
+<p>We focus the analysis on Croatia's coastal region by defining a geographic boundary. This ensures that only relevant features are included in the dataset.</p>
+
+<pre>
+<code>// Define Croatia's coastal bounds
+var croatiaCoastalBounds = ee.Geometry.Polygon([
+  [13.5, 44.0], [18.5, 44.0], [18.5, 42.0], [13.5, 42.0], [13.5, 44.0]
+]);
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> A polygon geometry is created to delineate the coastal region of Croatia. The <code>filterBounds</code> function will use this boundary to extract relevant features from the datasets.</p>
+
+<h4><strong>Step 4: Filter the Dataset to the Coastal Region</strong></h4>
+<p>The land use datasets are filtered to include only features within the coastal boundaries. This reduces computational overhead and focuses the analysis on the area of interest.</p>
+
+<pre>
+<code>// Filter datasets for 2012 and 2018 to the coastal region
+var coastalLulc2012 = lulc2012.filterBounds(croatiaCoastalBounds);
+var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>filterBounds</code> method is used to extract features that intersect the defined coastal region. This step ensures that only relevant data is included in subsequent analyses.</p>
+
+<h4><strong>Step 5: Rasterize the Dataset</strong></h4>
+<p>We convert the feature collections into raster images, which are more suitable for pixel-based analyses and visualizations.</p>
+
+<pre>
+<code>// Rasterize the 2012 dataset
+var rasterized2012 = coastalLulc2012.map(function(feature) {
+  var code = feature.get('CODE_5_12'); // Use the field for the 2012 dataset
+  return feature.set('class', code); // Set the class based on CODE_5_12
+}).reduceToImage(['class'], ee.Reducer.first());
+
+// Rasterize the 2018 dataset
+var rasterized2018 = coastalLulc2018.map(function(feature) {
+  var code = feature.get('CODE_5_18'); // Use the field for the 2018 dataset
+  return feature.set('class', code); // Set the class based on CODE_5_18
+}).reduceToImage(['class'], ee.Reducer.first());
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>reduceToImage</code> function is used to generate raster images from the feature collections. Each pixel in the raster represents a land use class, with values corresponding to the <code>class</code> property.</p>
+
+<h4><strong>Step 6: Style and Visualize the Rasterized Datasets</strong></h4>
+<p>We apply the color palette to the rasterized datasets and visualize them on the map for inspection.</p>
+
+<pre>
+<code>// Extract the color palette from landCoverClasses
+var palette = Object.keys(landCoverClasses).map(function(key) {
+  return landCoverClasses[key].color; // Ensure only colors are extracted
+});
+
+// Add the rasterized 2012 layer to the map
+Map.addLayer(rasterized2012, {min: 11110, max: 84200, palette: palette}, 'Coastal Land Use 2012');
+
+// Add the rasterized 2018 layer to the map
+Map.addLayer(rasterized2018, {min: 11110, max: 84200, palette: palette}, 'Coastal Land Use 2018');
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> The color palette ensures that each class is visually distinct, making it easier to interpret the rasterized datasets. Adding the layers to the map allows for visual inspection and verification.</p>
+
+<h4><strong>Step 7: Add a Legend for Visualization</strong></h4>
+<p>To enhance interpretability, we create a legend that displays the color and description for each land use class.</p>
+
+<pre>
+<code>// Create the legend container
+var legend = ui.Panel({
+  style: {
+    position: 'bottom-left',
+    padding: '0px',
+    backgroundColor: '#f0f0f0'
+  }
+});
+
+// Add a checkbox to toggle the legend visibility
+var showLegend = ui.Checkbox({
+  label: 'Show Legend',
+  value: true,  // Initially checked to show the legend
+  style: {
+    fontSize: '10px',
+    padding: '0px',
+    backgroundColor: '#f0f0f0'
+  }
+});
+legend.add(showLegend);
+
+// Create columns for the legend items
+var column1 = ui.Panel({
+  style: {
+    padding: '5px',
+    backgroundColor: '#f0f0f0'
+  }
+});
+
+// Container panel to hold all columns
+var columns = ui.Panel({
+  layout: ui.Panel.Layout.Flow('horizontal'),
+  style: {
+    backgroundColor: '#f0f0f0'
+  }
+});
+columns.add(column1);
+
+// Helper function to create a legend row
+var makeRow = function(color, description) {
+  var colorBox = ui.Label({
+    style: {
+      backgroundColor: color,
+      padding: '4px',
+      margin: '0 4px 4px 0'
+    }
+  });
+  var label = ui.Label({
+    value: description,
+    style: {
+      margin: '0 0 4px 6px',
+      fontSize: '10px',
+      backgroundColor: '#f0f0f0'
+    }
+  });
+  return ui.Panel({
+    widgets: [colorBox, label],
+    layout: ui.Panel.Layout.Flow('horizontal'),
+    style: {
+      backgroundColor: '#f0f0f0'
+    }
+  });
+};
+
+// Populate the legend
+Object.keys(landCoverClasses).forEach(function(key) {
+  var color = landCoverClasses[key].color;
+  var description = landCoverClasses[key].description;
+  column1.add(makeRow(color, description));
+});
+
+// Add the legend to the map
+legend.add(columns);
+Map.add(legend);
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> The legend provides a visual reference for interpreting the land use classes, making the map more user-friendly and informative.</p>
+
+<h4><strong>Step 8: Export the Rasterized Datasets</strong></h4>
+<p>Finally, we export the rasterized datasets as assets for further analysis or sharing.</p>
+
+<pre>
+<code>// Export rasterized 2012 dataset
+Export.image.toAsset({
+  image: rasterized2012,
+  description: 'Coastal_Land_Use_2012',
+  assetId: 'projects/ee-desmond/assets/Coastal_Land_Use_2012',
+  region: croatiaCoastalBounds,
+  scale: 30,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+// Export rasterized 2018 dataset
+Export.image.toAsset({
+  image: rasterized2018,
+  description: 'Coastal_Land_Use_2018',
+  assetId: 'projects/ee-desmond/assets/Coastal_Land_Use_2018',
+  region: croatiaCoastalBounds,
+  scale: 30,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+</code>
+</pre>
+
+<p><strong>Explanation:</strong> Exporting the datasets ensures that they are available for future analyses or integration into other workflows. The <code>Export.image.toAsset</code> function saves the data as assets within the Earth Engine environment.</p>
+
 <p>Our Land use/cover data is ready for further analysis in Google Earth Engine. We will use this data as the functional unit and the basis for vreating other datasets like EUNIS, landscape Archetypes, Ecosystem service Map and risk exposures</p>
 
 
 
-<h3><strong>Other Datasets</strong></h3>
+<h5><strong>Other Datasets</strong></h5>
 <p>Following the land use data, we will explore additional datasets such as EUNIS, Points of Interest (POI), population, river basins, hydrosheds, and flood probability data. Similar detailed steps will be provided to guide you through the download, preprocessing, and integration of these datasets.</p>
 </div>
 
@@ -990,7 +1197,7 @@ Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 <h4><strong>Next Steps</strong></h4>
 <p>We will proceed to outline the step-by-step process for creating a EUNIS habitat map.</p>
 
-<h3><strong>Step 1: Define Land Cover Datasets</strong></h3>
+<h5><strong>Step 1: Define Land Cover Datasets</strong></h5>
 <p>To start, we need to define the datasets that represent land cover for the years 2012 and 2018. These datasets will form the basis of our EUNIS habitat classification.</p>
 
 <pre>
@@ -1004,7 +1211,7 @@ var landCoverYears = {
 
 <p><strong>Explanation:</strong> This step initializes an object containing the FeatureCollections for the two datasets. Each dataset represents the land cover of Croatia for a specific year.</p>
 
-<h3><strong>Step 2: Define the Crosswalk Mapping</strong></h3>
+<h5><strong>Step 2: Define the Crosswalk Mapping</strong></h5>
 <p>In this step, we define how land cover classes from the datasets are translated into EUNIS habitat codes. This mapping is essential for accurate reclassification.</p>
 
 <pre>
@@ -1028,7 +1235,7 @@ var landCoverToEunisNumeric = {
 
 <p><strong>Explanation:</strong> This object maps numeric land cover codes to their corresponding EUNIS numeric codes. Each mapping represents a habitat type, allowing us to translate land cover data into the EUNIS classification system.</p>
 
-<h3><strong>Step 3: Define the EUNIS Properties</strong></h3>
+<h5><strong>Step 3: Define the EUNIS Properties</strong></h5>
 <p>Here, we assign properties like color and descriptions to EUNIS habitat types. This enhances visualization and understanding of the output.</p>
 
 <pre>
@@ -1045,7 +1252,7 @@ var eunisNumericMapping = {
 
 <p><strong>Explanation:</strong> Each EUNIS code is assigned a color and description. This is useful for visualization and interpretation of the classified datasets.</p>
 
-<h3><strong>Step 4: Reclassify Land Cover to EUNIS</strong></h3>
+<h5><strong>Step 4: Reclassify Land Cover to EUNIS</strong></h5>
 <p>Now, we write a function to reclassify the land cover dataset into EUNIS habitats based on the mapping we defined earlier.</p>
 
 <pre>
@@ -1066,7 +1273,7 @@ var reclassifyToEunis = function(dataset, codeField, mapping) {
 
 <p><strong>Explanation:</strong> This function accepts a dataset, a code field, and the mapping object. It uses the <code>remap</code> function to reclassify the dataset based on the mapping.</p>
 
-<h3><strong>Step 5: Visualize the Reclassified Dataset</strong></h3>
+<h5><strong>Step 5: Visualize the Reclassified Dataset</strong></h5>
 <p>We create another function to style the reclassified EUNIS image for visualization in Google Earth Engine.</p>
 
 <pre>
@@ -1087,7 +1294,7 @@ var styleEunisImage = function(image) {
 
 <p><strong>Explanation:</strong> This function applies a color palette to the reclassified dataset for better visualization. The palette is derived from the EUNIS properties defined earlier.</p>
 
-<h3><strong>Step 6: Define Croatia Coastal Boundaries</strong></h3>
+<h5><strong>Step 6: Define Croatia Coastal Boundaries</strong></h5>
 <p>We define the geographic bounds of Croatia's coastal regions to limit the analysis to the relevant area.</p>
 
 <pre>
@@ -1100,7 +1307,7 @@ var croatiaCoastalBounds = ee.Geometry.Polygon([
 
 <p><strong>Explanation:</strong> This polygon defines the region of interest, focusing the analysis on Croatia's coastal area and excluding inland or irrelevant regions.</p>
 
-<h3><strong>Step 7: Reclassify and Style the 2012 Dataset</strong></h3>
+<h5><strong>Step 7: Reclassify and Style the 2012 Dataset</strong></h5>
 <p>Using the reclassification and visualization functions, we process the 2012 land cover dataset.</p>
 
 <pre>
@@ -1123,7 +1330,7 @@ Map.addLayer(reclassified2012, {
 
 <p><strong>Explanation:</strong> This step filters, reclassifies, and visualizes the 2012 dataset for Croatia's coastal regions.</p>
 
-<h3><strong>Step 8: Reclassify and Style the 2018 Dataset</strong></h3>
+<h5><strong>Step 8: Reclassify and Style the 2018 Dataset</strong></h5>
 <p>We repeat the process for the 2018 dataset, ensuring consistency in approach and visualization.</p>
 
 <pre>
@@ -1148,7 +1355,7 @@ Map.addLayer(reclassified2018, {
 
 <p>Now that the 2018 dataset is visualized, comparisons between 2012 and 2018 are possible.</p>
 
-<h3><strong>Step 9: Create a Chart for Comparing EUNIS Areas</h3>strong></strong></h3>
+<h5><strong>Step 9: Create a Chart for Comparing EUNIS Areas</h5>strong></strong></h5>
 <p><strong>Explanation:</strong> Comparing habitat areas across years provides insights into ecological changes. This is done by computing areas of each EUNIS class and displaying them in bar and pie charts for better visualization.</p>
 
 <pre><code>// Function to compute EUNIS areas
@@ -1175,7 +1382,7 @@ var computeEunisAreas = function(image, year, geometry) {
 
 <p>The computed areas for both 2012 and 2018 datasets are visualized in a bar chart for direct comparison.</p>
 
-<h3><strong>Step 10: Export the Reclassified Data</strong></h3>
+<h5><strong>Step 10: Export the Reclassified Data</strong></h5>
 <p><strong>Explanation:</strong> To facilitate further analysis or sharing, the reclassified datasets for 2012 and 2018 are exported in raster and vector formats. These exports allow users to inspect and validate the data in desktop GIS tools.</p>
 
 <pre><code>// Export reclassified 2018 dataset as raster
@@ -1208,7 +1415,7 @@ Export.table.toDrive({
 
 <p>These outputs can now be used for detailed GIS-based analysis and validation.</p>
 
-<h3><strong>Step 11: Add User Interaction for Drawing Analysis</strong></h3>
+<h5><strong>Step 11: Add User Interaction for Drawing Analysis</strong></h5>
 <p><strong>Explanation:</strong> Drawing tools allow users to interactively analyze specific areas on the map. The drawn geometry serves as the input for computing EUNIS class areas.</p>
 
 <pre><code>// Enable drawing tools on the map
@@ -1225,7 +1432,7 @@ drawingTools.onDraw(function(geometry) {
 
 <p>This interactive feature enhances user engagement by allowing custom area analysis.</p>
 
-<h3><strong>Step 12: Create a Legend</strong></h3>
+<h5><strong>Step 12: Create a Legend</strong></h5>
 <p><strong>Explanation:</strong> A legend helps users understand the mapping of EUNIS classes to colors. This is essential for interpreting the visualized data accurately.</p>
 
 <pre><code>// Create a legend panel
@@ -1254,7 +1461,7 @@ Map.add(legend);</code></pre>
 
 <p>Now users can reference the legend to understand the visualized classifications.</p>
 
-<h3><strong>Step 13: Finalize and Share the Workflow</strong></h3>
+<h5><strong>Step 13: Finalize and Share the Workflow</strong></h5>
 <p><strong>Explanation:</strong> The completed workflow can now be shared with stakeholders or team members. This step involves documenting the methodology and ensuring all data outputs are correctly exported and stored.</p>
 
 <pre><code>// Save the script and export as needed
