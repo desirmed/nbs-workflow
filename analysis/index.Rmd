@@ -26,7 +26,7 @@ This project focuses on the development of region-specific NbS portfolios that a
 
 [**_3_. Understanding all relevant Data**](Understanding_all_relevant_Data.html)
 
-<!-- [**_4_. Loading Geospatial Data in RStudio**](Loading_Geospatial_Data_in_RStudio.html) -->
+<[**_4_. Loading Geospatial Data in RStudio**](Downloads-and-Geoprocessing.html)
 
 <!-- [**_5_. Basic Operations with Vector Data**](Basic_Operations_with_Vector_Data.html) -->
 
