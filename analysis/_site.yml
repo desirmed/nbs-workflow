@@ -10,9 +10,7 @@ navbar:
       href: How_To.html
     - text: Downloads
       href: Download_Resources.html
-  right:
-    - icon: fab fa-github fa-lg
-      href: https://github.com/deltares-desirmed/nbs-workflow
+
   right:
     - icon: fas fa-landmark fa-lg
       href: https://cordis.europa.eu/project/id/869226
