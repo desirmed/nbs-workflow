@@ -281,7 +281,7 @@ $(document).ready(function () {
 
 
 
-<style>
+  <style>
     .title-container {
         text-align: center;
         margin-bottom: 20px;
@@ -302,8 +302,9 @@ $(document).ready(function () {
         align-items: center;
         gap: 10px;
         text-decoration: none;
-        color: black;
+        color: #1a0dab; /* Styled like scientific paper citations */
         font-weight: bold;
+        font-size: 1.1em;
     }
     .author img {
         width: 50px;
@@ -311,18 +312,10 @@ $(document).ready(function () {
         border-radius: 50%;
         object-fit: cover;
     }
-    .author-info {
-        display: flex;
-        flex-direction: column;
-    }
-    .author-name {
-        font-size: 1em;
+    .authors-label {
         font-weight: bold;
-    }
-    .author-role {
-        font-size: 0.9em;
-        font-style: italic;
-        color: gray;
+        font-size: 1.1em;
+        color: black;
     }
 </style>
 
@@ -331,22 +324,39 @@ $(document).ready(function () {
 </div>
 
 <div class="author-container">
-    <a href="https://www.linkedin.com/in/desmond-lartey/" target="_blank" class="author">
-        <img src="https://www.linkedin.com/in/desmond-lartey/" alt="Author 1">
-        <div class="author-info">
-            <span class="author-name">John Doe</span>
-            <span class="author-role">Researcher, Deltares</span>
-        </div>
-    </a>
+    <span class="authors-label">Authors:</span>
+    
+    <a href="https://www.linkedin.com/in/desmond-larte/" target="_blank" class="author">
+        <img src="https://www.linkedin.com/in/desmond-larte/" alt="1">
+        1
+    </a>;
 
     <a href="https://www.linkedin.com/in/example2" target="_blank" class="author">
-        <img src="https://via.placeholder.com/50" alt="Author 2">
-        <div class="author-info">
-            <span class="author-name">Jane Smith</span>
-            <span class="author-role">GIS Specialist, Deltares</span>
-        </div>
+        <img src="https://via.placeholder.com/50" alt="2">
+        2
+    </a>;
+    
+    <a href="https://www.linkedin.com/in/example3" target="_blank" class="author">
+        <img src="https://via.placeholder.com/50" alt="3">
+        3
+    </a>;    
+
+    <a href="https://www.linkedin.com/in/example3" target="_blank" class="author">
+        <img src="https://via.placeholder.com/50" alt="4">
+        4
+    </a>;    
+
+    <a href="https://www.linkedin.com/in/example3" target="_blank" class="author">
+      <img src="https://via.placeholder.com/50" alt="5">
+        5 
+    </a>;
+
+    <a href="https://www.linkedin.com/in/example3" target="_blank" class="author">
+      <img src="https://via.placeholder.com/50" alt="6">
+        6        
     </a>
 </div>
+
 
 </div>
 
