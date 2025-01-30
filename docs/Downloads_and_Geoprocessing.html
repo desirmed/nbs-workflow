@@ -1072,9 +1072,9 @@ Export.image.toAsset({
 <p>Our Land use/cover data is ready for further analysis in Google Earth Engine. We will use this data as the functional unit and the basis for vreating other datasets like EUNIS, landscape Archetypes, Ecosystem service Map and risk exposures</p>
 
 <h3><strong>Landscape Archetype Classification</strong></h3>
-<p>Understanding landscape archetypes is a critical step in spatial analysis, providing insights into how different land use and land cover classes interact across a given region. The concept of landscape archetypes integrates ecological, socio-economic, and governance layers to create meaningful spatial patterns that aid in decision-making for environmental planning, impact assessments, and conservation strategies.</p>
+<p>Understanding landscape archetypes is a critical step in spatial analysis, providing insights into how different land use and land cover classes interact across a given region. The concept of landscape archetypes integrates bio-physical, socio-economic, and governance layers to create meaningful spatial patterns that aid in decision-making for environmental planning, impact assessments, and conservation strategies.</p>
 
-<p>In this guide, we will develop a classification scheme for landscape archetypes using the land use dataset we created earlier. The workflow includes loading datasets, defining classifications, applying a reclassification technique, and visualizing the results. The classification process is based on CORINE land cover data, which serves as the basis for defining unique landscape archetypes according to their spatial patterns.</p>
+<p>In this guide, we will develop a classification scheme for landscape archetypes i.e bio-physical using the land use dataset we created earlier. The workflow includes loading datasets, defining classifications, applying a reclassification technique, and visualizing the results. The classification process is based on CORINE land cover data, which serves as the basis for defining unique landscape archetypes according to their spatial patterns.</p>
 
 <h4><strong>Step 1: Load Land Use Data</strong></h4>
 <p>The first step involves loading the land use datasets for 2012 and 2018. These datasets will serve as the basis for reclassifying landscape archetypes.</p>
@@ -1164,11 +1164,45 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 
 <p><strong>Explanation:</strong> Here you will realise we use 'CODE_5_12' and CODE_5_18' as columns to remap, this is because both datasets contains the class ids or class values to the land use. The <code>reduceToImage</code> function converts the vector dataset into a raster, while <code>remap</code> assigns each pixel a new value based on the archetype classification.</p>
 
-<p>This structured workflow enables the effective classification of landscape archetypes, forming the basis for further geospatial analysis and decision-making processes.</p>
+<h4><strong>Technical Process Overview</strong></h4>
 
+<ul>
+  <li><strong>Data Preparation:</strong> The input datasets consist of land use classifications derived from CORINE data (2012 and 2018). Each land cover class is assigned a unique integer code.</li>
+  
+  <li><strong>Reclassification Using <code>remap()</code>:</strong> The <code>remap()</code> function is applied to translate CORINE land cover classes into predefined archetypes. Each archetype groups multiple land cover classes based on shared ecological and functional characteristics.</li>
+
+  <li><strong>Binary Masking with <code>eq()</code> and <code>or()</code>:</strong> Pixel values are conditionally filtered to match the target landscape archetypes, ensuring that only relevant land cover types are included.</li>
+
+  <li><strong>Rule-Based Aggregation:</strong> Similar land cover types (e.g., forests, agricultural lands) are grouped under broader landscape units to enhance interpretability and spatial generalization.</li>
+
+  <li><strong>Vectorization and Area Computation:</strong> Raster data is converted into vector polygons, and each feature is assigned an area measurement to enable statistical assessments.</li>
+
+  <li><strong>Visualization and Legend Creation:</strong> The reclassified maps are visualized using a predefined color palette, and a legend is dynamically generated to improve user interpretation.</li>
+
+  <li><strong>Exporting Outputs:</strong> The final archetype datasets are exported to Google Earth Engine assets and Google Drive for further analysis and external use.</li>
+</ul>
+
+<h4><strong>Potential Issues and Considerations</strong></h4>
+
+<ul>
+  <li><strong>Loss of Granular Detail:</strong> Aggregating land cover classes into broad archetypes can obscure finer ecological variations (e.g., differentiating between mixed forests and coniferous forests).</li>
+
+  <li><strong>Potential Misclassification:</strong> The binary classification approach using <code>eq()</code> and <code>or()</code> can lead to misclassification if a land cover pixel aligns with multiple archetypes (Panpan et al., 2024).</li>
+
+  <li><strong>Landscape Artifacts and Temporal Mismatches:</strong> The underlying land cover dataset is based on 2018 data, meaning that landscape changes in the past six years are not reflected in the current classification (Sousa et al., 2020).</li>
+</ul>
+
+<h4><strong>References</strong></h4>
+
+<ul>
+  <li><a href="https://doi.org/10.1016/j.ecolind.2024.120245">Panpan et al., 2024</a> - On the challenges of landscape reclassification.</li>
+  <li><a href="https://doi.org/10.1016/j.envsoft.2020.104918">Sousa et al., 2020</a> - Assessing land cover changes in ecological modeling.</li>
+</ul>
+
+<p>For interactive visualization, explore the generated maps on <a href="https://desirmed.projects.earthengine.app/view/landscapearchetypes">Google Earth Engine</a>.</p>
 
 <h5><strong>Other Datasets</strong></h5>
-<p>Following the land use data, we will explore additional datasets such as EUNIS, Points of Interest (POI), population, river basins, hydrosheds, and flood probability data. Similar detailed steps will be provided to guide you through the download, preprocessing, and integration of these datasets.</p>
+<p>Following the Biophysical archetypes, we will explore additional datasets such as EUNIS, Points of Interest (POI), population, river basins, hydrosheds, and flood probability data. Similar detailed steps will be provided to guide you through the download, preprocessing, and integration of these datasets.</p>
 </div>
 
 <h3><strong>EUNIS Dataset Creation</strong></h3>
