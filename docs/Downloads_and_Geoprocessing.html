@@ -1162,7 +1162,7 @@ var archetypeImage2012 = codeImage2012.remap(fromList, toList).rename('archetype
 var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype2018');</code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>reduceToImage</code> function converts the vector dataset into a raster, while <code>remap</code> assigns each pixel a new value based on the archetype classification.</p>
+<p><strong>Explanation:</strong> Here you will realise we use 'CODE_5_12' and CODE_5_18' as columns to remap, this is because both datasets contains the class ids or class values to the land use. The <code>reduceToImage</code> function converts the vector dataset into a raster, while <code>remap</code> assigns each pixel a new value based on the archetype classification.</p>
 
 <p>This structured workflow enables the effective classification of landscape archetypes, forming the basis for further geospatial analysis and decision-making processes.</p>
 
