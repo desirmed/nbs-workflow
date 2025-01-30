@@ -862,6 +862,7 @@ Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 </code></pre>
 <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/11.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>
 
+
 <h3><strong>Land Use Dataset Creation</strong></h3>
 <p>The creation of land use datasets is an essential step in analyzing spatial patterns and understanding land cover dynamics over time. These datasets serve as foundational inputs for various geospatial analyses, including habitat classification, urban planning, and environmental monitoring. Using Earth Engine, we can load, process, and export land use datasets efficiently while ensuring compatibility with large-scale applications.</p>
 
@@ -1070,6 +1071,100 @@ Export.image.toAsset({
 
 <p>Our Land use/cover data is ready for further analysis in Google Earth Engine. We will use this data as the functional unit and the basis for vreating other datasets like EUNIS, landscape Archetypes, Ecosystem service Map and risk exposures</p>
 
+<h3><strong>Landscape Archetype Classification</strong></h3>
+<p>Understanding landscape archetypes is a critical step in spatial analysis, providing insights into how different land use and land cover classes interact across a given region. The concept of landscape archetypes integrates ecological, socio-economic, and governance layers to create meaningful spatial patterns that aid in decision-making for environmental planning, impact assessments, and conservation strategies.</p>
+
+<p>In this guide, we will develop a classification scheme for landscape archetypes using the land use dataset we created earlier. The workflow includes loading datasets, defining classifications, applying a reclassification technique, and visualizing the results. The classification process is based on CORINE land cover data, which serves as the basis for defining unique landscape archetypes according to their spatial patterns.</p>
+
+<h4><strong>Step 1: Load Land Use Data</strong></h4>
+<p>The first step involves loading the land use datasets for 2012 and 2018. These datasets will serve as the basis for reclassifying landscape archetypes.</p>
+
+<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<code>// Load the asset
+var lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal');
+var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal');</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>ee.FeatureCollection</code> function is used to load the vector datasets containing land use classifications for Croatia in 2012 and 2018. Each dataset consists of multiple features representing distinct land cover classes.</p>
+
+<h4><strong>Step 2: Define Croatia’s Coastal Boundaries</strong></h4>
+<p>To limit our analysis to the coastal region of Croatia, we define a geographic boundary using a polygon geometry.</p>
+
+<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<code>// Define Croatia's coastal bounds
+var croatiaCoastalBounds = ee.Geometry.Polygon([
+  [13.5, 44.0], [18.5, 44.0], [18.5, 42.0], [13.5, 42.0], [13.5, 44.0]
+]);</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>ee.Geometry.Polygon</code> function creates a polygon that defines the spatial extent of the study area. This boundary is later used to filter the dataset and extract only the relevant features.</p>
+
+<h4><strong>Step 3: Filter the Dataset to the Coastal Region</strong></h4>
+<p>Once the study boundary is established, we filter the dataset to retain only the features that fall within this region.</p>
+
+<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<code>// Filter the datasets to Croatia's coastal region
+var coastalLulc2012 = lulc2012.filterBounds(croatiaCoastalBounds);
+var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>filterBounds</code> method is applied to extract only those features that intersect with the defined polygon, ensuring that our analysis focuses solely on Croatia’s coastal areas.</p>
+
+<h4><strong>Step 4: Define Landscape Archetypes</strong></h4>
+<p>We define a classification scheme that groups land cover classes into broader landscape archetypes based on their ecological and functional similarities.</p>
+
+<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<code>// Define landscape archetypes
+var landscapeArchetypes = {
+  '1': { classes: ['11110', '11120', '11130'], color: '#636363', description: 'Urban' },
+  '2': { classes: ['12310', '12320', '12330'], color: '#969696', description: 'Coastal Urban' },
+  '3': { classes: ['13110', '13120', '13130'], color: '#cccccc', description: 'Industrial' },
+  '4': { classes: ['14000'], color: '#91d700', description: 'Recreational & Leisure Areas' },
+  '5': { classes: ['21100', '21200', '23300'], color: '#91d700', description: 'Rural (Flat Areas)' }
+};</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>landscapeArchetypes</code> object maps groups of land cover codes to their corresponding archetypes. Each archetype is associated with a unique color and description to facilitate interpretation.</p>
+
+<h4><strong>Step 5: Remap Land Cover Classes</strong></h4>
+<p>To convert the original land cover classifications into archetypes, we create a mapping function that translates each class into its corresponding archetype.</p>
+
+<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<code>// Prepare lists for remapping
+var fromList = [];
+var toList = [];
+var palette = [];
+var descriptions = [];
+
+Object.keys(landscapeArchetypes).forEach(function(archetypeId) {
+  var archetype = landscapeArchetypes[archetypeId];
+  var archetypeIdInt = parseInt(archetypeId);
+  archetype.classes.forEach(function(classCode) {
+    fromList.push(parseInt(classCode));
+    toList.push(archetypeIdInt);
+  });
+  palette.push(archetype.color);
+  descriptions.push(archetype.description);
+});</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>remap</code> function is used to convert the original land cover class values into landscape archetypes by replacing each class with its respective archetype ID. This step ensures that each pixel is assigned a meaningful category that aligns with the predefined archetype classification.</p>
+
+<h4><strong>Step 6: Apply Reclassification</strong></h4>
+<p>The final step involves reclassifying the 2012 and 2018 datasets based on the remapping criteria.</p>
+
+<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<code>// Reclassify the datasets
+var codeImage2012 = coastalLulc2012.reduceToImage(['CODE_5_12'], ee.Reducer.first()).rename('code2012');
+var codeImage2018 = coastalLulc2018.reduceToImage(['CODE_5_18'], ee.Reducer.first()).rename('code2018');
+
+var archetypeImage2012 = codeImage2012.remap(fromList, toList).rename('archetype2012');
+var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype2018');</code>
+</pre>
+
+<p><strong>Explanation:</strong> The <code>reduceToImage</code> function converts the vector dataset into a raster, while <code>remap</code> assigns each pixel a new value based on the archetype classification.</p>
+
+<p>This structured workflow enables the effective classification of landscape archetypes, forming the basis for further geospatial analysis and decision-making processes.</p>
 
 
 <h5><strong>Other Datasets</strong></h5>
