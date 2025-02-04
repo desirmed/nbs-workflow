@@ -28,7 +28,7 @@ This project focuses on the development of region-specific NbS portfolios that a
 
 [**_4_. Downloads and Geoprocessing**](Downloads_and_Geoprocessing.html)
 
-<!-- [**_5_. What is Landscape Characterisation?**](What_is_Landscape_Characterisation?.html) -->
+<!-- [**_5_. What is Landscape Characterisation?**](What_is_Landscape_Characterisation.html) -->
 
 <!-- [**_6_. Basic Operations with Raster Data**](Basic_Operations_with_Raster_Data.html) -->
 
