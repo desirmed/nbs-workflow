@@ -685,627 +685,158 @@ wflow_publish("analysis/What_is_Landscape_Characterisation.Rmd")
 </div>
 </div>
 <style> p { text-align: justify; } </style>
-<p>Once geospatial data is loaded into R, the next step is to explore
-and manipulate it to extract meaningful insights. Whether working with
-vector or raster data, R provides a rich set of tools for performing a
-variety of geospatial operations. These operations range from simple
-data viewing and subsetting to more complex geometric manipulations such
-as buffering and intersections. Mastering these fundamental tasks is
-crucial for conducting effective geospatial analysis.</p>
-<p>Vector data represents features as points, lines, or polygons and
-includes both geometric and attribute information. As already mentioned
-in previous chapter we will be using the <strong>sf</strong> package
-since it is an excellent tool for handling vector data, as it provides a
-seamless way to explore, manipulate, and analyze spatial features.
-Vector data operations often involve viewing and subsetting attributes,
-performing spatial queries, and conducting geometric
-transformations.</p>
-<div id="viewing-and-subsetting" class="section level2">
-<h2><strong>Viewing and Subsetting</strong></h2>
-<p>After loading vector data, the first step is usually to explore its
-structure. The sf package allows you to inspect both the attribute table
-and the geometries of spatial features. You can use standard R functions
-like <em>head()</em> and <em>summary()</em> to view the data.</p>
-<pre class="r"><code>library(sf)
-library(dplyr)
+<section style="background-color: #f0f8ff; padding: 20px; border-radius: 10px;">
+  <h2 style="color: #004080;">Landscape Characterization in DesirMED: Scientific Arguments and Operationalization</h2>
 
-# Import your downloaded gpkg file
-# don&#39;t forget to provide the path where you have downloaded it locally
-kpr &lt;- 
-  read_sf(&quot;data/vector/kanchanpur.gpkg&quot;)
+  <p>
+    <strong>Landscape characterization</strong> has been widely recognized as a critical methodology for spatial planning, ecosystem service assessment, 
+    and sustainable land management (<a href="https://doi.org/10.1016/j.landusepol.2018.04.022" target="_blank">Simensen et al., 2018</a>). 
+    As stipulated by the <a href="https://www.coe.int/en/web/landscape" target="_blank">European Landscape Convention (ELC)</a>, 
+    defining landscapes systematically is essential for understanding their ecological, socio-cultural, and functional attributes.  
+    However, <strong>no single method</strong> universally applies to all contexts, leading to a proliferation of approaches across disciplines (Antrop & Van Eetvelde, 2017).
+  </p>
 
-# View the structure of the vector data
-head(kpr)</code></pre>
-<pre><code>Simple feature collection with 6 features and 1 field
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: 80.06014 ymin: 28.64567 xmax: 80.55588 ymax: 29.05851
-Geodetic CRS:  WGS 84
-# A tibble: 6 × 2
-  NAME                                                                      geom
-  &lt;chr&gt;                                                       &lt;MULTIPOLYGON [°]&gt;
-1 BaisiBichawa (((80.49934 28.64667, 80.49709 28.64866, 80.49709 28.65089, 80.4…
-2 Beldandi     (((80.25229 28.75782, 80.25377 28.7646, 80.25588 28.76808, 80.25…
-3 Chandani     (((80.10973 28.98432, 80.10986 28.97376, 80.10738 28.96319, 80.1…
-4 Daijee       (((80.34424 29.05416, 80.34449 29.04956, 80.34698 29.04397, 80.3…
-5 Dekhatbhuli  (((80.44701 28.78921, 80.43608 28.78623, 80.4316 28.78623, 80.42…
-6 Dodhara      (((80.10042 28.88838, 80.09917 28.87645, 80.10327 28.87297, 80.1…</code></pre>
-<pre class="r"><code>summary(kpr)</code></pre>
-<pre><code>     NAME                      geom   
- Length:21          MULTIPOLYGON :21  
- Class :character   epsg:4326    : 0  
- Mode  :character   +proj=long...: 0  </code></pre>
-<p>From above, you can also see substantial difference on using
-<em>head()</em> and <em>summary()</em> functions.</p>
-<p>For subsetting, logical conditions can be applied to filter features
-based on their attributes.</p>
-<pre class="r"><code># subset polygon with Name: Sreepur
-subset_data &lt;- kpr %&gt;%
-  dplyr::filter(NAME == &quot;Sreepur&quot;)
+  <h3 style="color: #006699;">1. The Complexity of Landscape Characterization</h3>
+  <p>
+    Due to the <strong>multidisciplinary nature</strong> of landscape research, methodologies vary significantly across geography, ecology, landscape architecture, 
+    and social sciences. A review of 54 contemporary approaches identified three dominant strategies:
+  </p>
 
-# Lets see if the subsetting worked fine by plotting the subset data
-plot(subset_data,
-     col = &quot;lightblue&quot;,
-     border = &quot;red&quot;,
-     main = &quot;Sreepur&quot;)</code></pre>
-<p><img src="figure/What_is_Landscape_Characterisation.Rmd/subsetting-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-subsetting-1">
-Past versions of subsetting-1.png
-</button>
-</p>
-<div id="fig-subsetting-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/What_is_Landscape_Characterisation.Rmd/subsetting-1.png" target="_blank">3978bc8</a>
-</td>
-<td>
-Desmond Lartey
-</td>
-<td>
-2025-02-28
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Note: The <strong>%&gt;%</strong> operator in <em>dplyr</em> is
-called the “<strong>pipe</strong>” operator, and it allows you to pass
-the output of one function directly as the input to the next function in
-a readable, sequential manner. It helps streamline code by eliminating
-the need for intermediate variables, making it easier to write and read
-data manipulation workflows. For example, data %&gt;% filter(condition)
-%&gt;% select(column) means “take the data, filter it based on a
-condition, and then select specific columns.”</p>
-</div>
-<div id="buffer-and-intersection" class="section level2">
-<h2><strong>Buffer and Intersection</strong></h2>
-<p>Geometric operations modify the spatial geometry of vector features
-and are integral to spatial analysis. Two common operations are
-buffering and intersection.</p>
-<p>The <strong>buffer</strong> operation creates a zone around a feature
-at a specified distance. It is often used for proximity analysis, such
-as determining areas within a certain distance of a road or river.</p>
-<p>For this specific function, we are going to use subset polygon of
-Kanchanpur district (Sreepur VDC) which you can download by clicking <a
-href="https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/vector/sreepur.gpkg">this
-link</a>.</p>
-<pre class="r"><code># import your recently downloaded gpkg
-spr &lt;- 
-  read_sf(&quot;data/vector/sreepur.gpkg&quot;)
+  <ul>
+    <li><strong>Holistic Landscape Character Assessment (LCA):</strong> Emphasizes <em>visual perception</em> and <em>socio-cultural aspects</em>, commonly used in policy-driven projects (Swanwick, 2002).</li>
+    <li><strong>Land Use-Based Characterization:</strong> Relies on predefined <em>geo-ecological and anthropogenic variables</em> (Wascher, 2005; Mücher et al., 2010).</li>
+    <li><strong>Biophysical-Based Characterization:</strong> Uses <em>remote sensing, GIS, and statistical models</em> to classify landscapes based on physical properties (Brabyn, 2009; Erikstad et al., 2015).</li>
+  </ul>
 
-# Create a 10000-meter buffer around our area of interest i.e. spr
-buffered_data &lt;- 
-  sf::st_buffer(spr, dist = 10000)
+  <p>
+    These varying approaches underscore the importance of **fit-for-purpose methodologies**, especially in the context of NbS implementation, 
+    where both <em>biophysical constraints</em> and <em>governance structures</em> must be integrated.
+  </p>
 
-# Lets see if the buffer function worked fine by plotting the buffered data
-plot(buffered_data,
-     col = &quot;grey&quot;,
-     border = &quot;darkblue&quot;,
-     pch = 16,
-     main = &quot;Buffer Zone (10 Kms)&quot;)</code></pre>
-<p><img src="figure/What_is_Landscape_Characterisation.Rmd/buffer-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-buffer-1">
-Past versions of buffer-1.png
-</button>
-</p>
-<div id="fig-buffer-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/What_is_Landscape_Characterisation.Rmd/buffer-1.png" target="_blank">3978bc8</a>
-</td>
-<td>
-Desmond Lartey
-</td>
-<td>
-2025-02-28
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>From the plot above, we can see that a buffer zone of 10 km around
-Sreepur has been successfully created. You can adjust the buffer
-distance and also use point or line data as needed for your task.</p>
-<p>The <strong>intersection</strong> operation identifies the spatial
-overlap between two layers. It is used to find common areas or features
-shared by two datasets.</p>
-<p>Here in this tutorial, we will use the data from WDPA (World Database
-on Protected Areas) of Nepal and see the intersection between wdpa
-datasets and the Sreepur VDC, if theres any. For this, please download
-the wdpa data by clicking on <a
-href="https://github.com/deltares-desirmed/nbs-workflow/raw/refs/heads/master/data/vector/protected_areas.gpkg">this
-link</a>.</p>
-<pre class="r"><code># import protected areas gpkg
-wdpa &lt;- 
-  read_sf(&quot;data/vector/protected_areas.gpkg&quot;)
+  <h3 style="color: #006699;">2. Methodological Challenges in Landscape Characterization</h3>
+  <p>
+    Landscape classification inherently simplifies the **continuous nature** of ecosystems into discrete categories 
+    (<a href="https://doi.org/10.1016/j.landusepol.2018.04.022" target="_blank">Simensen et al., 2018</a>).
+    This simplification poses several challenges:
+  </p>
 
-# Perform an intersection between two layers - wdpa and sreepur
-intersected_data &lt;- 
-  sf::st_intersection(wdpa, spr)
+  <ul>
+    <li><strong>Scale Sensitivity:</strong> Classification at **nationwide scales** may overlook local landscape heterogeneity (Chuman & Romportl, 2010).</li>
+    <li><strong>Observer Dependence:</strong> Many approaches still rely on **subjective expert judgment**, affecting reproducibility (Bunce et al., 1996).</li>
+    <li><strong>Continuous vs. Categorical Typologies:</strong> Landscape properties exhibit **gradual** rather than **discrete** transitions (Whittaker, 1967; Økland, 1990).</li>
+    <li><strong>Multidimensional Landscape Structure:</strong> The **interaction of landforms, biodiversity, and human activities** makes classification non-trivial (Zonneveld, 1989; Forman & Godron, 1986).</li>
+  </ul>
 
-# View the structure of the intersected data
-head(intersected_data)</code></pre>
-<pre><code>Simple feature collection with 1 feature and 31 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: 80.34765 ymin: 28.72094 xmax: 80.38773 ymax: 28.76198
-Geodetic CRS:  WGS 84
-# A tibble: 1 × 32
-     WDPAID WDPA_PID  PA_DEF NAME  ORIG_NAME DESIG DESIG_ENG DESIG_TYPE IUCN_CAT
-      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;   
-1 555569941 555569941 1      Sukl… शुक्लाफाँटा… मध्यव… Wildlife… National   VI      
-# ℹ 23 more variables: INT_CRIT &lt;chr&gt;, MARINE &lt;chr&gt;, REP_M_AREA &lt;dbl&gt;,
-#   GIS_M_AREA &lt;dbl&gt;, REP_AREA &lt;dbl&gt;, GIS_AREA &lt;dbl&gt;, NO_TAKE &lt;chr&gt;,
-#   NO_TK_AREA &lt;dbl&gt;, STATUS &lt;chr&gt;, STATUS_YR &lt;int&gt;, GOV_TYPE &lt;chr&gt;,
-#   OWN_TYPE &lt;chr&gt;, MANG_AUTH &lt;chr&gt;, MANG_PLAN &lt;chr&gt;, VERIF &lt;chr&gt;,
-#   METADATAID &lt;int&gt;, SUB_LOC &lt;chr&gt;, PARENT_ISO &lt;chr&gt;, ISO3 &lt;chr&gt;,
-#   SUPP_INFO &lt;chr&gt;, CONS_OBJ &lt;chr&gt;, NAME.1 &lt;chr&gt;, geom &lt;MULTIPOLYGON [°]&gt;</code></pre>
-<pre class="r"><code># From the head() function, it is clear that the intersection function worked fine
-# Now, lets plot the intersected area
-plot(intersected_data[1],
-     col = &quot;red&quot;,
-     pch = 16,
-     main = &quot;Protected areas within Sreepur&quot;)</code></pre>
-<p><img src="figure/What_is_Landscape_Characterisation.Rmd/intersection-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-intersection-1">
-Past versions of intersection-1.png
-</button>
-</p>
-<div id="fig-intersection-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/What_is_Landscape_Characterisation.Rmd/intersection-1.png" target="_blank">3978bc8</a>
-</td>
-<td>
-Desmond Lartey
-</td>
-<td>
-2025-02-28
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Here, <em>st_intersection()</em> computes the geometric intersection
-of two spatial datasets ( <em>spr</em> and <em>wdpa</em>), retaining
-only the overlapping portions.</p>
-</div>
-<div id="area-computation" class="section level2">
-<h2><strong>Area computation</strong></h2>
-<p>The <em>sf</em> package makes it easy to compute the area of spatial
-features within an sf object. Area computation is particularly useful
-for polygons, such as determining the size of administrative regions,
-lakes, or land parcels. The <strong>st_area()</strong> function is used
-to calculate the area of each geometry in an sf object. By default, the
-area is computed in the unit of the CRS (coordinate reference system) of
-the data.</p>
-<pre class="r"><code># Compute the area of the intersected data of wdpa and sreepur
-st_area(intersected_data)</code></pre>
-<pre><code>69422.06 [m^2]</code></pre>
-<pre class="r"><code># Now, lets compute the area of sreepur 
-st_area(spr)</code></pre>
-<pre><code>55613977 [m^2]</code></pre>
-<pre class="r"><code># Also, check the area of Kanchanpur district
-st_area(kpr)</code></pre>
-<pre><code>Units: [m^2]
- [1]  73895607  24696276  32223907 101961917  90376492  24642977 121915343
- [8]  25452382 165351541  28876857 171357287  37749257  42644436  81013967
-[15]  39162470  30053069 360362343  35356757  55613977  57692908  19506734</code></pre>
-<pre class="r"><code># Since, there are 21 VDCs in kanchanpur district, we got the area of each polygons
-# Let&#39;s compute the total area of kanchanpur district using pipeline from dplyr and sum() function
-st_area(kpr) %&gt;% 
-  sum()</code></pre>
-<pre><code>1619906505 [m^2]</code></pre>
-<pre class="r"><code># All the areas displayed above are in square meters, lets convert them to square kilometers
-st_area(kpr) %&gt;% 
-  sum() %&gt;%
-  as.numeric()/1e6</code></pre>
-<pre><code>[1] 1619.907</code></pre>
-</div>
-<div id="basic-vector-operations" class="section level2">
-<h2><strong>Basic Vector Operations</strong></h2>
-<p>In addition to viewing, subsetting, buffer creation, intersection,
-and area computation, here are other basic vector operations commonly
-used in Applied desirmed Framework:</p>
-<div id="union" class="section level3">
-<h3><strong>Union</strong></h3>
-<p>Combines two or more geometries into a single geometry using function
-<em>st_union()</em>.</p>
-<pre class="r"><code># we already have Sreepur gpkg loaded as spr, lets subset one more polygon from kanchanpur district
-# subset polygon with Name: Tribhuwanbasti
-subset_data &lt;- kpr %&gt;%
-  dplyr::filter(NAME == &quot;Tribhuwanbasti&quot;)
+  <p>
+    These issues suggest that for DesirMED WP4.1, an **integrated approach** is required—one that combines biophysical data, 
+    socio-economic insights, and participatory methodologies.
+  </p>
 
-# combine both geometries
-union_data &lt;- 
-  st_union(subset_data, spr)
+  <h3 style="color: #006699;">3. The DesirMED Perspective: A Pragmatic and Fit-for-Purpose Approach</h3>
+  <p>
+    Given the challenges identified in the literature, **Task 4.1** of DesirMED must develop a landscape characterization approach that is:
+  </p>
 
-# plot the union data using library &#39;ggplot2&#39;
-library(ggplot2)
-ggplot() +
-  geom_sf(data = union_data, fill = &quot;cyan&quot;, color = &quot;magenta&quot;, alpha = 0.5) +
-  theme_minimal() +
-  ggtitle(&quot;Combined geometries&quot;)</code></pre>
-<p><img src="figure/What_is_Landscape_Characterisation.Rmd/union-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-union-1">
-Past versions of union-1.png
-</button>
-</p>
-<div id="fig-union-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/What_is_Landscape_Characterisation.Rmd/union-1.png" target="_blank">3978bc8</a>
-</td>
-<td>
-Desmond Lartey
-</td>
-<td>
-2025-02-28
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><strong>ggplot2</strong> is a popular and powerful data visualization
-package in R, part of the tidyverse ecosystem. It implements the grammar
-of graphics, a systematic approach to building plots by layering
-components like data, aesthetics, geometric objects, and scales.</p>
-<p>Key features include its flexibility to create complex, multi-layered
-visualizations, support for a wide range of plot types (e.g., scatter
-plots, bar charts, maps, and more), and its ability to handle large
-datasets seamlessly. The syntax is intuitive and encourages a
-declarative approach to visualization, where you specify what you want
-to see rather than how to draw it.</p>
-</div>
-<div id="difference" class="section level3">
-<h3><strong>Difference</strong></h3>
-<p>Computes the difference between two geometries (what’s left after
-subtracting one from another) using <em>st_difference()</em>
-function.</p>
-<pre class="r"><code># compute the difference between original kanchanpur data and union data
-diff &lt;- 
-  st_difference(kpr, union_data)
+  <ul>
+    <li><strong>Scientifically rigorous:</strong> Aligning with observer-independent methodologies using **remote sensing and GIS-based classification**.</li>
+    <li><strong>Operationally pragmatic:</strong> Ensuring applicability for **NbS implementation and upscaling** across Mediterranean landscapes.</li>
+    <li><strong>Policy-aligned:</strong> Integrating principles from the <a href="https://www.coe.int/en/web/landscape" target="_blank">European Landscape Convention</a> and EU biodiversity strategies.</li>
+  </ul>
 
-# Plot the geometry difference
-plot(diff[1],
-     col = &quot;cyan&quot;,
-     border = &quot;black&quot;,
-     main = &quot;Resulting polygons&quot;)</code></pre>
-<p><img src="figure/What_is_Landscape_Characterisation.Rmd/difference-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-difference-1">
-Past versions of difference-1.png
-</button>
-</p>
-<div id="fig-difference-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/What_is_Landscape_Characterisation.Rmd/difference-1.png" target="_blank">3978bc8</a>
-</td>
-<td>
-Desmond Lartey
-</td>
-<td>
-2025-02-28
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>We can see from the plot above that, the resulting sf object after
-using <em>st_difference()</em> function excludes two polygons
-i.e. Sreepur and Tribhuwanbasti.</p>
-</div>
-<div id="centroid-calculation" class="section level3">
-<h3><strong>Centroid Calculation</strong></h3>
-<p>Computes the centroid (geometric center) of a geometry using
-<em>st_centroid()</em> function.</p>
-<pre class="r"><code># compute the centroid of original kanchanpur data
-centroids &lt;- 
-  st_centroid(kpr)
+  <p>
+    Specifically, **landscape archetypes** will be created using land cover datasets from **CORINE (2012, 2018)**, 
+    reclassified according to biophysical, social, and governance dimensions. 
+    This structured **landscape typology** will serve as a **decision-support tool** for climate resilience planning.
+  </p>
 
-# View centroids
-head(centroids)</code></pre>
-<pre><code>Simple feature collection with 6 features and 1 field
-Geometry type: POINT
-Dimension:     XY
-Bounding box:  xmin: 80.0846 ymin: 28.70415 xmax: 80.48038 ymax: 28.99553
-Geodetic CRS:  WGS 84
-# A tibble: 6 × 2
-  NAME                        geom
-  &lt;chr&gt;                &lt;POINT [°]&gt;
-1 BaisiBichawa (80.48038 28.70415)
-2 Beldandi     (80.27784 28.77144)
-3 Chandani     (80.08745 28.92563)
-4 Daijee       (80.29327 28.99553)
-5 Dekhatbhuli  (80.39995 28.81342)
-6 Dodhara       (80.0846 28.85747)</code></pre>
-<p>We can see from the data above that centroids have been computed for
-all the polygons.</p>
-</div>
-<div id="bounding-box" class="section level3">
-<h3><strong>Bounding Box</strong></h3>
-<p>Extracts the bounding box (minimum enclosing rectangle) of a geometry
-using function <em>st_bbox()</em>.</p>
-<pre class="r"><code># extract the bounding box of original kanchanpur data
-bbox &lt;- 
-  st_bbox(kpr)
+  <h3 style="color: #006699;">4. Key Lessons from the Literature</h3>
+  <p>
+    A synthesis of existing research offers the following insights:
+  </p>
 
-# View bounding box
-head(bbox)</code></pre>
-<pre><code>    xmin     ymin     xmax     ymax 
-80.06014 28.55172 80.56110 29.13732 </code></pre>
-</div>
-<div id="length-computation" class="section level3">
-<h3><strong>Length Computation</strong></h3>
-<p>Computes the length of lines using <em>st_length()</em> function or
-perimeters of polygons using <em>st_perimeter()</em> function.</p>
-<pre class="r"><code># compute the perimeter of Sreepur data
-perimeter &lt;- 
-  st_perimeter(spr)
+  <ul>
+    <li><strong>Landscape character assessment (LCA) is crucial for long-term land management.</strong> Policy frameworks such as the 
+      <a href="https://www.coe.int/en/web/landscape" target="_blank">ELC</a> promote **participatory and adaptive** characterization strategies (Swanwick, 2002; Antrop, 2000).</li>
+    <li><strong>Observer independence is critical.</strong> The shift toward **statistical and GIS-based classification** is essential for ensuring consistency (Brabyn, 2009).</li>
+    <li><strong>NbS implementation requires a landscape-scale approach.</strong> Spatially explicit classifications must align with **ecosystem service provisioning** (Plieninger et al., 2015).</li>
+  </ul>
 
-# View perimeter
-perimeter</code></pre>
-<pre><code>43591.21 [m]</code></pre>
-<p>In order to compute length of the line object, we will do some
-workaround here.</p>
-<pre class="r"><code># convert polygon to line
-polygon_as_line &lt;- 
-  st_cast(spr, &quot;MULTILINESTRING&quot;)
+  <p>
+    These findings reinforce the need for a **hybrid methodology**, where **data-driven** classification is complemented by 
+    **local stakeholder engagement** to ensure practical relevance.
+  </p>
 
-# Calculate perimeter using st_length() function
-perimeter &lt;- 
-  st_length(polygon_as_line)
-  
-# View perimeter
-perimeter</code></pre>
-<pre><code>43591.21 [m]</code></pre>
-<p>Using both methods, we obtain the same result for the perimeter of
-the polygon. Choose the method you are most comfortable with.</p>
-</div>
-<div id="reprojectiontransformation" class="section level3">
-<h3><strong>Reprojection/Transformation</strong></h3>
-<p>Changes the Coordinate Reference System (CRS) of a spatial object.
-Use function <em>st_transform()</em>.</p>
-<pre class="r"><code># Our original Kanchanpur data is in WGS84 
-# Change CRS to NAD83
-reprojected_data &lt;- 
-  st_transform(kpr, crs = 4269)
+  <p>
+    To ensure that **landscape characterization** serves as a foundation for **Nature-Based Solutions (NbS) upscaling**, we propose a structured classification framework 
+    comprising three key dimensions: <strong>Biophysical, Socio-Economic, and Governance Domains</strong>. This multi-dimensional approach aligns with 
+    established methodologies in <a href="https://www.sciencedirect.com/science/article/pii/S0264837717314072" target="_blank">Simensen et al. (2018)</a>, 
+    <a href="https://doi.org/10.1016/j.landusepol.2018.04.022" target="_blank">Wascher (2005)</a>, and 
+    <a href="https://doi.org/10.1016/j.ecolecon.2006.09.018" target="_blank">Plieninger et al. (2015)</a>.
+  </p>
 
-# Retrieve the updated CRS
-st_crs(reprojected_data)</code></pre>
-<pre><code>Coordinate Reference System:
-  User input: EPSG:4269 
-  wkt:
-GEOGCRS[&quot;NAD83&quot;,
-    DATUM[&quot;North American Datum 1983&quot;,
-        ELLIPSOID[&quot;GRS 1980&quot;,6378137,298.257222101,
-            LENGTHUNIT[&quot;metre&quot;,1]]],
-    PRIMEM[&quot;Greenwich&quot;,0,
-        ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
-    CS[ellipsoidal,2],
-        AXIS[&quot;geodetic latitude (Lat)&quot;,north,
-            ORDER[1],
-            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
-        AXIS[&quot;geodetic longitude (Lon)&quot;,east,
-            ORDER[2],
-            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
-    USAGE[
-        SCOPE[&quot;Geodesy.&quot;],
-        AREA[&quot;North America - onshore and offshore: Canada - Alberta; British Columbia; Manitoba; New Brunswick; Newfoundland and Labrador; Northwest Territories; Nova Scotia; Nunavut; Ontario; Prince Edward Island; Quebec; Saskatchewan; Yukon. Puerto Rico. United States (USA) - Alabama; Alaska; Arizona; Arkansas; California; Colorado; Connecticut; Delaware; Florida; Georgia; Hawaii; Idaho; Illinois; Indiana; Iowa; Kansas; Kentucky; Louisiana; Maine; Maryland; Massachusetts; Michigan; Minnesota; Mississippi; Missouri; Montana; Nebraska; Nevada; New Hampshire; New Jersey; New Mexico; New York; North Carolina; North Dakota; Ohio; Oklahoma; Oregon; Pennsylvania; Rhode Island; South Carolina; South Dakota; Tennessee; Texas; Utah; Vermont; Virginia; Washington; West Virginia; Wisconsin; Wyoming. US Virgin Islands. British Virgin Islands.&quot;],
-        BBOX[14.92,167.65,86.45,-40.73]],
-    ID[&quot;EPSG&quot;,4269]]</code></pre>
-</div>
-<div id="distance-calculation" class="section level3">
-<h3><strong>Distance Calculation</strong></h3>
-<p>Measures the distance between geometries.</p>
-<pre class="r"><code># compute distance between sreepur and Tribhuwanbasti polygon
-distances &lt;- 
-  st_distance(spr, subset_data)
+  <h3 style="color: #006699;">1. Biophysical Domain</h3>
+  <p>
+    The **biophysical dimension** encompasses landscape structures and ecological systems that influence the spatial variability of land cover. 
+    Existing methodologies from <a href="https://www.coe.int/en/web/landscape" target="_blank">European Landscape Convention (ELC)</a> and 
+    <a href="https://www.sciencedirect.com/science/article/pii/S0264837717314072" target="_blank">Erikstad et al. (2015)</a> highlight the need to incorporate 
+    <strong>physiographic, hydrological, and biodiversity attributes</strong>.
+  </p>
+  <ul>
+    <li><strong>Landforms:</strong> Elevation, slope, and geomorphology (Bastian, 2000).</li>
+    <li><strong>Hydrology:</strong> Rivers, wetlands, groundwater recharge areas (Hazeu et al., 2011).</li>
+    <li><strong>Soil and Geology:</strong> Soil types, permeability, erosion sensitivity (Chuman & Romportl, 2010).</li>
+    <li><strong>Vegetation and Land Cover:</strong> Forest types, agricultural landscapes, natural habitats (Meeus, 1995; Mücher et al., 2010).</li>
+    <li><strong>Climate and Bioclimatic Zones:</strong> Temperature and precipitation variability affecting landscape typology (Fňukalová & Romportl, 2014).</li>
+  </ul>
 
-# View distance
-distances</code></pre>
-<pre><code>Units: [m]
-         [,1]
-[1,] 4522.424</code></pre>
-<p>So, the distance between sreepur and Tribhuwanbasti is ~4523
-meters.</p>
-</div>
-<div id="sampling-points" class="section level3">
-<h3><strong>Sampling Points</strong></h3>
-<p>Generates random or regular points within a geometry.</p>
-<pre class="r"><code># Generate 100 sampling points within Sreepur polygon
-sampled_points &lt;- 
-  st_sample(spr, size = 100, type = &quot;random&quot;)
+  <h3 style="color: #006699;">2. Socio-Economic Domain</h3>
+  <p>
+    Socio-economic factors play a pivotal role in shaping landscape evolution. While some methodologies emphasize **land use and economic activity**, 
+    others integrate **perceptual and cultural dimensions** (<a href="https://doi.org/10.1016/j.landusepol.2018.04.022" target="_blank">Swanwick, 2002</a>).
+  </p>
+  <ul>
+    <li><strong>Land Use and Economic Activity:</strong> Urbanization, agriculture, tourism, and industry (Pinto-Correia et al., 2003).</li>
+    <li><strong>Infrastructure and Accessibility:</strong> Road networks, energy infrastructure, connectivity (Warnock & Griffiths, 2014).</li>
+    <li><strong>Demographics and Settlements:</strong> Population density, rural vs. urban landscapes (Xie et al., 2004).</li>
+    <li><strong>Cultural and Historical Landscapes:</strong> Heritage sites, traditional land management systems (Raymond et al., 2015).</li>
+    <li><strong>Ecosystem Services and Human Well-being:</strong> Recreation, aesthetic value, provisioning services (Plieninger et al., 2016).</li>
+  </ul>
 
-# Plot the sampled points within sreepur
-ggplot() +
-  geom_sf(data = spr, fill = &quot;lightblue&quot;, color = &quot;magenta&quot;, alpha = 0.5) +
-  geom_sf(data = sampled_points, color = &quot;red&quot;, pch = 16) +
-  theme_minimal() +
-  ggtitle(&quot;Sampling points (Sreepur)&quot;)</code></pre>
-<p><img src="figure/What_is_Landscape_Characterisation.Rmd/sample-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sample-1">
-Past versions of sample-1.png
-</button>
-</p>
-<div id="fig-sample-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/3978bc8c1de9449cf2231628a2c1303ba5708d2f/docs/figure/What_is_Landscape_Characterisation.Rmd/sample-1.png" target="_blank">3978bc8</a>
-</td>
-<td>
-Desmond Lartey
-</td>
-<td>
-2025-02-28
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="saving-data-to-file" class="section level3">
-<h3><strong>Saving Data to file</strong></h3>
-<p>To save vector data to a file in R using the sf package, we can use
-the <strong>st_write()</strong> function. This function allows us to
-write spatial data to various formats, including Shapefile, GeoPackage,
-GeoJSON, and more.</p>
-<p>Exporting data every time I knit the R Markdown document is tiresome.
-Therefore, please remember to remove the <strong>#</strong> from the
-script section and provide the absolute path where you want to
-export/save the sf object. Here’s a basic example of how to save vector
-data:</p>
-<pre class="r"><code># Assuming &#39;vector_data&#39; is your sf object (e.g., a shapefile, GeoJSON, etc.)
+  <h3 style="color: #006699;">3. Governance Domain</h3>
+  <p>
+    Effective landscape management depends on **policy frameworks, institutional arrangements, and participatory governance**. 
+    The **European Landscape Convention (ELC)** advocates for a governance-driven approach to **integrated landscape assessment** (<a href="https://www.coe.int/en/web/landscape" target="_blank">Council of Europe, 2000</a>).
+  </p>
+  <ul>
+    <li><strong>Policy and Regulatory Frameworks:</strong> National and EU directives on landscape protection (Mücher et al., 2003).</li>
+    <li><strong>Ownership and Land Tenure:</strong> Public vs. private land governance structures (Bunce et al., 1996).</li>
+    <li><strong>Environmental Protection and Conservation:</strong> Protected areas, restoration programs, NbS planning (Nogué et al., 2016).</li>
+    <li><strong>Stakeholder Involvement:</strong> Participatory governance, local community engagement (Van Eetvelde & Antrop, 2009).</li>
+  </ul>
 
-# Save to a shapefile
-# st_write(vector_data, &quot;path/to/output_file.shp&quot;)
+  <h3 style="color: #006699;">4. Why This Approach is Fit for Purpose in DesirMED WP4.1</h3>
+  <p>
+    The multidimensional framework provides an **integrated characterization of landscapes**, ensuring that NbS interventions are:
+  </p>
+  <ul>
+    <li><strong>Scientifically Grounded:</strong> Aligns with spatial classification principles used in global landscape studies (<a href="https://doi.org/10.1016/j.landusepol.2018.04.022" target="_blank">Simensen et al., 2018</a>).</li>
+    <li><strong>Operationally Scalable:</strong> Supports NbS upscaling and cross-boundary governance applications (<a href="https://www.sciencedirect.com/science/article/pii/S0264837717314072" target="_blank">Erikstad et al., 2015</a>).</li>
+    <li><strong>Policy-Relevant:</strong> Integrates EU policies for climate resilience and biodiversity conservation (<a href="https://www.coe.int/en/web/landscape" target="_blank">Council of Europe, 2000</a>).</li>
+  </ul>
 
-# Save to a GeoPackage
-# st_write(vector_data, &quot;path/to/output_file.gpkg&quot;)
+  <p>
+    The adoption of this framework within **Task 4.1** ensures that landscape characterization is not only **a scientific exercise** but also 
+    **a strategic tool for decision-making**, shaping sustainable landscape management across Mediterranean regions.
+  </p>
 
-# Save to a GeoJSON file
-# st_write(vector_data, &quot;path/to/output_file.geojson&quot;)</code></pre>
-<p><strong><em>For this tutorial, this concludes the coverage of vector
-data operations. If you would like to explore additional operations,
-examples, or need clarification on any of the steps covered, please
-visit the GitHub repository: <a
-href="https://github.com/deltares-desirmed/nbs-workflow">nbs-workflow</a> and feel free
-to open an issue.</em></strong></p>
-<br>
-<p>
-<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
-<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-Session information
-</button>
-</p>
+  <p><em>For further reading:</em></p>
+  <ul>
+    <li><a href="https://www.sciencedirect.com/science/article/pii/S0264837717314072" target="_blank">Simensen et al. (2018) – Methods for Landscape Characterization</a></li>
+    <li><a href="https://www.coe.int/en/web/landscape" target="_blank">European Landscape Convention (ELC)</a></li>
+    <li><a href="https://doi.org/10.1016/j.landusepol.2018.04.022" target="_blank">Landscape Typologies and Observer Independence</a></li>
+  </ul>
+</section>
+
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.4.0 (2024-04-24 ucrt)
