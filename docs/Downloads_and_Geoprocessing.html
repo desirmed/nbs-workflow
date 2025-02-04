@@ -1646,6 +1646,120 @@ print('Workflow completed successfully.');</code></pre>
 <p>At this stage, the habitat classification workflow is finalized and ready for application.</p>
 
 
+<h3><strong>Eco-EUNIS Value Map</strong></h3>
+<p>
+    Understanding habitats requires more than just classification—it is essential to **assess their ecological value** 
+    to support **nature-based solutions (NbS), resilience strategies, and conservation planning** (<a href="https://doi.org/10.1016/j.ecoser.2010.09.003" target="_blank">De Groot et al., 2010</a>).  
+    The Eco-EUNIS Value Map builds upon **existing EUNIS habitat datasets** but supplements them with **the Flemish Biological Valuation Map (BWK)**, 
+    which provides **spatial ecological valuation insights**.
+</p>
+
+
+<p>
+    Ecological valuation methods have been extensively studied for **biodiversity conservation** and **land-use planning** 
+    (<a href="https://doi.org/10.1016/j.landusepol.2018.04.022" target="_blank">Simensen et al., 2018</a>).  
+    The **European Landscape Convention (ELC)** (<a href="https://www.coe.int/en/web/landscape" target="_blank">Council of Europe, 2000</a>)  
+    emphasizes the **need for spatially explicit ecological characterization**. The integration of **habitat mapping** 
+    with **valuation frameworks** ensures that planners can prioritize landscapes based on their **functional importance**.
+</p>
+
+<h4><strong>Data Sources and Technical Descriptions</strong></h4>
+<p>
+    The Eco-EUNIS Value Map is created using two primary datasets:
+</p>
+<ul>
+    <li><a href="https://eunis.eea.europa.eu/" target="_blank"><strong>EUNIS Habitat Data (2023)</strong></a>:  
+        A standardized dataset **classifying European habitats** based on **biophysical, ecological, and socio-economic characteristics**.</li>
+    <li><a href="https://www.vlaanderen.be/datavindplaats/catalogus/biologische-waarderingskaart-en-natura-2000-habitatkaart-toestand-2023" target="_blank"><strong>Flemish Biological Valuation Map (BWK)</strong></a>:  
+        A high-resolution spatial dataset **mapping biodiversity values** across **Flanders**.</li>
+</ul>
+<p>
+    While EUNIS provides a **comprehensive typology**, it does not include **detailed valuation scores**.  
+    The BWK dataset helps **fill this gap** by assigning **ecological value classes** based on:
+</p>
+<ul>
+    <li><strong>Habitat richness & diversity</strong></li>
+    <li><strong>Presence of key fauna & flora</strong></li>
+    <li><strong>Connectivity & ecological corridors</strong></li>
+    <li><strong>Environmental pressures & land-use intensity</strong></li>
+</ul>
+
+<h4><strong>Methodology: Creating the Eco-EUNIS Value Map</strong></h4>
+<p>
+    The process involves **geoprocessing techniques** to integrate EUNIS with BWK valuation scores:
+</p>
+<ol>
+    <li><strong>Data Preprocessing:</strong> Convert datasets to a **common projection (EPSG: 3035)**.</li>
+    <li><strong>Spatial Overlay:</strong> Use **spatial joins** to assign BWK valuation to EUNIS habitat polygons.</li>
+    <li><strong>Classification:</strong> Normalize valuation into a **standard 1-5 scale**.</li>
+    <li><strong>Visualization:</strong> Apply **symbology based on value classes**.</li>
+</ol>
+
+<p><em>Screenshot Placeholder: Data Processing Workflow</em></p>
+
+<h4><strong>Data Access and API Integration</strong></h4>
+<p>
+    The datasets can be accessed via **Flemish Government APIs**:
+</p>
+<ul>
+    <li><a href="https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9fffedd9-5076-4310-a366-198947717725" target="_blank">Metadata Catalog</a> – Dataset descriptions.</li>
+    <li><a href="https://www.geopunt.be/catalogus" target="_blank">Geopunt API</a> – Access for automated downloads.</li>
+</ul>
+
+<h5><strong>Steps to Load Data in QGIS</strong></h5>
+<ol>
+    <li>Open **QGIS** and go to <em>Layer → Data Source Manager → WMS/WMTS</em>.</li>
+    <li>Click **"New"**, enter the API URL, and load the **BWK layers**.</li>
+    <li>Apply **symbology using an SLD file**.</li>
+</ol>
+
+<p><em>Screenshot Placeholder: QGIS API Integration</em></p>
+
+<h5><strong>Steps to Load Data in ArcGIS Pro</strong></h5>
+<ol>
+    <li>Go to **Insert → Connections → Server → Add WMS Server**.</li>
+    <li>Enter the Flemish **BWK WMS API endpoint**.</li>
+    <li>Drag the loaded WMS layers onto the **Map panel**.</li>
+    <li>Apply **LYR symbology files**.</li>
+</ol>
+
+<p><em>Screenshot Placeholder: ArcGIS Pro API Integration</em></p>
+
+<h4><strong>Python Script for Automated Data Download</strong></h4>
+<p>
+    To streamline retrieval, use the following **Python script**:
+</p>
+
+<pre>
+import requests
+import geopandas as gpd
+
+# API Endpoint for BWK Data
+bwk_api_url = "https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9fffedd9-5076-4310-a366-198947717725"
+
+# Download Data
+response = requests.get(bwk_api_url)
+if response.status_code == 200:
+with open("BWK_data.zip", "wb") as file:
+    file.write(response.content)
+print("Download successful. Extract and load in QGIS/ArcGIS.")
+else:
+print("Failed to download data.")
+</pre>
+
+<h4><strong>Conclusion and Future Applications</strong></h4>
+<p>
+    The **Eco-EUNIS Value Map** supports **biodiversity policies and nature-based solutions** by integrating **habitat mapping with valuation**.  
+    Future applications will focus on:
+</p>
+<ul>
+    <li>**AI-driven remote sensing** for **automated habitat detection**.</li>
+    <li>**Climate resilience modeling** using time-series datasets.</li>
+    <li>**Pan-European harmonization** of ecological valuation data.</li>
+</ul>
+
+
+
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.4.0 (2024-04-24 ucrt)
