@@ -1727,53 +1727,101 @@ print('Workflow completed successfully.');</code></pre>
     These classifications provide a structured approach to <strong>evaluating habitat significance</strong>, ensuring that ecological resilience is factored into <strong>planning and conservation efforts</strong>.
 </p>
 
-<h4><strong>Methodology: Creating the Eco-EUNIS Value Map</strong></h4>
+
+    <h3><strong>Data Acquisition and Processing</strong></h3>
 <p>
-    The process involves **geoprocessing techniques** to integrate EUNIS with BWK valuation scores:
-</p>
-<ol>
-    <li><strong>Data Preprocessing:</strong> Convert datasets to a **common projection (EPSG: 3035)**.</li>
-    <li><strong>Spatial Overlay:</strong> Use **spatial joins** to assign BWK valuation to EUNIS habitat polygons.</li>
-    <li><strong>Classification:</strong> Normalize valuation into a **standard 1-5 scale**.</li>
-    <li><strong>Visualization:</strong> Apply **symbology based on value classes**.</li>
-</ol>
+        The Eco-EUNIS Value Map aims to integrate **habitat classification with ecological valuation** to support 
+        **nature-based solutions (NbS)** and **landscape resilience assessments**. This is achieved by combining 
+        **EUNIS habitat data** with the **Flemish Biological Valuation Map (BWK)**.
+    </p>
 
-<p><em>Screenshot Placeholder: Data Processing Workflow</em></p>
+    <h3><strong>Exploring the Dataset Online</strong></h3>
+    <p>
+        If you want to **explore the dataset interactively**, follow these steps:
+    </p>
+    <ul>
+        <li>Go to <a href="https://www.vlaanderen.be/datavindplaats/catalogus/biologische-waarderingskaart-en-natura-2000-habitatkaart-toestand-2023" target="_blank">this webpage</a>.</li>
+        <li>Click on **"Show on Geopunt map"**. The dataset will load.</li>
+        <li>Zoom in to **5km scale** to see features appear.</li>
+        <li>Click the **Layers button** to view legend, turn layers on/off, or access more details.</li>
+        <li>To inspect an area, **click on the map**. A panel will appear showing its **ecological value**.</li>
+    </ul>
+    <p>
+        While this approach allows **basic exploration**, it does not enable **integration with EUNIS data**.  
+        To perform in-depth analysis, we need to **download the dataset** or use an **API endpoint** in GIS software.
+    </p>
 
-<h4><strong>Data Access and API Integration</strong></h4>
-<p>
-    The datasets can be accessed via **Flemish Government APIs**:
-</p>
-<ul>
-    <li><a href="https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9fffedd9-5076-4310-a366-198947717725" target="_blank">Metadata Catalog</a> – Dataset descriptions.</li>
-    <li><a href="https://www.geopunt.be/catalogus" target="_blank">Geopunt API</a> – Access for automated downloads.</li>
-</ul>
+    <h4><strong>Downloading the BWK Dataset</strong></h4>
+    <p>
+        To manually download the dataset:
+    </p>
+    <ul>
+        <li>Go to <a href="https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9fffedd9-5076-4310-a366-198947717725" target="_blank">this metadata page</a>.</li>
+        <li>Click **"Download"** and export the files as a ZIP.</li>
+        <li>Unzip the files. The dataset includes:
+            <ul>
+                <li><strong>BWK 2 Zone</strong>: Main ecological valuation dataset (Shapefile format).</li>
+                <li><strong>Habfauna & Hab3260</strong>: Additional datasets for biodiversity assessment.</li>
+                <li><strong>Metadata PDF</strong>: Important documentation about the dataset.</li>
+            </ul>
+        </li>
+    </ul>
+    <p>
+        Before proceeding with GIS analysis, **review the metadata file** to understand the dataset structure.
+    </p>
 
-<h5><strong>Steps to Load Data in QGIS</strong></h5>
-<ol>
-    <li>Open **QGIS** and go to <em>Layer → Data Source Manager → WMS/WMTS</em>.</li>
-    <li>Click **"New"**, enter the API URL, and load the **BWK layers**.</li>
-    <li>Apply **symbology using an SLD file**.</li>
-</ol>
+    <h4><strong>Loading the Data into QGIS</strong></h4>
+    <p>
+        To visualize the dataset in **QGIS**, follow these steps:
+    </p>
+    <ul>
+        <li>Open **QGIS**.</li>
+        <li>Go to **Layer → Add Vector Layer**.</li>
+        <li>Navigate to the **BWK 2 Zone Shapefile** and click **Open**.</li>
+        <li>To apply symbology, go to **Layer Properties → Symbology → Load Style**.</li>
+        <li>Select the **.lyr or .sld file** included in the ZIP.</li>
+    </ul>
+    <p><em>Screenshot Placeholder: QGIS Symbology Setup</em></p>
 
-<p><em>Screenshot Placeholder: QGIS API Integration</em></p>
+    <h4><strong>Loading the Data into ArcGIS Pro</strong></h4>
+    <p>
+        To visualize the dataset in **ArcGIS Pro**, follow these steps:
+    </p>
+    <ul>
+        <li>Open **ArcGIS Pro**.</li>
+        <li>Click **Add Data** and browse to the **BWK 2 Zone Shapefile**.</li>
+        <li>Drag and drop the layer onto the **Map panel**.</li>
+        <li>Right-click the layer, select **Symbology**, and load the **LYR file**.</li>
+    </ul>
+    <p><em>Screenshot Placeholder: ArcGIS Pro Symbology Setup</em></p>
 
-<h5><strong>Steps to Load Data in ArcGIS Pro</strong></h5>
-<ol>
-    <li>Go to **Insert → Connections → Server → Add WMS Server**.</li>
-    <li>Enter the Flemish **BWK WMS API endpoint**.</li>
-    <li>Drag the loaded WMS layers onto the **Map panel**.</li>
-    <li>Apply **LYR symbology files**.</li>
-</ol>
+    <h4><strong>Accessing the Dataset via API (WFS/WMS)</strong></h4>
+    <p>
+        Instead of downloading files, you can access the dataset via **API endpoints**:
+    </p>
+    <ul>
+        <li><strong>WMS Endpoint:</strong> <a href="https://www.geopunt.be/catalogus" target="_blank">Geopunt API</a>.</li>
+        <li><strong>WFS Endpoint:</strong> <a href="https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9fffedd9-5076-4310-a366-198947717725" target="_blank">Metadata API</a>.</li>
+    </ul>
+    
+    <h5><strong>Steps to Load WMS/WFS in QGIS</strong></h5>
+    <ul>
+        <li>Go to **Layer → Data Source Manager → WMS/WMTS**.</li>
+        <li>Click **"New"** and enter the **WMS API URL**.</li>
+        <li>Load the layers and inspect attributes.</li>
+    </ul>
+    
+    <h5><strong>Steps to Load WMS/WFS in ArcGIS Pro</strong></h5>
+    <ul>
+        <li>Go to **Insert → Connections → Server → Add WMS Server**.</li>
+        <li>Enter the **API endpoint** and add layers to the map.</li>
+    </ul>
 
-<p><em>Screenshot Placeholder: ArcGIS Pro API Integration</em></p>
-
-<h4><strong>Python Script for Automated Data Download</strong></h4>
-<p>
-    To streamline retrieval, use the following **Python script**:
-</p>
-
-<pre>
+    <h4><strong>Python Script for Automated Data Download</strong></h4>
+    <p>
+        The dataset can also be downloaded programmatically using Python:
+    </p>
+    <pre>
 import requests
 import geopandas as gpd
 
@@ -1783,12 +1831,40 @@ bwk_api_url = "https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9
 # Download Data
 response = requests.get(bwk_api_url)
 if response.status_code == 200:
-with open("BWK_data.zip", "wb") as file:
-    file.write(response.content)
-print("Download successful. Extract and load in QGIS/ArcGIS.")
+    with open("BWK_data.zip", "wb") as file:
+        file.write(response.content)
+    print("Download successful. Extract and load in QGIS/ArcGIS.")
 else:
-print("Failed to download data.")
-</pre>
+    print("Failed to download data.")
+    </pre>
+
+    <h4><strong>Integrating BWK Data with EUNIS Habitat Data</strong></h4>
+    <p>
+        Now that we have loaded the dataset, the next step is to **integrate it with EUNIS habitat data**.  
+        If you downloaded the BWK dataset manually, it is in **vector format**, so ensure that the **EUNIS dataset** is also in the same format.
+    </p>
+
+    <h5><strong>Spatial Join for Desktop GIS</strong></h5>
+    <p>
+        The best method to merge both datasets in **QGIS or ArcGIS** is **spatial join**:
+    </p>
+    <ul>
+        <li>Go to **Vector → Data Management Tools → Join Attributes by Location**.</li>
+        <li>Select **EUNIS as the target layer** and **BWK as the join layer**.</li>
+        <li>Choose **"intersects"** as the spatial operation.</li>
+        <li>Export the result as a **new dataset**.</li>
+    </ul>
+
+    <h5><strong>Cloud-Based Integration (Google Earth Engine)</strong></h5>
+    <p>
+        Given the **large file size** (100,000+ polygons), **cloud processing** is preferable.  
+        We will **upload the BWK dataset to Earth Engine** and use it alongside the **EUNIS dataset stored as an asset**.
+    </p>
+
+    <p><em>Screenshot Placeholder: Earth Engine Data Upload</em></p>
+
+
+
 
 
 
