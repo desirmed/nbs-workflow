@@ -1899,7 +1899,7 @@ else:
         <li>Define a **Region of Interest (ROI)** for analysis.</li>
     </ul>
 
-    <h4><strong>Google Earth Engine Code</strong></h4>
+    
     <p>
         The following script loads the datasets and prints basic information for validation:
     </p>
@@ -1927,7 +1927,7 @@ print("EUNIS Image Bands:", eunis.bandNames());  // Ensure correct band names
 print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
     </pre>
 
-    <h4><strong>Explanation of the Code</strong></h4>
+    
     <p>
         - The script **imports EUNIS** as a raster image and **BWK as a feature collection**.  
         - The study area is defined as a **bounding box (BBox)** for the West Flanders region.  
@@ -1963,7 +1963,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
             calculations or spatial analysis. We need to **map these categories to numerical values**.
         </p>
     
-        <h4><strong>Why Is This Important?</strong></h4>
+        
         <ul>
             <li>**Raster datasets require numeric values** for classification and analysis.</li>
             <li>**Mathematical operations (e.g., reclassification, merging) need numeric data types**.</li>
@@ -2018,7 +2018,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
             </tr>
         </table>
     
-        <h4><strong>Google Earth Engine Code</strong></h4>
+        
         <p>
             The following script **applies the mapping function to the BWK dataset**:
         </p>
@@ -2049,7 +2049,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
     print("BWK First Feature with Numeric 'EVAL_NUM':", bwkNumeric.first());
         </pre>
     
-        <h4><strong>Explanation of the Code</strong></h4>
+        
         <ul>
             <li><strong>Dictionary Mapping (bwkCategoryToNumeric)</strong>:
                 - This object defines **how text-based values ('z', 'wz', etc.) map to numeric values (7, 6, etc.)**.</li>
@@ -2105,7 +2105,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
                 <li>**Reduces processing complexity** when performing operations like overlays and classifications.</li>
             </ul>
         
-            <h4><strong>Google Earth Engine Code</strong></h4>
+            
             <p>
                 The following script converts the **BWK ecological value polygons** into a raster, using the  
                 **EVAL_NUM field** (which we created in Step 2).
@@ -2134,7 +2134,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
         print(" Reprojected BWK Raster:", bwkValues);
             </pre>
         
-            <h4><strong>Explanation of the Code</strong></h4>
+            
             <ul>
                 <li><strong><code>bwkNumeric.reduceToImage()</code></strong>:  
                     - Converts the **BWK vector polygons into a raster** using the **EVAL_NUM** field.  
@@ -2189,7 +2189,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
                     <li>🔹 Exporting the dataset allows **efficient spatial sampling**, avoiding excessive processing load.</li>
                 </ul>
             
-                <h4><strong>Google Earth Engine Code</strong></h4>
+                
                 <p>
                     The following script exports the **BWK raster dataset** so that it can be later  
                     used for **sampling and crosswalk table generation**.
@@ -2212,7 +2212,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
             });
                 </pre>
             
-                <h4><strong>Explanation of the Code</strong></h4>
+                
                 <ul>
                     <li><strong><code>Export.image.toAsset()</code></strong>:  
                         - Saves the **BWK raster dataset** as an **Earth Engine asset** for later use.</li>
@@ -2265,7 +2265,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
                         <li> Provides structured data that can be used in **spatial modeling**.</li>
                     </ul>
                 
-                    <h4><strong>Google Earth Engine Code</strong></h4>
+                    
                     <p>
                         The following script **samples raster values** at randomly generated locations  
                         and creates a **crosswalk table linking habitat types to their ecological value**.
@@ -2347,7 +2347,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
                 print(" Export Task Created: Run it manually in the 'Tasks' tab!");
                     </pre>
                 
-                    <h4><strong>Explanation of the Code</strong></h4>
+                    
                     <ul>
                         <li><strong><code>sampleRegions()</code></strong>:  
                             - Extracts **EUNIS habitat type** and **BWK ecological value** at **random points**.</li>
@@ -2397,7 +2397,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
                             <li> Allows for **interactive exploration of habitat quality**.</li>
                         </ul>
                     
-                        <h4><strong>Google Earth Engine Code</strong></h4>
+                        
                         <p>
                             The following script **renders an interactive map**  
                             with a **legend showing ecological value classifications**.
@@ -2479,7 +2479,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
                     print(" EUNIS Map Layer Added.");
                         </pre>
                     
-                        <h4><strong>Explanation of the Code</strong></h4>
+                        
                         <ul>
                             <li><strong><code>Map.addLayer()</code></strong>:  
                                 - Displays the **ecological valuation layer** on the map.</li>
