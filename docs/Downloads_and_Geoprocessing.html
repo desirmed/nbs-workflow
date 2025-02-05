@@ -2270,110 +2270,110 @@ Raster Properties:
                 and creates a **crosswalk table linking habitat types to their ecological value**.
             </p>
         
-            <pre>
-        // ===============================
-        // **STEP 5: CROSSWALK TABLE GENERATION**
-        // ===============================
-        
-        //  Load the updated raster dataset with EUNIS + BWK data
-        var eunisWithBwkUpdated = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
-        print(" Loaded Final Raster for Crosswalk Table Generation:", eunisWithBwkUpdated);
-        
-        //  Extract EUNIS and Ecological Value bands
-        var eunisBand = eunisWithBwkUpdated.select('eunis');
-        var ecoValueBand = eunisWithBwkUpdated.select('ecological_group');
-        print(" EUNIS Band:", eunisBand);
-        print(" Ecological Value Band:", ecoValueBand);
-        
-        //  Generate Random Sample Points within the Study Region
-        var samplePoints = ee.FeatureCollection.randomPoints({
-          region: region, 
-          points: 5000, // Limit to avoid exceeding feature count
-          seed: 42
-        });
-        print(" Generated Sample Points:", samplePoints);
-        
-        //  Extract EUNIS and Ecological Values at Sampled Locations
-        var sampledValues = eunisWithBwkUpdated.sampleRegions({
-          collection: samplePoints,
-          scale: 100,
-          properties: [],
-          tileScale: 4  // Optimized for large collections
-        });
-        print(" Sampled Raster Values:", sampledValues.limit(10)); // Preview first 10 rows
-        
-        //  Convert Sampled Data into a Feature Collection Table
-        var eunisMapping = ee.Dictionary(eunisNumericMapping); // Convert to EE dictionary
-        
-        var crosswalkTable = sampledValues.map(function(feature) {
-          var eunisClass = feature.get('eunis');  // Extract EUNIS class ID
-          var ecoValue = feature.get('ecological_group'); // Extract Ecological Value
-        
-          // Convert EUNIS class to a string key for dictionary lookup
-          var eunisKey = ee.Algorithms.If(eunisClass, ee.String(eunisClass), 'Unknown');
-        
-          // Ensure the key exists in the dictionary, else assign default values
-          var hasKey = eunisMapping.contains(eunisKey);
-          
-          var eunisEntry = ee.Algorithms.If(
-            hasKey, 
-            eunisMapping.get(eunisKey), 
-            ee.Dictionary({'eunisCode': 'Unknown', 'description': 'Unknown Habitat', 'color': '#808080'})
-          );
-        
-          var eunisCode = ee.String(ee.Dictionary(eunisEntry).get('eunisCode'));
-          var eunisDesc = ee.String(ee.Dictionary(eunisEntry).get('description'));
-          var eunisColor = ee.String(ee.Dictionary(eunisEntry).get('color'));
-        
-          return feature.set({
-            'EUNIS Code': eunisCode,
-            'EUNIS Habitat': eunisDesc,
-            'EUNIS Color': eunisColor,
-            'Ecological Value': ecoValue
-          });
-        });
-        
-        //  Convert to Feature Collection for Table View
-        var crosswalkFC = ee.FeatureCollection(crosswalkTable);
-        print(" Final Crosswalk Table (Sampled Pixels):", crosswalkFC.limit(10)); // Preview first 10 rows
-        
-        //  Export as a CSV for non-GIS users
-        Export.table.toDrive({
-          collection: crosswalkFC,
-          description: 'EUNIS_Ecological_Crosswalk_Sampled',
-          fileFormat: 'CSV'
-        });
-        print(" Export Task Created: Run it manually in the 'Tasks' tab!");
-            </pre>
-        
-            
-            <ul>
-                <li><strong><code>sampleRegions()</code></strong>:  
-                    - Extracts **EUNIS habitat type** and **BWK ecological value** at **random points**.</li>
-                <li><strong><code>randomPoints()</code></strong>:  
-                    - Generates **5000 random sample locations** across the study area.</li>
-                <li><strong><code>map()</code></strong>:  
-                    - Iterates through each sampled location, **retrieving habitat and ecological value**.</li>
-                <li><strong><code>Export.table.toDrive()</code></strong>:  
-                    - Exports the **final crosswalk table** as a **CSV file**.</li>
-            </ul>
-        
-            <h4><strong>Expected Output</strong></h4>
-            <p>
-                After running this script, you will find a **crosswalk table**  
-                available in Google Drive as a **CSV file**, which links:
-            </p>
-            <pre>
-            EUNIS Habitat Type → BWK Ecological Value
-            ----------------------------------------
-            Forest (T1)        → Very High (7)
-            Urban Area (J1)    → Low (2)
-            Wetland (C1)       → High (6)
-            </pre>
-        
-            
-            <p><em>(Insert screenshot of exported crosswalk CSV file here)</em></p>
-        
+<pre>
+// ===============================
+// **STEP 5: CROSSWALK TABLE GENERATION**
+// ===============================
+
+//  Load the updated raster dataset with EUNIS + BWK data
+var eunisWithBwkUpdated = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
+print(" Loaded Final Raster for Crosswalk Table Generation:", eunisWithBwkUpdated);
+
+//  Extract EUNIS and Ecological Value bands
+var eunisBand = eunisWithBwkUpdated.select('eunis');
+var ecoValueBand = eunisWithBwkUpdated.select('ecological_group');
+print(" EUNIS Band:", eunisBand);
+print(" Ecological Value Band:", ecoValueBand);
+
+//  Generate Random Sample Points within the Study Region
+var samplePoints = ee.FeatureCollection.randomPoints({
+region: region, 
+points: 5000, // Limit to avoid exceeding feature count
+seed: 42
+});
+print(" Generated Sample Points:", samplePoints);
+
+//  Extract EUNIS and Ecological Values at Sampled Locations
+var sampledValues = eunisWithBwkUpdated.sampleRegions({
+collection: samplePoints,
+scale: 100,
+properties: [],
+tileScale: 4  // Optimized for large collections
+});
+print(" Sampled Raster Values:", sampledValues.limit(10)); // Preview first 10 rows
+
+//  Convert Sampled Data into a Feature Collection Table
+var eunisMapping = ee.Dictionary(eunisNumericMapping); // Convert to EE dictionary
+
+var crosswalkTable = sampledValues.map(function(feature) {
+var eunisClass = feature.get('eunis');  // Extract EUNIS class ID
+var ecoValue = feature.get('ecological_group'); // Extract Ecological Value
+
+// Convert EUNIS class to a string key for dictionary lookup
+var eunisKey = ee.Algorithms.If(eunisClass, ee.String(eunisClass), 'Unknown');
+
+// Ensure the key exists in the dictionary, else assign default values
+var hasKey = eunisMapping.contains(eunisKey);
+
+var eunisEntry = ee.Algorithms.If(
+hasKey, 
+eunisMapping.get(eunisKey), 
+ee.Dictionary({'eunisCode': 'Unknown', 'description': 'Unknown Habitat', 'color': '#808080'})
+);
+
+var eunisCode = ee.String(ee.Dictionary(eunisEntry).get('eunisCode'));
+var eunisDesc = ee.String(ee.Dictionary(eunisEntry).get('description'));
+var eunisColor = ee.String(ee.Dictionary(eunisEntry).get('color'));
+
+return feature.set({
+'EUNIS Code': eunisCode,
+'EUNIS Habitat': eunisDesc,
+'EUNIS Color': eunisColor,
+'Ecological Value': ecoValue
+});
+});
+
+//  Convert to Feature Collection for Table View
+var crosswalkFC = ee.FeatureCollection(crosswalkTable);
+print(" Final Crosswalk Table (Sampled Pixels):", crosswalkFC.limit(10)); // Preview first 10 rows
+
+//  Export as a CSV for non-GIS users
+Export.table.toDrive({
+collection: crosswalkFC,
+description: 'EUNIS_Ecological_Crosswalk_Sampled',
+fileFormat: 'CSV'
+});
+print(" Export Task Created: Run it manually in the 'Tasks' tab!");
+</pre>
+
+
+<ul>
+    <li><strong><code>sampleRegions()</code></strong>:  
+        - Extracts **EUNIS habitat type** and **BWK ecological value** at **random points**.</li>
+    <li><strong><code>randomPoints()</code></strong>:  
+        - Generates **5000 random sample locations** across the study area.</li>
+    <li><strong><code>map()</code></strong>:  
+        - Iterates through each sampled location, **retrieving habitat and ecological value**.</li>
+    <li><strong><code>Export.table.toDrive()</code></strong>:  
+        - Exports the **final crosswalk table** as a **CSV file**.</li>
+</ul>
+
+<h4><strong>Expected Output</strong></h4>
+<p>
+    After running this script, you will find a **crosswalk table**  
+    available in Google Drive as a **CSV file**, which links:
+</p>
+<pre>
+EUNIS Habitat Type → BWK Ecological Value
+----------------------------------------
+Forest (T1)        → Very High (7)
+Urban Area (J1)    → Low (2)
+Wetland (C1)       → High (6)
+</pre>
+
+
+<p><em>(Insert screenshot of exported crosswalk CSV file here)</em></p>
+
 <h4><strong>Next Step: Visualizing the Data</strong></h4>
 <p>
     With the **crosswalk table completed**,  
