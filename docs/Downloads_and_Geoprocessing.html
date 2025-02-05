@@ -2178,7 +2178,7 @@ else:
         The following script loads the datasets and prints basic information for validation:
     </p>
 
-    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"><code>// Create a legend panel
+    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">// Create a legend panel
 // ===============================
 // **LOAD EXISTING EUNIS & BWK DATA**
 // ===============================
@@ -2199,42 +2199,42 @@ var region = ee.Geometry.BBox(2.5, 50.7, 4.0, 51.4);
 print(" EUNIS Image Properties:", eunis);
 print("EUNIS Image Bands:", eunis.bandNames());  // Ensure correct band names
 print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
-    </pre>
+    
+</pre>
 
     
-    <p>
-        - The script **imports EUNIS** as a raster image and **BWK as a feature collection**.  
-        - The study area is defined as a **bounding box (BBox)** for the West Flanders region.  
-        - The **<code>print()</code> function** helps inspect the datasets to ensure correctness before proceeding.  
-    </p>
+      <p>
+          - The script **imports EUNIS** as a raster image and **BWK as a feature collection**.  
+          - The study area is defined as a **bounding box (BBox)** for the West Flanders region.  
+          - The **<code>print()</code> function** helps inspect the datasets to ensure correctness before proceeding.  
+      </p>
 
-    <h4><strong>Expected Output</strong></h4>
-    <p>
-        When you run the script in **Google Earth Engine**, you should see:
-    </p>
-    <ul>
-        <li>A **list of bands** available in the **EUNIS raster**.</li>
-        <li>The **first feature** in the **BWK dataset**, showing its attribute fields.</li>
-        <li>A **geometry object** defining the West Flanders region.</li>
-    </ul>
+      <h4><strong>Expected Output</strong></h4>
+      <p>
+          When you run the script in **Google Earth Engine**, you should see:
+      </p>
+      <ul>
+          <li>A **list of bands** available in the **EUNIS raster**.</li>
+          <li>The **first feature** in the **BWK dataset**, showing its attribute fields.</li>
+          <li>A **geometry object** defining the West Flanders region.</li>
+      </ul>
 
-    
-    <p><em>(Insert screenshot of GEE console output here)</em></p>
+      <p><em>(Insert screenshot of GEE console output here)</em></p>
 
-    <h4><strong>Next Step</strong></h4>
-    <p>
-        Now that we have successfully loaded the datasets, the next step is to **convert BWK ecological categories into numeric values**  
-        so they can be used in geospatial calculations.
-    </p>
+  <h4><strong>Next Step</strong></h4>
+  <p>
+      Now that we have successfully loaded the datasets, the next step is to **convert BWK ecological categories into numeric values**  
+      so they can be used in geospatial calculations.
+  </p>
 
 
-    
-        <h4><strong>Step 2: Convert BWK 'EVAL' Property to Numeric Values</strong></h3>
-        
+  
+      <h4><strong>Step 2: Convert BWK 'EVAL' Property to Numeric Values</strong></h3>
+      
 <p>
-    The **BWK dataset** contains an attribute named **EVAL**, which assigns qualitative ecological values  
-    to land areas. However, these values are stored as **categorical text**, which is not suitable for raster  
-    calculations or spatial analysis. We need to **map these categories to numerical values**.
+  The **BWK dataset** contains an attribute named **EVAL**, which assigns qualitative ecological values  
+  to land areas. However, these values are stored as **categorical text**, which is not suitable for raster  
+  calculations or spatial analysis. We need to **map these categories to numerical values**.
 </p>
 
 
