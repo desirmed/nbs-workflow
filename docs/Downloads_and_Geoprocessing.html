@@ -923,11 +923,79 @@ var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatia
 
 <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
 <code>// Define the color palette for each land use class
-var landCoverClasses = {
-  11110: {color: '#d20000', description: 'Continuous urban fabric (IMD >= 80%)'},
-  11120: {color: '#f20000', description: 'Dense urban fabric (IMD >= 30-80%)'},
-  // ... Add the remaining classes here
-};
+  var landCoverClasses = {
+    11110: {color: '#d20000', description: 'Continuous urban fabric (IMD >= 80%)'},
+    11120: {color: '#f20000', description: 'Dense urban fabric (IMD >= 30-80%)'},
+    11130: {color: '#f5a18a', description: 'Low density fabric (IMD < 30%)'},
+    11210: {color: '#9862f0', description: 'Industrial, commercial, public, and military units'},
+    11220: {color: '#8748ee', description: 'Nuclear energy plants and associated land'},
+    12100: {color: '#838b9d', description: 'Road networks and associated land'},
+    12200: {color: '#404040', description: 'Railways and associated land'},
+    12310: {color: '#ffe6de', description: 'Cargo port'},
+    12320: {color: '#f0d7de', description: 'Passenger port'},
+    12330: {color: '#FF1493', description: 'Fishing port'},
+    12340: {color: '#800000', description: 'Naval port'},
+    12350: {color: '#DB7093', description: 'Marinas'},
+    12360: {color: '#9932CC', description: 'Local multi-functional harbours'},
+    12370: {color: '#8B008B', description: 'Shipyards'},
+    12400: {color: '#4B0082', description: 'Airports and associated land'},
+    13110: {color: '#966401', description: 'Mineral extraction sites'},
+    13120: {color: '#A52A2A', description: 'Dump sites'},
+    13130: {color: '#B8860B', description: 'Construction sites'},
+    13200: {color: '#D2691E', description: 'Land without current use'},
+    14000: {color: '#91d700', description: 'Green urban, sports, and leisure facilities'},
+    21100: {color: '#ffffa8', description: 'Arable irrigated and non-irrigated land'},
+    21200: {color: '#b9c151', description: 'Greenhouses'},
+    22100: {color: '#f3830b', description: 'Vineyards, fruit trees, and berry plantations'},
+    22200: {color: '#df9f00', description: 'Olive groves'},
+    23100: {color: '#ffe6a6', description: 'Annual crops associated with permanent crops'},
+    23200: {color: '#ffe64d', description: 'Complex cultivation patterns'},
+    23300: {color: '#e6cc4d', description: 'Land principally occupied by agriculture'},
+    23400: {color: '#edc69f', description: 'Agro-forestry'},
+    31100: {color: '#82be00', description: 'Natural & semi-natural broadleaved forest'},
+    31200: {color: '#82be00', description: 'Highly artificial broadleaved plantations'},
+    32100: {color: '#008000', description: 'Natural & semi-natural coniferous forest'},
+    32200: {color: '#027800', description: 'Highly artificial coniferous plantations'},
+    33100: {color: '#41a000', description: 'Natural & semi-natural mixed forest'},
+    33200: {color: '#556B2F', description: 'Highly artificial mixed plantations'},
+    34000: {color: '#a9f100', description: 'Transitional woodland and scrub'},
+    35000: {color: '#8B0000', description: 'Lines of trees and scrub'},
+    36000: {color: '#A0522D', description: 'Damaged forest'},
+    41000: {color: '#BDB76B', description: 'Managed grassland'},
+    42100: {color: '#DAA520', description: 'Semi-natural grassland'},
+    42200: {color: '#F4A460', description: 'Alpine and sub-alpine natural grassland'},
+    51000: {color: '#8B4513', description: 'Heathland and moorland'},
+    52000: {color: '#DEB887', description: 'Alpine scrub land'},
+    53000: {color: '#FFDAB9', description: 'Sclerophyllous scrubs'},
+    61100: {color: '#D2B48C', description: 'Sparse vegetation on sands'},
+    61200: {color: '#F5DEB3', description: 'Sparse vegetation on rocks'},
+    62111: {color: '#FFE4C4', description: 'Sandy beaches'},
+    62112: {color: '#FFA07A', description: 'Shingle beaches'},
+    62120: {color: '#FFD700', description: 'Dunes'},
+    62200: {color: '#FFEBCD', description: 'River banks'},
+    63110: {color: '#FAF0E6', description: 'Bare rocks and outcrops'},
+    63120: {color: '#F0E68C', description: 'Coastal cliffs'},
+    63200: {color: '#D3D3D3', description: 'Burnt areas (except burnt forest)'},
+    63300: {color: '#C0C0C0', description: 'Glaciers and perpetual snow'},
+    71100: {color: '#B0E0E6', description: 'Inland marshes'},
+    71210: {color: '#ADD8E6', description: 'Exploited peat bogs'},
+    71220: {color: '#464af8', description: 'Unexploited peat bogs'},
+    72100: {color: '#91c8f0', description: 'Salt marshes'},
+    72200: {color: '#858fa7', description: 'Salines'},
+    72300: {color: '#a2a3e3', description: 'Intertidal flats'},
+    81100: {color: '#00f1dd', description: 'Natural & semi-natural water courses'},
+    81200: {color: '#00f4cf', description: 'Highly modified water courses and canals'},
+    81300: {color: '#79ecf0', description: 'Seasonally connected water courses'},
+    82100: {color: '#82f0f0', description: 'Natural lakes'},
+    82200: {color: '#78e6e6', description: 'Reservoirs'},
+    82300: {color: '#6edcdc', description: 'Aquaculture ponds'},
+    82400: {color: '#64d2d2', description: 'Standing water bodies of extractive industrial sites'},
+    83100: {color: '#00ffa6', description: 'Lagoons'},
+    83200: {color: '#00f096', description: 'Estuaries'},
+    83300: {color: '#00e187', description: 'Marine inlets and fjords'},
+    84100: {color: '#e6f5f3', description: 'Open sea'},
+    84200: {color: '#d2e6eb', description: 'Coastal waters'}
+  };
 </code>
 </pre>
 
@@ -1157,11 +1225,103 @@ var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);</code>
 <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
 <code>// Define landscape archetypes
 var landscapeArchetypes = {
-  '1': { classes: ['11110', '11120', '11130'], color: '#636363', description: 'Urban' },
-  '2': { classes: ['12310', '12320', '12330'], color: '#969696', description: 'Coastal Urban' },
-  '3': { classes: ['13110', '13120', '13130'], color: '#cccccc', description: 'Industrial' },
-  '4': { classes: ['14000'], color: '#91d700', description: 'Recreational & Leisure Areas' },
-  '5': { classes: ['21100', '21200', '23300'], color: '#91d700', description: 'Rural (Flat Areas)' }
+// Urban: Highly urbanized areas including industrial, commercial, and residential zones.
+'1': {
+  classes: ['11110', '11120', '11130', '11210', '11220', '12100', '12200'],
+  color: '#636363',
+  description: 'Urban' // Includes continuous and dense urban fabric, low-density fabric, and industrial zones
+},
+
+// Coastal Urban: Urbanized areas near coastlines, including ports and airports.
+'2': {
+  classes: ['12310', '12320', '12330', '12340', '12350', '12360', '12370', '12400'],
+  color: '#969696',
+  description: 'Coastal Urban' // Includes cargo ports, passenger ports, fishing ports, naval ports, marinas, multifunctional harbours, shipyards, and airports
+},
+
+// Industrial: Areas heavily modified by human activity, including industrial sites and urban infrastructure.
+'3': {
+  classes: ['13110', '13120', '13130', '13200'],
+  color: '#cccccc',
+  description: 'Industrial' // Includes mineral extraction sites, dump sites, construction sites, and land without current use
+},
+
+// Recreational & Leisure Areas: Green urban spaces, parks, and leisure areas.
+'4': {
+  classes: ['14000'],
+  color: '#91d700',
+  description: 'Recreational & Leisure Areas' // Includes green urban areas and sports facilities
+},
+
+// Rural (Riparian Zone, Floodplain, Interfluvium Flat Areas): Agricultural and flat areas.
+'5': {
+  classes: ['21100', '21200', '23300', '23400'],
+  color: '#91d700',
+  description: 'Rural (Riparian Zone, Floodplain, Interfluvium Flat Areas)' // Includes arable land, greenhouses, agro-forestry, and semi-natural grasslands
+},
+
+// Rural (Hillside, Interfluvium Hilly Areas): Agricultural areas in hilly terrain.
+'6': {
+  classes: ['23100', '23200', '22200', '22100'],
+  color: '#df9f00',
+  description: 'Rural (Hillside, Interfluvium Hilly Areas)' // Includes annual crops, complex cultivation patterns, olive groves, and vineyards
+},
+
+// Forested: Predominantly forested areas with various tree species.
+'7': {
+  classes: ['31100', '31200', '31300', '32100', '32200', '33100', '33200', '34000'],
+  color: '#80ff00',
+  description: 'Forested' // Includes broad-leaved, coniferous, and mixed forests
+},
+
+// Mountainous (Hillside, Hollow/Torrent): Rugged terrains and sparsely vegetated regions.
+'8': {
+  classes: ['35000', '36000', '41000', '42100'],
+  color: '#a63603',
+  description: 'Mountainous (Hillside, Hollow/Torrent)' // Includes lines of trees, damaged forests, and sparsely vegetated areas
+},
+
+// Rural: Miscellaneous agricultural or low-density natural areas.
+'9': {
+  classes: ['42200', '51000', '52000', '53000', '61100'],
+  color: '#78c679',
+  description: 'Rural' // Includes heathland, scrubland, and sparse vegetation
+},
+
+// Coastal (Beach-Dune System, Coastal Land-Claim Areas): Sandy and reclaimed areas.
+'10': {
+  classes: ['62111', '62112', '62120', '61100'],
+  color: '#ffcc99',
+  description: 'Coastal (Beach-Dune System, Coastal Land-Claim Areas)' // Includes sandy beaches, shingle beaches, dunes, and bare rocks
+},
+
+// Coastal Rural (Estuary, Polder): Low-lying coastal and estuarine rural regions.
+'11': {
+  classes: ['62200', '63120', '63200'],
+  color: '#7fff00',
+  description: 'Coastal Rural (Estuary, Polder)' // Includes riverbanks, coastal cliffs, and burnt areas
+},
+
+// Wetlands & Marshes: Coastal and inland marshy areas.
+'12': {
+  classes: ['71100', '71210', '71220', '72100', '72200', '72300', '63300'],
+  color: '#a6e6ff',
+  description: 'Wetlands & Marshes' // Includes inland marshes, peat bogs, salt marshes, and intertidal flats
+},
+
+// Inland Water Bodies: Lakes, reservoirs, and water courses inland.
+'13': {
+  classes: ['81100', '81200', '81300', '82100', '82200', '82300', '82400'],
+  color: '#4da6ff',
+  description: 'Inland Water Bodies' // Includes lakes, reservoirs, aquaculture ponds, and water courses
+},
+
+// Marine (Subtidal Coast): Marine regions and coastal waters.
+'14': {
+  classes: ['83100', '83200', '83300', '84100', '84200'],
+  color: '#00bfff',
+  description: 'Marine (Subtidal Coast)' // Includes lagoons, estuaries, marine inlets, and coastal waters
+}
 };</code>
 </pre>
 
@@ -2110,7 +2270,7 @@ properties: {
         **EVAL_NUM field** (which we created in Step 2).
     </p>
 
-    <pre>
+    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
 // ===============================
 // **STEP 3: RASTERIZE BWK TO MATCH EUNIS RESOLUTION**
 // ===============================
@@ -2155,7 +2315,7 @@ print(" Reprojected BWK Raster:", bwkValues);
         ecological valuation score.
     </p>
 
-    <pre>
+    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
 Raster Properties:
 - Band Name: ecological_value
 - Pixel Size: Matches EUNIS raster
@@ -2194,7 +2354,7 @@ Raster Properties:
             used for **sampling and crosswalk table generation**.
         </p>
     
-        <pre>
+        <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
     // ===============================
     // **STEP 4: EXPORT BWK DATASET AS A RASTER**
     // ===============================
@@ -2232,7 +2392,7 @@ Raster Properties:
             After running this export command, you should find the **EUNIS_BWK_EcoValue_TIFF**  
             stored under **"Assets" in Google Earth Engine**.
         </p>
-        <pre>
+        <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
         projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF
         </pre>
     
@@ -2270,7 +2430,7 @@ Raster Properties:
                 and creates a **crosswalk table linking habitat types to their ecological value**.
             </p>
         
-<pre>
+<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
 // ===============================
 // **STEP 5: CROSSWALK TABLE GENERATION**
 // ===============================
@@ -2363,7 +2523,7 @@ print(" Export Task Created: Run it manually in the 'Tasks' tab!");
     After running this script, you will find a **crosswalk table**  
     available in Google Drive as a **CSV file**, which links:
 </p>
-<pre>
+<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
 EUNIS Habitat Type → BWK Ecological Value
 ----------------------------------------
 Forest (T1)        → Very High (7)
@@ -2402,7 +2562,7 @@ Wetland (C1)       → High (6)
         with a **legend showing ecological value classifications**.
     </p>
 
-    <pre>
+    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
 // ===============================
 // **STEP 6: MAP VISUALIZATION**
 // ===============================
