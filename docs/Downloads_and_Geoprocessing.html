@@ -1646,6 +1646,244 @@ print('Workflow completed successfully.');</code></pre>
 <p>At this stage, the habitat classification workflow is finalized and ready for application.</p>
 
 
+<h3><strong>Eco-EUNIS Value Map</strong></h3>
+<p>
+    Understanding habitats requires more than just classification—it is essential to <strong>assess their ecological value</strong> 
+    to support <strong>nature-based solutions (NbS), resilience strategies, and conservation planning</strong> 
+    (<a href="https://doi.org/10.1016/j.ecoser.2018.10.012" target="_blank">Gómez-Baggethun et al., 2018</a>).  
+    The Eco-EUNIS Value Map builds upon <strong>existing EUNIS habitat datasets</strong> but supplements them with <strong>the Flemish Biological Valuation Map (BWK)</strong>, 
+    which provides <strong>spatial ecological valuation insights</strong> 
+    (<a href="https://doi.org/10.1007/s10980-018-0615-0" target="_blank">Burkhard et al., 2018</a>).
+</p>
+
+<p>
+    Ecological valuation methods have been extensively studied for <strong>biodiversity conservation</strong> and <strong>land-use planning</strong> 
+    (<a href="https://doi.org/10.1016/j.landurbplan.2020.103978" target="_blank">Jacobs et al., 2020</a>).  
+    The <strong>European Landscape Convention (ELC)</strong> 
+    (<a href="https://www.coe.int/en/web/landscape" target="_blank">Council of Europe, 2000</a>)  
+    emphasizes the <strong>need for spatially explicit ecological characterization</strong>. The integration of <strong>habitat mapping</strong> 
+    with <strong>valuation frameworks</strong> ensures that planners can prioritize landscapes based on their <strong>functional importance</strong> 
+    (<a href="https://doi.org/10.1016/j.ecolind.2017.09.058" target="_blank">Schröter et al., 2017</a>).
+</p>
+
+
+<h4><strong>Data Sources and Technical Descriptions</strong></h4>
+<p>
+    The Eco-EUNIS Value Map is created using two primary datasets:
+</p>
+<ul>
+    <li><a href="https://eunis.eea.europa.eu/" target="_blank"><strong>EUNIS Habitat classification</strong></a>:  
+        A standardized dataset <strong>classifying European habitats</strong> based on <strong>biophysical, and ecological characteristics</strong>.</li>
+    <li><a href="https://www.vlaanderen.be/datavindplaats/catalogus/biologische-waarderingskaart-en-natura-2000-habitatkaart-toestand-2023" target="_blank"><strong>Flemish Biological Valuation Map (BWK)</strong></a>:  
+        A high-resolution spatial dataset <strong>mapping biodiversity values</strong> across <strong>Flanders</strong>, offering detailed insights into Natura 2000 habitat types and regionally significant biotopes.</li>
+</ul>
+<p>
+    Thanks to the Flemish Institute for Nature and Forest Research (INBO) and Digital Flanders, we can access an extensive spatial dataset that facilitates <strong>ecological valuation and resilience assessments</strong>. The integration of BWK into Eco-EUNIS enhances our ability to map ecological functions, biodiversity hotspots, and conservation priorities.
+</p>
+
+<h4><strong>Metadata Summary</strong></h4>
+<table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+    <tr style="background-color: #f2f2f2;">
+        <th style="border: 1px solid black; padding: 8px; text-align: left;">Attribute</th>
+        <th style="border: 1px solid black; padding: 8px; text-align: left;">Description</th>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Dataset Name</td>
+        <td style="border: 1px solid black; padding: 8px;">Flemish Biological Valuation Map (BWK)</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Version</td>
+        <td style="border: 1px solid black; padding: 8px;">BWK2 Version 2.2 - Status 2023</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Geographical Coverage</td>
+        <td style="border: 1px solid black; padding: 8px;">Flanders, Belgium</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Spatial Resolution</td>
+        <td style="border: 1px solid black; padding: 8px;">1:3000</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Data Owner</td>
+        <td style="border: 1px solid black; padding: 8px;">Institute for Nature and Forest Research (INBO)</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Access & Licensing</td>
+        <td style="border: 1px solid black; padding: 8px;">Publicly available (Digital Flanders)</td>
+    </tr>
+</table>
+
+<h4><strong>Ecological Zone Classification</strong></h4>
+<ul>
+    <li><strong>Biologisch minder waardevol</strong> (Biologically Less Valuable)</li>
+    <li><strong>Complex van biologisch minder waardevolle en waardevolle elementen</strong> (Complex of Less Valuable and Valuable Elements)</li>
+    <li><strong>Complex van biologisch minder waardevolle, waardevolle en zeer waardevolle elementen</strong> (Complex of Less Valuable, Valuable, and Very Valuable Elements)</li>
+    <li><strong>Complex van biologisch minder waardevolle en zeer waardevolle elementen</strong> (Complex of Less Valuable and Very Valuable Elements)</li>
+    <li><strong>Biologisch waardevol</strong> (Biologically Valuable)</li>
+    <li><strong>Complex van biologisch waardevolle en zeer waardevolle elementen</strong> (Complex of Valuable and Very Valuable Elements)</li>
+    <li><strong>Biologisch zeer waardevol</strong> (Biologically Very Valuable)</li>
+</ul>
+<p>
+    These classifications provide a structured approach to <strong>evaluating habitat significance</strong>, ensuring that ecological resilience is factored into <strong>planning and conservation efforts</strong>.
+</p>
+
+
+    <h4><strong>Data Acquisition and Processing</strong></h3>
+<p>
+        The Eco-EUNIS Value Map aims to integrate **habitat classification with ecological valuation** to support 
+        **nature-based solutions (NbS)** and **landscape resilience assessments**. This is achieved by combining 
+        **EUNIS habitat data** with the **Flemish Biological Valuation Map (BWK)**.
+    </p>
+
+    <h4><strong>Exploring the Dataset Online</strong></h3>
+    <p>
+        If you want to **explore the dataset interactively**, follow these steps:
+    </p>
+    <ul>
+        <li>Go to <a href="https://www.vlaanderen.be/datavindplaats/catalogus/biologische-waarderingskaart-en-natura-2000-habitatkaart-toestand-2023" target="_blank">this webpage</a>.</li>
+        <li>Click on **"Show on Geopunt map"**. The dataset will load.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/16.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+        <li>Zoom in to **5km scale** to see features appear.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/17.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>
+        <li>Click the **Layers button** to view legend, turn layers on/off, or access more details.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/18.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>
+        <li>To inspect an area, **click on the map**. A panel will appear showing its **ecological value**.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/19.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>
+      </ul>
+    <p>
+        While this approach allows **basic exploration**, it does not enable **integration with EUNIS data**.  
+        To perform in-depth analysis, we need to **download the dataset** or use an **API endpoint** in GIS software.
+    </p>
+
+    <h4><strong>Downloading the BWK Dataset</strong></h4>
+    <p>
+        To manually download the dataset:
+    </p>
+    <ul>
+        <li>Go to <a href="https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9fffedd9-5076-4310-a366-198947717725" target="_blank">this metadata page</a>.</li>
+        <li>Click **"Download"** and export the files as a ZIP.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/20.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+        <li>Unzip the files. The dataset includes:
+          <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/21.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+            <ul>
+                <li><strong>BWK 2 Zone</strong>: Main ecological valuation dataset (Shapefile format).</li>
+                <li><strong>Habfauna & Hab3260</strong>: Additional datasets for biodiversity assessment.</li>
+                <li><strong>Metadata PDF</strong>: Important documentation about the dataset.</li>
+            </ul>
+        </li>
+    </ul>
+    <p>
+        Before proceeding with GIS analysis, **review the metadata file** to understand the dataset structure.
+    </p>
+
+    <h4><strong>Loading the Data into QGIS</strong></h4>
+    <p>
+        To visualize the dataset in **QGIS**, follow these steps:
+    </p>
+    <ul>
+        <li>Open **QGIS**.</li>
+        <li>Go to **Layer → Add Vector Layer**.</li>
+        <li>Navigate to the **BWK 2 Zone Shapefile** and click **Open**.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/22.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+        <li>To apply symbology, go to **Layer Properties → Symbology → Load Style**.</li>
+        <li>Select the **.lyr or .sld file** included in the ZIP.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/24.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+    </ul>
+        
+  
+
+    <h4><strong>Loading the Data into ArcGIS Pro</strong></h4>
+    <p>
+        To visualize the dataset in **ArcGIS Pro**, follow these steps:
+    </p>
+    <ul>
+        <li>Open **ArcGIS Pro**.</li>
+        <li>Click **Add Data** and browse to the **BWK 2 Zone Shapefile**.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/23.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+        <li>Drag and drop the layer onto the **Map panel**.</li>
+        <li>Right-click the layer, select **Symbology**, and load the **LYR file**.</li>
+    </ul>
+    <p><em>Screenshot Placeholder: ArcGIS Pro Symbology Setup</em></p>
+
+    <h4><strong>Accessing the Dataset via API (WFS/WMS)</strong></h4>
+    <p>
+        Instead of downloading files, you can access the dataset via **API endpoints**:
+    </p>
+    <ul>
+        <li><strong>WMS Endpoint:</strong> <a href="https://www.geopunt.be/catalogus" target="_blank">Geopunt API</a>.</li>
+        <li><strong>WFS Endpoint:</strong> <a href="https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9fffedd9-5076-4310-a366-198947717725" target="_blank">Metadata API</a>.</li>
+    </ul>
+    
+    <h5><strong>Steps to Load WMS/WFS in QGIS</strong></h5>
+    <ul>
+        <li>Go to **Layer → Data Source Manager → WMS/WMTS**.</li>
+        <li>Click **"New"** and enter the **WMS API URL**.</li>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/25.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>    
+        <li>Load the layers and inspect attributes.</li>
+    </ul>
+    
+    <h5><strong>Steps to Load WMS/WFS in ArcGIS Pro</strong></h5>
+    <ul>
+        <li>Go to **Insert → Connections → Server → Add WMS Server**.</li>
+        <li>Enter the **API endpoint** and add layers to the map.</li>
+    </ul>
+
+    <h4><strong>Python Script for Automated Data Download</strong></h4>
+    <p>
+        The dataset can also be downloaded programmatically using Python:
+    </p>
+    <pre>
+import requests
+import geopandas as gpd
+
+# API Endpoint for BWK Data
+bwk_api_url = "https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/9fffedd9-5076-4310-a366-198947717725"
+
+# Download Data
+response = requests.get(bwk_api_url)
+if response.status_code == 200:
+    with open("BWK_data.zip", "wb") as file:
+        file.write(response.content)
+    print("Download successful. Extract and load in QGIS/ArcGIS.")
+else:
+    print("Failed to download data.")
+    </pre>
+
+    <h4><strong>Integrating BWK Data with EUNIS Habitat Data</strong></h4>
+    <p>
+        Now that we have loaded the dataset, the next step is to **integrate it with EUNIS habitat data**.  
+        If you downloaded the BWK dataset manually, it is in **vector format**, so ensure that the **EUNIS dataset** is also in the same format.
+    </p>
+
+    <h5><strong>Spatial Join for Desktop GIS</strong></h5>
+    <p>
+        The best method to merge both datasets in **QGIS or ArcGIS** is **spatial join**:
+    </p>
+    <ul>
+        <li>Go to **Vector → Data Management Tools → Join Attributes by Location**.</li>
+        <li>Select **EUNIS as the target layer** and **BWK as the join layer**.</li>
+        <li>Choose **"intersects"** as the spatial operation.</li>
+        <li>Export the result as a **new dataset**.</li>
+    </ul>
+    <div style="background-color: #e6f2ff; padding: 15px; border-radius: 5px; border-left: 5px solid #008cba;">
+      <strong>Note</strong>
+      <p>We <strong>do not cover this spatial operation in this guide</strong> since we want to do this in a cloud computing environment. If you want to do this you can consult other resources on how to perform a spatial join.</p>
+    </div>
+    <h5><strong>Cloud-Based Integration (Google Earth Engine)</strong></h5>
+    <p>
+        Given the **large file size** (100,000+ polygons), **cloud processing** is preferable.  
+        We will **upload the BWK dataset to Earth Engine** and use it alongside the **EUNIS dataset stored as an asset**.
+    </p>
+
+    <p><em>Screenshot Placeholder: Earth Engine Data Upload</em></p>
+
+
+
+
+
+
+
+
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.4.0 (2024-04-24 ucrt)
