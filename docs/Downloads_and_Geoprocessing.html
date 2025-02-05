@@ -2088,7 +2088,99 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
             **Rasterizing BWK to match the EUNIS resolution**.
         </p>
     
-    
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Step 3: Rasterizing BWK to Match EUNIS Resolution</title>
+        </head>
+        <body>
+        
+            <h3><strong>Step 3: Rasterizing BWK to Match EUNIS Resolution</strong></h3>
+            
+            <p>
+                The **BWK dataset** is currently in **vector format**, meaning it consists of **polygon geometries**  
+                representing different ecological valuation zones. However, to analyze this data alongside the **EUNIS  
+                habitat raster dataset**, we need to **convert BWK into a raster format**. This process is called **rasterization**.
+            </p>
+        
+            <h4><strong>Why Is Rasterization Important?</strong></h4>
+            <ul>
+                <li>**Raster data allows pixel-based spatial analysis**, making computations easier and faster.</li>
+                <li>**Ensures compatibility with the EUNIS dataset**, which is already in raster format.</li>
+                <li>**Reduces processing complexity** when performing operations like overlays and classifications.</li>
+            </ul>
+        
+            <h4><strong>Google Earth Engine Code</strong></h4>
+            <p>
+                The following script converts the **BWK ecological value polygons** into a raster, using the  
+                **EVAL_NUM field** (which we created in Step 2).
+            </p>
+        
+            <pre>
+        // ===============================
+        // **STEP 3: RASTERIZE BWK TO MATCH EUNIS RESOLUTION**
+        // ===============================
+        
+        // Convert BWK features to raster using the 'EVAL_NUM' property
+        var bwkValues = bwkNumeric.reduceToImage({
+          properties: ['EVAL_NUM'],  
+          reducer: ee.Reducer.first()  // Assigns first valid value per pixel
+        }).rename('ecological_value');
+        
+        // Debugging Print: Rasterized BWK Values
+        print("✅ Rasterized BWK Values (ecological_value):", bwkValues);
+        
+        // Align BWK raster to match EUNIS spatial resolution
+        bwkValues = bwkValues.reproject({
+          crs: eunis.projection(),  // Use EUNIS coordinate reference system
+          scale: eunis.projection().nominalScale()  // Match pixel size
+        });
+        
+        print("✅ Reprojected BWK Raster:", bwkValues);
+            </pre>
+        
+            <h4><strong>Explanation of the Code</strong></h4>
+            <ul>
+                <li><strong><code>bwkNumeric.reduceToImage()</code></strong>:  
+                    - Converts the **BWK vector polygons into a raster** using the **EVAL_NUM** field.  
+                    - Uses **<code>ee.Reducer.first()</code>** to assign the first encountered value to each pixel.</li>
+                <li><strong><code>.rename('ecological_value')</code></strong>:  
+                    - Gives the new raster band a **meaningful name (ecological_value)**.</li>
+                <li><strong><code>bwkValues.reproject()</code></strong>:  
+                    - Ensures the **BWK raster has the same coordinate reference system (CRS) and resolution as EUNIS**.</li>
+                <li><strong><code>eunis.projection()</code></strong>:  
+                    - Retrieves the **projection system of the EUNIS dataset**, ensuring alignment.</li>
+                <li><strong><code>eunis.projection().nominalScale()</code></strong>:  
+                    - Ensures the **BWK raster uses the same pixel size** as EUNIS.</li>
+            </ul>
+        
+            <h4><strong>Expected Output</strong></h4>
+            <p>
+                After running the script, BWK should be successfully **converted into a raster**.  
+                The raster should now have an **ecological_value** band, where each pixel represents an  
+                ecological valuation score.
+            </p>
+        
+            <pre>
+        Raster Properties:
+        - Band Name: ecological_value
+        - Pixel Size: Matches EUNIS raster
+        - Projection: EPSG:4326
+        - Data Type: Integer (1-7)
+            </pre>
+        
+            <h4><strong>Screenshot Placeholder</strong></h4>
+            <p><em>(Insert screenshot of the BWK raster output in GEE here)</em></p>
+        
+            <h4><strong>Next Step</strong></h4>
+            <p>
+                Now that the **BWK dataset is rasterized**, we can move to the next step:
+                **Combining the BWK raster with the EUNIS habitat raster.**
+            </p>
+        
+           
 
 
 
