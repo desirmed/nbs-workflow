@@ -1957,562 +1957,558 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
     
         <h4><strong>Step 2: Convert BWK 'EVAL' Property to Numeric Values</strong></h3>
         
+<p>
+    The **BWK dataset** contains an attribute named **EVAL**, which assigns qualitative ecological values  
+    to land areas. However, these values are stored as **categorical text**, which is not suitable for raster  
+    calculations or spatial analysis. We need to **map these categories to numerical values**.
+</p>
+
+
+<ul>
+    <li>**Raster datasets require numeric values** for classification and analysis.</li>
+    <li>**Mathematical operations (e.g., reclassification, merging) need numeric data types**.</li>
+    <li>**Ensures compatibility** between the BWK (vector) and EUNIS (raster) datasets.</li>
+</ul>
+
+<h4><strong>Ecological Value Mapping Scheme</strong></h4>
+<p>
+    We will **map the BWK categorical values to numerical equivalents** as follows:
+</p>
+
+<table border="1">
+    <tr>
+        <th>Categorical Value (EVAL)</th>
+        <th>Numerical Value (EVAL_NUM)</th>
+        <th>Ecological Meaning</th>
+    </tr>
+    <tr>
+        <td>z</td>
+        <td>7</td>
+        <td>Very High</td>
+    </tr>
+    <tr>
+        <td>wz</td>
+        <td>6</td>
+        <td>High</td>
+    </tr>
+    <tr>
+        <td>w</td>
+        <td>5</td>
+        <td>Moderate</td>
+    </tr>
+    <tr>
+        <td>mwz</td>
+        <td>4</td>
+        <td>Low-Moderate</td>
+    </tr>
+    <tr>
+        <td>mw</td>
+        <td>3</td>
+        <td>Low</td>
+    </tr>
+    <tr>
+        <td>m</td>
+        <td>2</td>
+        <td>Very Low</td>
+    </tr>
+    <tr>
+        <td>Missing / Undefined</td>
+        <td>1</td>
+        <td>Unknown</td>
+    </tr>
+</table>
+
+
+<p>
+    The following script **applies the mapping function to the BWK dataset**:
+</p>
+
+<pre>
+// ===============================
+// **STEP 2: CONVERT BWK 'EVAL' PROPERTY TO NUMERIC**
+// ===============================
+
+// Define mapping of categorical BWK values to numeric scores
+var bwkCategoryToNumeric = {
+'z': 7,  // Very High
+'wz': 6, // High
+'w': 5,  // Moderate
+'mwz': 4, // Low-Moderate
+'mw': 3,  // Low
+'m': 2    // Very Low
+};
+
+// Function to apply the mapping to BWK features
+var bwkNumeric = bwk.map(function(feature) {
+var evalValue = feature.get('EVAL');  // Get categorical value
+var numericValue = ee.Number(ee.Dictionary(bwkCategoryToNumeric).get(evalValue, 1)); // Default to 1 if missing
+return feature.set('EVAL_NUM', numericValue);
+});
+
+// Debugging Print: Sample BWK Feature with Numeric Values
+print("BWK First Feature with Numeric 'EVAL_NUM':", bwkNumeric.first());
+</pre>
+
+
+<ul>
+    <li><strong>Dictionary Mapping (bwkCategoryToNumeric)</strong>:
+        - This object defines **how text-based values ('z', 'wz', etc.) map to numeric values (7, 6, etc.)**.</li>
+    <li><strong><code>bwk.map(function(feature) {...})</code></strong>:  
+        - This function **iterates through each feature in the BWK dataset**, applying the numeric mapping.</li>
+    <li><strong><code>feature.get('EVAL')</code></strong>:  
+        - Retrieves the **existing categorical value** for each BWK feature.</li>
+    <li><strong><code>ee.Number(ee.Dictionary(bwkCategoryToNumeric).get(evalValue, 1))</code></strong>:  
+        - Converts the **text value into a number** using the dictionary.  
+        - If no match is found, it **assigns a default value of 1 (Unknown).**</li>
+    <li><strong><code>feature.set('EVAL_NUM', numericValue)</code></strong>:  
+        - Adds the new **numeric attribute (EVAL_NUM)** to each feature.</li>
+</ul>
+
+<h4><strong>Expected Output</strong></h4>
+<p>
+    After running the script, the **first feature in the BWK dataset** should now have a new property:
+</p>
+
+<pre>
+Feature {
+geometry: (Polygon)
+properties: {
+    EVAL: "w",
+    EVAL_NUM: 5  // Now in numeric format
+}
+}
+</pre>
+
+
+<p><em>(Insert screenshot of the updated BWK feature table in GEE here)</em></p>
+
+<h4><strong>Next Step</strong></h4>
+<p>
+    Now that the **BWK dataset has numeric values**, we can proceed to the next step:
+    **Rasterizing BWK to match the EUNIS resolution**.
+</p>
+
+
+
+    <h4><strong>Step 3: Rasterizing BWK to Match EUNIS Resolution</strong></h3>
+    
+    <p>
+        The **BWK dataset** is currently in **vector format**, meaning it consists of **polygon geometries**  
+        representing different ecological valuation zones. However, to analyze this data alongside the **EUNIS  
+        habitat raster dataset**, we need to **convert BWK into a raster format**. This process is called **rasterization**.
+    </p>
+
+    <h4><strong>Why Is Rasterization Important?</strong></h4>
+    <ul>
+        <li>**Raster data allows pixel-based spatial analysis**, making computations easier and faster.</li>
+        <li>**Ensures compatibility with the EUNIS dataset**, which is already in raster format.</li>
+        <li>**Reduces processing complexity** when performing operations like overlays and classifications.</li>
+    </ul>
+
+    
+    <p>
+        The following script converts the **BWK ecological value polygons** into a raster, using the  
+        **EVAL_NUM field** (which we created in Step 2).
+    </p>
+
+    <pre>
+// ===============================
+// **STEP 3: RASTERIZE BWK TO MATCH EUNIS RESOLUTION**
+// ===============================
+
+// Convert BWK features to raster using the 'EVAL_NUM' property
+var bwkValues = bwkNumeric.reduceToImage({
+  properties: ['EVAL_NUM'],  
+  reducer: ee.Reducer.first()  // Assigns first valid value per pixel
+}).rename('ecological_value');
+
+// Debugging Print: Rasterized BWK Values
+print(" Rasterized BWK Values (ecological_value):", bwkValues);
+
+// Align BWK raster to match EUNIS spatial resolution
+bwkValues = bwkValues.reproject({
+  crs: eunis.projection(),  // Use EUNIS coordinate reference system
+  scale: eunis.projection().nominalScale()  // Match pixel size
+});
+
+print(" Reprojected BWK Raster:", bwkValues);
+    </pre>
+
+    
+    <ul>
+        <li><strong><code>bwkNumeric.reduceToImage()</code></strong>:  
+            - Converts the **BWK vector polygons into a raster** using the **EVAL_NUM** field.  
+            - Uses **<code>ee.Reducer.first()</code>** to assign the first encountered value to each pixel.</li>
+        <li><strong><code>.rename('ecological_value')</code></strong>:  
+            - Gives the new raster band a **meaningful name (ecological_value)**.</li>
+        <li><strong><code>bwkValues.reproject()</code></strong>:  
+            - Ensures the **BWK raster has the same coordinate reference system (CRS) and resolution as EUNIS**.</li>
+        <li><strong><code>eunis.projection()</code></strong>:  
+            - Retrieves the **projection system of the EUNIS dataset**, ensuring alignment.</li>
+        <li><strong><code>eunis.projection().nominalScale()</code></strong>:  
+            - Ensures the **BWK raster uses the same pixel size** as EUNIS.</li>
+    </ul>
+
+    <h4><strong>Expected Output</strong></h4>
+    <p>
+        After running the script, BWK should be successfully **converted into a raster**.  
+        The raster should now have an **ecological_value** band, where each pixel represents an  
+        ecological valuation score.
+    </p>
+
+    <pre>
+Raster Properties:
+- Band Name: ecological_value
+- Pixel Size: Matches EUNIS raster
+- Projection: EPSG:4326
+- Data Type: Integer (1-7)
+    </pre>
+
+    
+    <p><em>(Insert screenshot of the BWK raster output in GEE here)</em></p>
+
+    <h4><strong>Next Step</strong></h4>
+    <p>
+        Now that the **BWK dataset is rasterized**, we can move to the next step:
+        **Combining the BWK raster with the EUNIS habitat raster.**
+    </p>
+
+    
+    
+        <h4><strong>Step 4: Exporting the BWK Dataset for Crosswalk Analysis</strong></h3>
+    
         <p>
-            The **BWK dataset** contains an attribute named **EVAL**, which assigns qualitative ecological values  
-            to land areas. However, these values are stored as **categorical text**, which is not suitable for raster  
-            calculations or spatial analysis. We need to **map these categories to numerical values**.
+            Now that we have **merged the EUNIS habitat dataset with BWK ecological values**,  
+            the next step is to **export the BWK dataset as a raster asset** in Google Earth Engine.  
         </p>
     
-        
+        <h4><strong>Why Do We Need to Export the BWK Dataset?</strong></h4>
         <ul>
-            <li>**Raster datasets require numeric values** for classification and analysis.</li>
-            <li>**Mathematical operations (e.g., reclassification, merging) need numeric data types**.</li>
-            <li>**Ensures compatibility** between the BWK (vector) and EUNIS (raster) datasets.</li>
+            <li>🔹 **Converting BWK from a feature collection to raster** ensures compatibility with raster-based analysis.</li>
+            <li>🔹 This raster will serve as the **foundation for crosswalk analysis**, where we compare **EUNIS habitat types** with **BWK ecological values**.</li>
+            <li>🔹 Exporting the dataset allows **efficient spatial sampling**, avoiding excessive processing load.</li>
         </ul>
     
-        <h4><strong>Ecological Value Mapping Scheme</strong></h4>
-        <p>
-            We will **map the BWK categorical values to numerical equivalents** as follows:
-        </p>
-    
-        <table border="1">
-            <tr>
-                <th>Categorical Value (EVAL)</th>
-                <th>Numerical Value (EVAL_NUM)</th>
-                <th>Ecological Meaning</th>
-            </tr>
-            <tr>
-                <td>z</td>
-                <td>7</td>
-                <td>Very High</td>
-            </tr>
-            <tr>
-                <td>wz</td>
-                <td>6</td>
-                <td>High</td>
-            </tr>
-            <tr>
-                <td>w</td>
-                <td>5</td>
-                <td>Moderate</td>
-            </tr>
-            <tr>
-                <td>mwz</td>
-                <td>4</td>
-                <td>Low-Moderate</td>
-            </tr>
-            <tr>
-                <td>mw</td>
-                <td>3</td>
-                <td>Low</td>
-            </tr>
-            <tr>
-                <td>m</td>
-                <td>2</td>
-                <td>Very Low</td>
-            </tr>
-            <tr>
-                <td>Missing / Undefined</td>
-                <td>1</td>
-                <td>Unknown</td>
-            </tr>
-        </table>
-    
         
         <p>
-            The following script **applies the mapping function to the BWK dataset**:
+            The following script exports the **BWK raster dataset** so that it can be later  
+            used for **sampling and crosswalk table generation**.
         </p>
     
         <pre>
     // ===============================
-    // **STEP 2: CONVERT BWK 'EVAL' PROPERTY TO NUMERIC**
+    // **STEP 4: EXPORT BWK DATASET AS A RASTER**
     // ===============================
     
-    // Define mapping of categorical BWK values to numeric scores
-    var bwkCategoryToNumeric = {
-      'z': 7,  // Very High
-      'wz': 6, // High
-      'w': 5,  // Moderate
-      'mwz': 4, // Low-Moderate
-      'mw': 3,  // Low
-      'm': 2    // Very Low
-    };
-    
-    // Function to apply the mapping to BWK features
-    var bwkNumeric = bwk.map(function(feature) {
-      var evalValue = feature.get('EVAL');  // Get categorical value
-      var numericValue = ee.Number(ee.Dictionary(bwkCategoryToNumeric).get(evalValue, 1)); // Default to 1 if missing
-      return feature.set('EVAL_NUM', numericValue);
+    // Export BWK dataset as a raster asset in Google Earth Engine
+    Export.image.toAsset({
+      image: eunisWithBwk,
+      description: 'EUNIS_BWK_EcoValue_TIFF',
+      assetId: 'projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF',
+      region: region,
+      scale: 100,
+      crs: 'EPSG:4326',
+      maxPixels: 1e13
     });
-    
-    // Debugging Print: Sample BWK Feature with Numeric Values
-    print("BWK First Feature with Numeric 'EVAL_NUM':", bwkNumeric.first());
         </pre>
     
         
         <ul>
-            <li><strong>Dictionary Mapping (bwkCategoryToNumeric)</strong>:
-                - This object defines **how text-based values ('z', 'wz', etc.) map to numeric values (7, 6, etc.)**.</li>
-            <li><strong><code>bwk.map(function(feature) {...})</code></strong>:  
-                - This function **iterates through each feature in the BWK dataset**, applying the numeric mapping.</li>
-            <li><strong><code>feature.get('EVAL')</code></strong>:  
-                - Retrieves the **existing categorical value** for each BWK feature.</li>
-            <li><strong><code>ee.Number(ee.Dictionary(bwkCategoryToNumeric).get(evalValue, 1))</code></strong>:  
-                - Converts the **text value into a number** using the dictionary.  
-                - If no match is found, it **assigns a default value of 1 (Unknown).**</li>
-            <li><strong><code>feature.set('EVAL_NUM', numericValue)</code></strong>:  
-                - Adds the new **numeric attribute (EVAL_NUM)** to each feature.</li>
+            <li><strong><code>Export.image.toAsset()</code></strong>:  
+                - Saves the **BWK raster dataset** as an **Earth Engine asset** for later use.</li>
+            <li><strong><code>image: eunisWithBwk</code></strong>:  
+                - Specifies that we are exporting **EUNIS with BWK values merged**.</li>
+            <li><strong><code>region: region</code></strong>:  
+                - Defines the **study area (West Flanders, Belgium)**.</li>
+            <li><strong><code>scale: 100</code></strong>:  
+                - Ensures that the **raster resolution** is **100 meters per pixel**.</li>
+            <li><strong><code>crs: 'EPSG:4326'</code></strong>:  
+                - Ensures a **consistent spatial reference system** (WGS84).</li>
+            <li><strong><code>maxPixels: 1e13</code></strong>:  
+                - Ensures the dataset can be processed without exceeding Earth Engine’s limits.</li>
         </ul>
     
         <h4><strong>Expected Output</strong></h4>
         <p>
-            After running the script, the **first feature in the BWK dataset** should now have a new property:
+            After running this export command, you should find the **EUNIS_BWK_EcoValue_TIFF**  
+            stored under **"Assets" in Google Earth Engine**.
         </p>
-    
         <pre>
-    Feature {
-        geometry: (Polygon)
-        properties: {
-            EVAL: "w",
-            EVAL_NUM: 5  // Now in numeric format
-        }
-    }
+        projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF
         </pre>
     
         
-        <p><em>(Insert screenshot of the updated BWK feature table in GEE here)</em></p>
+        <p><em>(Insert screenshot of Google Earth Engine asset manager with the exported dataset here)</em></p>
     
-        <h4><strong>Next Step</strong></h4>
+        <h4><strong>Next Step: Performing the Crosswalk Analysis</strong></h4>
         <p>
-            Now that the **BWK dataset has numeric values**, we can proceed to the next step:
-            **Rasterizing BWK to match the EUNIS resolution**.
+            With the **BWK dataset now available in raster format**,  
+            we can proceed to **Step 5**, where we will extract **random sample points**  
+            and generate a **crosswalk table** comparing **habitat types with ecological values**.
         </p>
-    
+
 
         
-            <h4><strong>Step 3: Rasterizing BWK to Match EUNIS Resolution</strong></h3>
-            
+            <h4><strong>Step 5: Generating a Crosswalk Table</strong></h3>
+        
             <p>
-                The **BWK dataset** is currently in **vector format**, meaning it consists of **polygon geometries**  
-                representing different ecological valuation zones. However, to analyze this data alongside the **EUNIS  
-                habitat raster dataset**, we need to **convert BWK into a raster format**. This process is called **rasterization**.
+                Now that we have the **EUNIS habitat** and **BWK ecological valuation** datasets  
+                stored as a raster asset, we can proceed with generating a **crosswalk table**  
+                that maps **habitat types to their ecological valuation**.
             </p>
         
-            <h4><strong>Why Is Rasterization Important?</strong></h4>
+            <h4><strong>Why is a Crosswalk Table Important?</strong></h4>
             <ul>
-                <li>**Raster data allows pixel-based spatial analysis**, making computations easier and faster.</li>
-                <li>**Ensures compatibility with the EUNIS dataset**, which is already in raster format.</li>
-                <li>**Reduces processing complexity** when performing operations like overlays and classifications.</li>
+                <li> Helps **quantify** the ecological value of different land cover types.</li>
+                <li> Allows for **comparative analysis** of habitat resilience and biodiversity.</li>
+                <li> Supports **nature-based solutions (NbS)** planning for climate adaptation.</li>
+                <li> Provides structured data that can be used in **spatial modeling**.</li>
             </ul>
         
             
             <p>
-                The following script converts the **BWK ecological value polygons** into a raster, using the  
-                **EVAL_NUM field** (which we created in Step 2).
+                The following script **samples raster values** at randomly generated locations  
+                and creates a **crosswalk table linking habitat types to their ecological value**.
             </p>
         
             <pre>
         // ===============================
-        // **STEP 3: RASTERIZE BWK TO MATCH EUNIS RESOLUTION**
+        // **STEP 5: CROSSWALK TABLE GENERATION**
         // ===============================
         
-        // Convert BWK features to raster using the 'EVAL_NUM' property
-        var bwkValues = bwkNumeric.reduceToImage({
-          properties: ['EVAL_NUM'],  
-          reducer: ee.Reducer.first()  // Assigns first valid value per pixel
-        }).rename('ecological_value');
+        //  Load the updated raster dataset with EUNIS + BWK data
+        var eunisWithBwkUpdated = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
+        print(" Loaded Final Raster for Crosswalk Table Generation:", eunisWithBwkUpdated);
         
-        // Debugging Print: Rasterized BWK Values
-        print(" Rasterized BWK Values (ecological_value):", bwkValues);
+        //  Extract EUNIS and Ecological Value bands
+        var eunisBand = eunisWithBwkUpdated.select('eunis');
+        var ecoValueBand = eunisWithBwkUpdated.select('ecological_group');
+        print(" EUNIS Band:", eunisBand);
+        print(" Ecological Value Band:", ecoValueBand);
         
-        // Align BWK raster to match EUNIS spatial resolution
-        bwkValues = bwkValues.reproject({
-          crs: eunis.projection(),  // Use EUNIS coordinate reference system
-          scale: eunis.projection().nominalScale()  // Match pixel size
+        //  Generate Random Sample Points within the Study Region
+        var samplePoints = ee.FeatureCollection.randomPoints({
+          region: region, 
+          points: 5000, // Limit to avoid exceeding feature count
+          seed: 42
+        });
+        print(" Generated Sample Points:", samplePoints);
+        
+        //  Extract EUNIS and Ecological Values at Sampled Locations
+        var sampledValues = eunisWithBwkUpdated.sampleRegions({
+          collection: samplePoints,
+          scale: 100,
+          properties: [],
+          tileScale: 4  // Optimized for large collections
+        });
+        print(" Sampled Raster Values:", sampledValues.limit(10)); // Preview first 10 rows
+        
+        //  Convert Sampled Data into a Feature Collection Table
+        var eunisMapping = ee.Dictionary(eunisNumericMapping); // Convert to EE dictionary
+        
+        var crosswalkTable = sampledValues.map(function(feature) {
+          var eunisClass = feature.get('eunis');  // Extract EUNIS class ID
+          var ecoValue = feature.get('ecological_group'); // Extract Ecological Value
+        
+          // Convert EUNIS class to a string key for dictionary lookup
+          var eunisKey = ee.Algorithms.If(eunisClass, ee.String(eunisClass), 'Unknown');
+        
+          // Ensure the key exists in the dictionary, else assign default values
+          var hasKey = eunisMapping.contains(eunisKey);
+          
+          var eunisEntry = ee.Algorithms.If(
+            hasKey, 
+            eunisMapping.get(eunisKey), 
+            ee.Dictionary({'eunisCode': 'Unknown', 'description': 'Unknown Habitat', 'color': '#808080'})
+          );
+        
+          var eunisCode = ee.String(ee.Dictionary(eunisEntry).get('eunisCode'));
+          var eunisDesc = ee.String(ee.Dictionary(eunisEntry).get('description'));
+          var eunisColor = ee.String(ee.Dictionary(eunisEntry).get('color'));
+        
+          return feature.set({
+            'EUNIS Code': eunisCode,
+            'EUNIS Habitat': eunisDesc,
+            'EUNIS Color': eunisColor,
+            'Ecological Value': ecoValue
+          });
         });
         
-        print(" Reprojected BWK Raster:", bwkValues);
+        //  Convert to Feature Collection for Table View
+        var crosswalkFC = ee.FeatureCollection(crosswalkTable);
+        print(" Final Crosswalk Table (Sampled Pixels):", crosswalkFC.limit(10)); // Preview first 10 rows
+        
+        //  Export as a CSV for non-GIS users
+        Export.table.toDrive({
+          collection: crosswalkFC,
+          description: 'EUNIS_Ecological_Crosswalk_Sampled',
+          fileFormat: 'CSV'
+        });
+        print(" Export Task Created: Run it manually in the 'Tasks' tab!");
             </pre>
         
             
             <ul>
-                <li><strong><code>bwkNumeric.reduceToImage()</code></strong>:  
-                    - Converts the **BWK vector polygons into a raster** using the **EVAL_NUM** field.  
-                    - Uses **<code>ee.Reducer.first()</code>** to assign the first encountered value to each pixel.</li>
-                <li><strong><code>.rename('ecological_value')</code></strong>:  
-                    - Gives the new raster band a **meaningful name (ecological_value)**.</li>
-                <li><strong><code>bwkValues.reproject()</code></strong>:  
-                    - Ensures the **BWK raster has the same coordinate reference system (CRS) and resolution as EUNIS**.</li>
-                <li><strong><code>eunis.projection()</code></strong>:  
-                    - Retrieves the **projection system of the EUNIS dataset**, ensuring alignment.</li>
-                <li><strong><code>eunis.projection().nominalScale()</code></strong>:  
-                    - Ensures the **BWK raster uses the same pixel size** as EUNIS.</li>
+                <li><strong><code>sampleRegions()</code></strong>:  
+                    - Extracts **EUNIS habitat type** and **BWK ecological value** at **random points**.</li>
+                <li><strong><code>randomPoints()</code></strong>:  
+                    - Generates **5000 random sample locations** across the study area.</li>
+                <li><strong><code>map()</code></strong>:  
+                    - Iterates through each sampled location, **retrieving habitat and ecological value**.</li>
+                <li><strong><code>Export.table.toDrive()</code></strong>:  
+                    - Exports the **final crosswalk table** as a **CSV file**.</li>
             </ul>
         
             <h4><strong>Expected Output</strong></h4>
             <p>
-                After running the script, BWK should be successfully **converted into a raster**.  
-                The raster should now have an **ecological_value** band, where each pixel represents an  
-                ecological valuation score.
+                After running this script, you will find a **crosswalk table**  
+                available in Google Drive as a **CSV file**, which links:
             </p>
-        
             <pre>
-        Raster Properties:
-        - Band Name: ecological_value
-        - Pixel Size: Matches EUNIS raster
-        - Projection: EPSG:4326
-        - Data Type: Integer (1-7)
+            EUNIS Habitat Type → BWK Ecological Value
+            ----------------------------------------
+            Forest (T1)        → Very High (7)
+            Urban Area (J1)    → Low (2)
+            Wetland (C1)       → High (6)
             </pre>
         
             
-            <p><em>(Insert screenshot of the BWK raster output in GEE here)</em></p>
+            <p><em>(Insert screenshot of exported crosswalk CSV file here)</em></p>
         
-            <h4><strong>Next Step</strong></h4>
-            <p>
-                Now that the **BWK dataset is rasterized**, we can move to the next step:
-                **Combining the BWK raster with the EUNIS habitat raster.**
-            </p>
-        
-           
-            
-                <h4><strong>Step 4: Exporting the BWK Dataset for Crosswalk Analysis</strong></h3>
-            
-                <p>
-                    Now that we have **merged the EUNIS habitat dataset with BWK ecological values**,  
-                    the next step is to **export the BWK dataset as a raster asset** in Google Earth Engine.  
-                </p>
-            
-                <h4><strong>Why Do We Need to Export the BWK Dataset?</strong></h4>
-                <ul>
-                    <li>🔹 **Converting BWK from a feature collection to raster** ensures compatibility with raster-based analysis.</li>
-                    <li>🔹 This raster will serve as the **foundation for crosswalk analysis**, where we compare **EUNIS habitat types** with **BWK ecological values**.</li>
-                    <li>🔹 Exporting the dataset allows **efficient spatial sampling**, avoiding excessive processing load.</li>
-                </ul>
-            
-                
-                <p>
-                    The following script exports the **BWK raster dataset** so that it can be later  
-                    used for **sampling and crosswalk table generation**.
-                </p>
-            
-                <pre>
-            // ===============================
-            // **STEP 4: EXPORT BWK DATASET AS A RASTER**
-            // ===============================
-            
-            // Export BWK dataset as a raster asset in Google Earth Engine
-            Export.image.toAsset({
-              image: eunisWithBwk,
-              description: 'EUNIS_BWK_EcoValue_TIFF',
-              assetId: 'projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF',
-              region: region,
-              scale: 100,
-              crs: 'EPSG:4326',
-              maxPixels: 1e13
-            });
-                </pre>
-            
-                
-                <ul>
-                    <li><strong><code>Export.image.toAsset()</code></strong>:  
-                        - Saves the **BWK raster dataset** as an **Earth Engine asset** for later use.</li>
-                    <li><strong><code>image: eunisWithBwk</code></strong>:  
-                        - Specifies that we are exporting **EUNIS with BWK values merged**.</li>
-                    <li><strong><code>region: region</code></strong>:  
-                        - Defines the **study area (West Flanders, Belgium)**.</li>
-                    <li><strong><code>scale: 100</code></strong>:  
-                        - Ensures that the **raster resolution** is **100 meters per pixel**.</li>
-                    <li><strong><code>crs: 'EPSG:4326'</code></strong>:  
-                        - Ensures a **consistent spatial reference system** (WGS84).</li>
-                    <li><strong><code>maxPixels: 1e13</code></strong>:  
-                        - Ensures the dataset can be processed without exceeding Earth Engine’s limits.</li>
-                </ul>
-            
-                <h4><strong>Expected Output</strong></h4>
-                <p>
-                    After running this export command, you should find the **EUNIS_BWK_EcoValue_TIFF**  
-                    stored under **"Assets" in Google Earth Engine**.
-                </p>
-                <pre>
-                projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF
-                </pre>
-            
-                
-                <p><em>(Insert screenshot of Google Earth Engine asset manager with the exported dataset here)</em></p>
-            
-                <h4><strong>Next Step: Performing the Crosswalk Analysis</strong></h4>
-                <p>
-                    With the **BWK dataset now available in raster format**,  
-                    we can proceed to **Step 5**, where we will extract **random sample points**  
-                    and generate a **crosswalk table** comparing **habitat types with ecological values**.
-                </p>
+<h4><strong>Next Step: Visualizing the Data</strong></h4>
+<p>
+    With the **crosswalk table completed**,  
+    we will move to **Step 6**, where we visualize the dataset  
+    and interpret key insights from the analysis.
+</p>
+
+    <h4><strong>Step 6: Map Visualization</strong></h3>
+
+    <p>
+        With the **crosswalk table** completed, we can now visualize  
+        the EUNIS habitat types and BWK ecological valuation data  
+        in Google Earth Engine.
+    </p>
+
+    
+    <ul>
+        <li> Helps **identify spatial patterns** in ecological value.</li>
+        <li> Supports **policy-making and conservation planning**.</li>
+        <li> Allows for **interactive exploration of habitat quality**.</li>
+    </ul>
+
+    
+    <p>
+        The following script **renders an interactive map**  
+        with a **legend showing ecological value classifications**.
+    </p>
+
+    <pre>
+// ===============================
+// **STEP 6: MAP VISUALIZATION**
+// ===============================
+
+//  Load the final EUNIS + BWK dataset
+var eunisEcoValue = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
+print(" Loaded Final Raster for Visualization:", eunisEcoValue);
+
+//  Define visualization parameters for the 7-group classification
+var visParams = {
+  min: 1,
+  max: 7,
+  palette: ['#00441b', '#238b45', '#41ae76', '#66c2a4', '#99d8c9', '#ccece6', '#edf8fb']
+};
+
+//  Center the map on the study region
+Map.centerObject(region, 10);
+
+//  Add the ecological classification layer to the map
+Map.addLayer(eunisEcoValue.select('ecological_group'), visParams, "Ecological Value Classification");
+
+//  Define classification labels for the legend
+var labels = ['Very High', 'High', 'High-Moderate', 'Moderate', 'Low-Moderate', 'Low', 'Very Low'];
+var colors = ['#00441b', '#238b45', '#41ae76', '#66c2a4', '#99d8c9', '#ccece6', '#edf8fb'];
+
+//  Create a legend panel
+var legend = ui.Panel({
+  style: {
+    position: 'bottom-left',
+    padding: '8px',
+    backgroundColor: 'white'
+  }
+});
+
+//  Add title to the legend
+legend.add(ui.Label({
+  value: 'Ecological Value Classification',
+  style: { fontWeight: 'bold' }
+}));
+
+//  Add legend entries dynamically
+labels.forEach(function(label, index) {
+  legend.add(ui.Panel([
+    ui.Label({
+      style: {
+        backgroundColor: colors[index], 
+        padding: '8px', 
+        margin: '0px 4px 4px 0', 
+        border: '1px solid black'
+      }
+    }),
+    ui.Label({ 
+      value: label, 
+      style: { margin: '0px 0px 4px 6px' } 
+    })
+  ], ui.Panel.Layout.Flow('horizontal')));
+});
+
+//  Add the legend to the Map
+Map.add(legend);
+print(" Legend added to the map.");
+
+//  Add the original EUNIS habitat classification layer
+var eunisVisParams = {
+  min: 1,
+  max: 44,
+  palette: Object.keys(eunisNumericMapping).map(function(key) {
+    return eunisNumericMapping[key].color;
+  })
+};
+Map.addLayer(eunis, eunisVisParams, "EUNIS Habitat Classification");
+
+print(" EUNIS Map Layer Added.");
+    </pre>
+
+    
+    <ul>
+        <li><strong><code>Map.addLayer()</code></strong>:  
+            - Displays the **ecological valuation layer** on the map.</li>
+        <li><strong><code>ui.Panel()</code></strong>:  
+            - Creates an **interactive legend** for visualization.</li>
+        <li><strong><code>palette</code></strong>:  
+            - Assigns **colors** to different ecological value classes.</li>
+    </ul>
+
+    <h4><strong>Expected Output</strong></h4>
+    <p>
+        After running this script, the map will display:
+    </p>
+    <ul>
+        <li> **EUNIS habitat classifications** (colored by land cover type).</li>
+        <li> **BWK ecological valuation classes** (ranging from very high to very low).</li>
+        <li> **An interactive legend** showing the color scheme for each category.</li>
+    </ul>
+
+    
+    <p><em>(Insert screenshot of the final rendered map here)</em></p>
 
 
-                
-                    <h4><strong>Step 5: Generating a Crosswalk Table</strong></h3>
-                
-                    <p>
-                        Now that we have the **EUNIS habitat** and **BWK ecological valuation** datasets  
-                        stored as a raster asset, we can proceed with generating a **crosswalk table**  
-                        that maps **habitat types to their ecological valuation**.
-                    </p>
-                
-                    <h4><strong>Why is a Crosswalk Table Important?</strong></h4>
-                    <ul>
-                        <li> Helps **quantify** the ecological value of different land cover types.</li>
-                        <li> Allows for **comparative analysis** of habitat resilience and biodiversity.</li>
-                        <li> Supports **nature-based solutions (NbS)** planning for climate adaptation.</li>
-                        <li> Provides structured data that can be used in **spatial modeling**.</li>
-                    </ul>
-                
-                    
-                    <p>
-                        The following script **samples raster values** at randomly generated locations  
-                        and creates a **crosswalk table linking habitat types to their ecological value**.
-                    </p>
-                
-                    <pre>
-                // ===============================
-                // **STEP 5: CROSSWALK TABLE GENERATION**
-                // ===============================
-                
-                //  Load the updated raster dataset with EUNIS + BWK data
-                var eunisWithBwkUpdated = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
-                print(" Loaded Final Raster for Crosswalk Table Generation:", eunisWithBwkUpdated);
-                
-                //  Extract EUNIS and Ecological Value bands
-                var eunisBand = eunisWithBwkUpdated.select('eunis');
-                var ecoValueBand = eunisWithBwkUpdated.select('ecological_group');
-                print(" EUNIS Band:", eunisBand);
-                print(" Ecological Value Band:", ecoValueBand);
-                
-                //  Generate Random Sample Points within the Study Region
-                var samplePoints = ee.FeatureCollection.randomPoints({
-                  region: region, 
-                  points: 5000, // Limit to avoid exceeding feature count
-                  seed: 42
-                });
-                print(" Generated Sample Points:", samplePoints);
-                
-                //  Extract EUNIS and Ecological Values at Sampled Locations
-                var sampledValues = eunisWithBwkUpdated.sampleRegions({
-                  collection: samplePoints,
-                  scale: 100,
-                  properties: [],
-                  tileScale: 4  // Optimized for large collections
-                });
-                print(" Sampled Raster Values:", sampledValues.limit(10)); // Preview first 10 rows
-                
-                //  Convert Sampled Data into a Feature Collection Table
-                var eunisMapping = ee.Dictionary(eunisNumericMapping); // Convert to EE dictionary
-                
-                var crosswalkTable = sampledValues.map(function(feature) {
-                  var eunisClass = feature.get('eunis');  // Extract EUNIS class ID
-                  var ecoValue = feature.get('ecological_group'); // Extract Ecological Value
-                
-                  // Convert EUNIS class to a string key for dictionary lookup
-                  var eunisKey = ee.Algorithms.If(eunisClass, ee.String(eunisClass), 'Unknown');
-                
-                  // Ensure the key exists in the dictionary, else assign default values
-                  var hasKey = eunisMapping.contains(eunisKey);
-                  
-                  var eunisEntry = ee.Algorithms.If(
-                    hasKey, 
-                    eunisMapping.get(eunisKey), 
-                    ee.Dictionary({'eunisCode': 'Unknown', 'description': 'Unknown Habitat', 'color': '#808080'})
-                  );
-                
-                  var eunisCode = ee.String(ee.Dictionary(eunisEntry).get('eunisCode'));
-                  var eunisDesc = ee.String(ee.Dictionary(eunisEntry).get('description'));
-                  var eunisColor = ee.String(ee.Dictionary(eunisEntry).get('color'));
-                
-                  return feature.set({
-                    'EUNIS Code': eunisCode,
-                    'EUNIS Habitat': eunisDesc,
-                    'EUNIS Color': eunisColor,
-                    'Ecological Value': ecoValue
-                  });
-                });
-                
-                //  Convert to Feature Collection for Table View
-                var crosswalkFC = ee.FeatureCollection(crosswalkTable);
-                print(" Final Crosswalk Table (Sampled Pixels):", crosswalkFC.limit(10)); // Preview first 10 rows
-                
-                //  Export as a CSV for non-GIS users
-                Export.table.toDrive({
-                  collection: crosswalkFC,
-                  description: 'EUNIS_Ecological_Crosswalk_Sampled',
-                  fileFormat: 'CSV'
-                });
-                print(" Export Task Created: Run it manually in the 'Tasks' tab!");
-                    </pre>
-                
-                    
-                    <ul>
-                        <li><strong><code>sampleRegions()</code></strong>:  
-                            - Extracts **EUNIS habitat type** and **BWK ecological value** at **random points**.</li>
-                        <li><strong><code>randomPoints()</code></strong>:  
-                            - Generates **5000 random sample locations** across the study area.</li>
-                        <li><strong><code>map()</code></strong>:  
-                            - Iterates through each sampled location, **retrieving habitat and ecological value**.</li>
-                        <li><strong><code>Export.table.toDrive()</code></strong>:  
-                            - Exports the **final crosswalk table** as a **CSV file**.</li>
-                    </ul>
-                
-                    <h4><strong>Expected Output</strong></h4>
-                    <p>
-                        After running this script, you will find a **crosswalk table**  
-                        available in Google Drive as a **CSV file**, which links:
-                    </p>
-                    <pre>
-                    EUNIS Habitat Type → BWK Ecological Value
-                    ----------------------------------------
-                    Forest (T1)        → Very High (7)
-                    Urban Area (J1)    → Low (2)
-                    Wetland (C1)       → High (6)
-                    </pre>
-                
-                    
-                    <p><em>(Insert screenshot of exported crosswalk CSV file here)</em></p>
-                
-                    <h4><strong>Next Step: Visualizing the Data</strong></h4>
-                    <p>
-                        With the **crosswalk table completed**,  
-                        we will move to **Step 6**, where we visualize the dataset  
-                        and interpret key insights from the analysis.
-                    </p>
-                    
-                        <h4><strong>Step 6: Map Visualization</strong></h3>
-                    
-                        <p>
-                            With the **crosswalk table** completed, we can now visualize  
-                            the EUNIS habitat types and BWK ecological valuation data  
-                            in Google Earth Engine.
-                        </p>
-                    
-                        
-                        <ul>
-                            <li> Helps **identify spatial patterns** in ecological value.</li>
-                            <li> Supports **policy-making and conservation planning**.</li>
-                            <li> Allows for **interactive exploration of habitat quality**.</li>
-                        </ul>
-                    
-                        
-                        <p>
-                            The following script **renders an interactive map**  
-                            with a **legend showing ecological value classifications**.
-                        </p>
-                    
-                        <pre>
-                    // ===============================
-                    // **STEP 6: MAP VISUALIZATION**
-                    // ===============================
-                    
-                    //  Load the final EUNIS + BWK dataset
-                    var eunisEcoValue = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
-                    print(" Loaded Final Raster for Visualization:", eunisEcoValue);
-                    
-                    //  Define visualization parameters for the 7-group classification
-                    var visParams = {
-                      min: 1,
-                      max: 7,
-                      palette: ['#00441b', '#238b45', '#41ae76', '#66c2a4', '#99d8c9', '#ccece6', '#edf8fb']
-                    };
-                    
-                    //  Center the map on the study region
-                    Map.centerObject(region, 10);
-                    
-                    //  Add the ecological classification layer to the map
-                    Map.addLayer(eunisEcoValue.select('ecological_group'), visParams, "Ecological Value Classification");
-                    
-                    //  Define classification labels for the legend
-                    var labels = ['Very High', 'High', 'High-Moderate', 'Moderate', 'Low-Moderate', 'Low', 'Very Low'];
-                    var colors = ['#00441b', '#238b45', '#41ae76', '#66c2a4', '#99d8c9', '#ccece6', '#edf8fb'];
-                    
-                    //  Create a legend panel
-                    var legend = ui.Panel({
-                      style: {
-                        position: 'bottom-left',
-                        padding: '8px',
-                        backgroundColor: 'white'
-                      }
-                    });
-                    
-                    //  Add title to the legend
-                    legend.add(ui.Label({
-                      value: 'Ecological Value Classification',
-                      style: { fontWeight: 'bold' }
-                    }));
-                    
-                    //  Add legend entries dynamically
-                    labels.forEach(function(label, index) {
-                      legend.add(ui.Panel([
-                        ui.Label({
-                          style: {
-                            backgroundColor: colors[index], 
-                            padding: '8px', 
-                            margin: '0px 4px 4px 0', 
-                            border: '1px solid black'
-                          }
-                        }),
-                        ui.Label({ 
-                          value: label, 
-                          style: { margin: '0px 0px 4px 6px' } 
-                        })
-                      ], ui.Panel.Layout.Flow('horizontal')));
-                    });
-                    
-                    //  Add the legend to the Map
-                    Map.add(legend);
-                    print(" Legend added to the map.");
-                    
-                    //  Add the original EUNIS habitat classification layer
-                    var eunisVisParams = {
-                      min: 1,
-                      max: 44,
-                      palette: Object.keys(eunisNumericMapping).map(function(key) {
-                        return eunisNumericMapping[key].color;
-                      })
-                    };
-                    Map.addLayer(eunis, eunisVisParams, "EUNIS Habitat Classification");
-                    
-                    print(" EUNIS Map Layer Added.");
-                        </pre>
-                    
-                        
-                        <ul>
-                            <li><strong><code>Map.addLayer()</code></strong>:  
-                                - Displays the **ecological valuation layer** on the map.</li>
-                            <li><strong><code>ui.Panel()</code></strong>:  
-                                - Creates an **interactive legend** for visualization.</li>
-                            <li><strong><code>palette</code></strong>:  
-                                - Assigns **colors** to different ecological value classes.</li>
-                        </ul>
-                    
-                        <h4><strong>Expected Output</strong></h4>
-                        <p>
-                            After running this script, the map will display:
-                        </p>
-                        <ul>
-                            <li> **EUNIS habitat classifications** (colored by land cover type).</li>
-                            <li> **BWK ecological valuation classes** (ranging from very high to very low).</li>
-                            <li> **An interactive legend** showing the color scheme for each category.</li>
-                        </ul>
-                    
-                        
-                        <p><em>(Insert screenshot of the final rendered map here)</em></p>
-                    
-                        <h4><strong>Final Notes</strong></h4>
-                        <p>
-                            By **visualizing ecological valuation**, we can better understand  
-                            how different habitats contribute to resilience, biodiversity,  
-                            and nature-based solutions.
-                        </p>
-                    
-                        <p><strong>Next Steps:</strong>  
-                            This concludes the main GIS processing.  
-                            Would you like to discuss **further analysis** or **data integration**?
-                        </p>
+    <p>
+        We can now better understand  
+        how different habitats contribute to resilience, biodiversity,  
+        and nature-based solutions based on their ecological value. Note that this map is based on the Flemish data. If your region has an ecological value dataset, you can follow and implement similar approach.
+    </p>
+
                                                
 
 
