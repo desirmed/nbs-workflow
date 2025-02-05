@@ -1954,6 +1954,141 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
     </p>
 
 
+    
+        <h3><strong>Step 2: Convert BWK 'EVAL' Property to Numeric Values</strong></h3>
+        
+        <p>
+            The **BWK dataset** contains an attribute named **EVAL**, which assigns qualitative ecological values  
+            to land areas. However, these values are stored as **categorical text**, which is not suitable for raster  
+            calculations or spatial analysis. We need to **map these categories to numerical values**.
+        </p>
+    
+        <h4><strong>Why Is This Important?</strong></h4>
+        <ul>
+            <li>**Raster datasets require numeric values** for classification and analysis.</li>
+            <li>**Mathematical operations (e.g., reclassification, merging) need numeric data types**.</li>
+            <li>**Ensures compatibility** between the BWK (vector) and EUNIS (raster) datasets.</li>
+        </ul>
+    
+        <h4><strong>Ecological Value Mapping Scheme</strong></h4>
+        <p>
+            We will **map the BWK categorical values to numerical equivalents** as follows:
+        </p>
+    
+        <table border="1">
+            <tr>
+                <th>Categorical Value (EVAL)</th>
+                <th>Numerical Value (EVAL_NUM)</th>
+                <th>Ecological Meaning</th>
+            </tr>
+            <tr>
+                <td>z</td>
+                <td>7</td>
+                <td>Very High</td>
+            </tr>
+            <tr>
+                <td>wz</td>
+                <td>6</td>
+                <td>High</td>
+            </tr>
+            <tr>
+                <td>w</td>
+                <td>5</td>
+                <td>Moderate</td>
+            </tr>
+            <tr>
+                <td>mwz</td>
+                <td>4</td>
+                <td>Low-Moderate</td>
+            </tr>
+            <tr>
+                <td>mw</td>
+                <td>3</td>
+                <td>Low</td>
+            </tr>
+            <tr>
+                <td>m</td>
+                <td>2</td>
+                <td>Very Low</td>
+            </tr>
+            <tr>
+                <td>Missing / Undefined</td>
+                <td>1</td>
+                <td>Unknown</td>
+            </tr>
+        </table>
+    
+        <h4><strong>Google Earth Engine Code</strong></h4>
+        <p>
+            The following script **applies the mapping function to the BWK dataset**:
+        </p>
+    
+        <pre>
+    // ===============================
+    // **STEP 2: CONVERT BWK 'EVAL' PROPERTY TO NUMERIC**
+    // ===============================
+    
+    // Define mapping of categorical BWK values to numeric scores
+    var bwkCategoryToNumeric = {
+      'z': 7,  // Very High
+      'wz': 6, // High
+      'w': 5,  // Moderate
+      'mwz': 4, // Low-Moderate
+      'mw': 3,  // Low
+      'm': 2    // Very Low
+    };
+    
+    // Function to apply the mapping to BWK features
+    var bwkNumeric = bwk.map(function(feature) {
+      var evalValue = feature.get('EVAL');  // Get categorical value
+      var numericValue = ee.Number(ee.Dictionary(bwkCategoryToNumeric).get(evalValue, 1)); // Default to 1 if missing
+      return feature.set('EVAL_NUM', numericValue);
+    });
+    
+    // Debugging Print: Sample BWK Feature with Numeric Values
+    print("BWK First Feature with Numeric 'EVAL_NUM':", bwkNumeric.first());
+        </pre>
+    
+        <h4><strong>Explanation of the Code</strong></h4>
+        <ul>
+            <li><strong>Dictionary Mapping (bwkCategoryToNumeric)</strong>:
+                - This object defines **how text-based values ('z', 'wz', etc.) map to numeric values (7, 6, etc.)**.</li>
+            <li><strong><code>bwk.map(function(feature) {...})</code></strong>:  
+                - This function **iterates through each feature in the BWK dataset**, applying the numeric mapping.</li>
+            <li><strong><code>feature.get('EVAL')</code></strong>:  
+                - Retrieves the **existing categorical value** for each BWK feature.</li>
+            <li><strong><code>ee.Number(ee.Dictionary(bwkCategoryToNumeric).get(evalValue, 1))</code></strong>:  
+                - Converts the **text value into a number** using the dictionary.  
+                - If no match is found, it **assigns a default value of 1 (Unknown).**</li>
+            <li><strong><code>feature.set('EVAL_NUM', numericValue)</code></strong>:  
+                - Adds the new **numeric attribute (EVAL_NUM)** to each feature.</li>
+        </ul>
+    
+        <h4><strong>Expected Output</strong></h4>
+        <p>
+            After running the script, the **first feature in the BWK dataset** should now have a new property:
+        </p>
+    
+        <pre>
+    Feature {
+        geometry: (Polygon)
+        properties: {
+            EVAL: "w",
+            EVAL_NUM: 5  // Now in numeric format
+        }
+    }
+        </pre>
+    
+        <h4><strong>Screenshot Placeholder</strong></h4>
+        <p><em>(Insert screenshot of the updated BWK feature table in GEE here)</em></p>
+    
+        <h4><strong>Next Step</strong></h4>
+        <p>
+            Now that the **BWK dataset has numeric values**, we can proceed to the next step:
+            **Rasterizing BWK to match the EUNIS resolution**.
+        </p>
+    
+    
 
 
 
