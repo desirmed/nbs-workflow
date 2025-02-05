@@ -1875,7 +1875,83 @@ else:
         We will **upload the BWK dataset to Earth Engine** and use it alongside the **EUNIS dataset stored as an asset**.
     </p>
 
-    <p><em>Screenshot Placeholder: Earth Engine Data Upload</em></p>
+
+
+    <h3><strong>Step 1: Load Existing EUNIS & BWK Data</strong></h3>
+    <p>
+        Before performing any spatial analysis, we need to **load the required datasets into Google Earth Engine (GEE)**.  
+        This includes:
+    </p>
+    <ul>
+        <li><strong>EUNIS Habitat Classification (Raster)</strong>: A processed habitat dataset for the year 2018.</li>
+        <li><strong>BWK Ecological Valuation (Vector)</strong>: A dataset containing **ecological quality ratings** for land units.</li>
+        <li><strong>Study Region (West Flanders, Belgium)</strong>: The bounding box coordinates for our analysis.</li>
+    </ul>
+
+    <h4><strong>Why is this Step Important?</strong></h4>
+    <p>
+        Combining these datasets will allow us to assess the **ecological value of different EUNIS habitat types**.  
+        However, we first need to:
+    </p>
+    <ul>
+        <li>Check that the **EUNIS raster contains the correct bands**.</li>
+        <li>Inspect the **BWK vector attributes** before further processing.</li>
+        <li>Define a **Region of Interest (ROI)** for analysis.</li>
+    </ul>
+
+    <h4><strong>Google Earth Engine Code</strong></h4>
+    <p>
+        The following script loads the datasets and prints basic information for validation:
+    </p>
+
+    <pre>
+// ===============================
+// **LOAD EXISTING EUNIS & BWK DATA**
+// ===============================
+
+// Load the EUNIS habitat raster dataset (processed version)
+var eunis = ee.Image("projects/ee-desmond/assets/EUNIS_2018_TIFF_nbracer");
+
+// Load the BWK ecological valuation shapefile
+var bwk = ee.FeatureCollection("projects/ee-desmond/assets/BwkHab");
+
+// Define the region of interest (West Flanders, Belgium)
+var region = ee.Geometry.BBox(2.5, 50.7, 4.0, 51.4);
+
+// ===============================
+// **DEBUGGING: PRINT AVAILABLE PROPERTIES & BANDS**
+// ===============================
+
+print(" EUNIS Image Properties:", eunis);
+print("EUNIS Image Bands:", eunis.bandNames());  // Ensure correct band names
+print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
+    </pre>
+
+    <h4><strong>Explanation of the Code</strong></h4>
+    <p>
+        - The script **imports EUNIS** as a raster image and **BWK as a feature collection**.  
+        - The study area is defined as a **bounding box (BBox)** for the West Flanders region.  
+        - The **<code>print()</code> function** helps inspect the datasets to ensure correctness before proceeding.  
+    </p>
+
+    <h4><strong>Expected Output</strong></h4>
+    <p>
+        When you run the script in **Google Earth Engine**, you should see:
+    </p>
+    <ul>
+        <li>A **list of bands** available in the **EUNIS raster**.</li>
+        <li>The **first feature** in the **BWK dataset**, showing its attribute fields.</li>
+        <li>A **geometry object** defining the West Flanders region.</li>
+    </ul>
+
+    <h4><strong>Screenshot Placeholder</strong></h4>
+    <p><em>(Insert screenshot of GEE console output here)</em></p>
+
+    <h4><strong>Next Step</strong></h4>
+    <p>
+        Now that we have successfully loaded the datasets, the next step is to **convert BWK ecological categories into numeric values**  
+        so they can be used in geospatial calculations.
+    </p>
 
 
 
