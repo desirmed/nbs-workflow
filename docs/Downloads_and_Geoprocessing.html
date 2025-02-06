@@ -2737,30 +2737,28 @@ var eunisVisParams = {
 };
 
 // Print available bands in the final raster before visualization
-print(" Final Raster Bands:", eunisWithBwk.bandNames());
+print("✅ Final Raster Bands:", eunisWithBwk.bandNames());
 
-//  Load the final EUNIS + BWK dataset
-var eunisEcoValue = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
-print(" Loaded Final Raster for Visualization:", eunisEcoValue);
-
-//  Define visualization parameters for the 7-group classification
+// Define visualization parameters for the 7-group classification
 var visParams = {
-  min: 1,
+  min: 2,  // Change from 1 to 2
   max: 7,
-  palette: ['#00441b', '#238b45', '#41ae76', '#66c2a4', '#99d8c9', '#ccece6', '#edf8fb']
+  palette: ['#edf8fb', '#ccece6', '#99d8c9', '#66c2a4', '#41ae76', '#238b45'] // Correct order
 };
 
-//  Center the map on the study region
+
+
+// Load the processed EUNIS raster with ecological values
+var eunisEcoValue = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
+print("✅ Loaded Final Raster for Visualization:", eunisEcoValue);
+
+// Center the map on the study region
 Map.centerObject(region, 10);
 
-//  Add the ecological classification layer to the map
+// Add the ecological classification layer
 Map.addLayer(eunisEcoValue.select('ecological_group'), visParams, "Ecological Value Classification");
 
-//  Define classification labels for the legend
-var labels = ['Very High', 'High', 'High-Moderate', 'Moderate', 'Low-Moderate', 'Low', 'Very Low'];
-var colors = ['#00441b', '#238b45', '#41ae76', '#66c2a4', '#99d8c9', '#ccece6', '#edf8fb'];
-
-//  Create a legend panel
+// **🔹 Add the Legend**
 var legend = ui.Panel({
   style: {
     position: 'bottom-left',
@@ -2769,13 +2767,32 @@ var legend = ui.Panel({
   }
 });
 
-//  Add title to the legend
+// Add title to the legend
 legend.add(ui.Label({
   value: 'Ecological Value Classification',
   style: { fontWeight: 'bold' }
 }));
 
-//  Add legend entries dynamically
+// Correct classification labels matching raster values (2 to 7)
+var labels = ['Very Low', 'Low', 'Low-Moderate', 'Moderate', 'High', 'Very High'];
+var colors = ['#edf8fb', '#ccece6', '#99d8c9', '#66c2a4', '#41ae76', '#238b45'];  // Matches visParams
+
+// Clear previous legend (if any)
+var legend = ui.Panel({
+  style: {
+    position: 'bottom-left',
+    padding: '8px',
+    backgroundColor: 'white'
+  }
+});
+
+// Add title
+legend.add(ui.Label({
+  value: 'Ecological Value Classification',
+  style: { fontWeight: 'bold' }
+}));
+
+// Add legend entries dynamically (matching raster values)
 labels.forEach(function(label, index) {
   legend.add(ui.Panel([
     ui.Label({
@@ -2793,21 +2810,13 @@ labels.forEach(function(label, index) {
   ], ui.Panel.Layout.Flow('horizontal')));
 });
 
-//  Add the legend to the Map
+// Add the corrected legend to the map
 Map.add(legend);
-print(" Legend added to the map.");
+print("✅ Legend updated and added to the map.");
 
-//  Add the original EUNIS habitat classification layer
-var eunisVisParams = {
-  min: 1,
-  max: 44,
-  palette: Object.keys(eunisNumericMapping).map(function(key) {
-    return eunisNumericMapping[key].color;
-  })
-};
+// Add EUNIS habitat map to the display
+Map.centerObject(region, 10);
 Map.addLayer(eunis, eunisVisParams, "EUNIS Habitat Classification");
-
-print(" EUNIS Map Layer Added.");
     </pre>
 
     
