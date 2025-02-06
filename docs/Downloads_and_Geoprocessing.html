@@ -3,7 +3,6 @@
 <html>
 
 <head>
-  <script src="comments.js"></script>
 
 <meta charset="utf-8" />
 <meta name="generator" content="pandoc" />
@@ -2994,3 +2993,21 @@ $(document).ready(function ()  {
 
 </body>
 </html>
+<div id="comments">
+    <hr />
+    <p>If you want to give feedback or share your experience with this tutorial, please comment below. (Requires GitHub account)</p>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let script = document.createElement("script");
+    script.src = "https://utteranc.es/client.js";
+    script.setAttribute("repo", "deltares-desirmed/nbs-tutorials");
+    script.setAttribute("issue-term", "title");
+    script.setAttribute("label", "comment");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("crossorigin", "anonymous");
+    script.async = true;
+    document.getElementById("comments").appendChild(script);
+});
+</script>
