@@ -2737,7 +2737,7 @@ var eunisVisParams = {
 };
 
 // Print available bands in the final raster before visualization
-print("✅ Final Raster Bands:", eunisWithBwk.bandNames());
+print(" Final Raster Bands:", eunisWithBwk.bandNames());
 
 // Define visualization parameters for the 7-group classification
 var visParams = {
@@ -2750,7 +2750,7 @@ var visParams = {
 
 // Load the processed EUNIS raster with ecological values
 var eunisEcoValue = ee.Image("projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF");
-print("✅ Loaded Final Raster for Visualization:", eunisEcoValue);
+print(" Loaded Final Raster for Visualization:", eunisEcoValue);
 
 // Center the map on the study region
 Map.centerObject(region, 10);
@@ -2812,7 +2812,7 @@ labels.forEach(function(label, index) {
 
 // Add the corrected legend to the map
 Map.add(legend);
-print("✅ Legend updated and added to the map.");
+print(" Legend updated and added to the map.");
 
 // Add EUNIS habitat map to the display
 Map.centerObject(region, 10);
