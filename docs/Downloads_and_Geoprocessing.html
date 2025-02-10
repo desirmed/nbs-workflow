@@ -1485,6 +1485,88 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <li>Click on a POI to inspect its attributes.</li>
 </ol>
 
+<h3><strong>Inspecting a Point Feature in the Foursquare Dataset</strong></h3>
+
+<p>
+    After selecting a **Point of Interest (POI)** in the **Foursquare Open Source Places** interface,  
+    the feature's details will appear in **JSON format** within the console.
+</p>
+
+<h4><strong>Understanding the JSON Output</strong></h4>
+
+<p>
+    JSON (**JavaScript Object Notation**) is a lightweight data format used for storing and exchanging structured information.  
+    In this dataset, each POI is represented as a **GeoJSON Feature**, containing **properties** (metadata) and **geometry** (location).
+</p>
+
+<p><strong>Example JSON Feature:</strong></p>
+
+<pre style="background: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+{
+  "type": "Feature",
+  "properties": {
+    "name": "Mauricio's Manor",
+    "level2_category_name": "Accommodation"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-122.440572, 37.765877]
+  }
+}
+</pre>
+
+<h4><strong>Validating Location in GeoJSON.io</strong></h4>
+
+<p>
+    To confirm if the extracted location matches the real-world coordinates:
+</p>
+
+<ol>
+    <li>Copy the entire **JSON feature** from the Foursquare console.</li>
+    <li>Go to <a href="https://geojson.io" target="_blank"><strong>GeoJSON.io</strong></a>.</li>
+    <li>Paste the copied **JSON feature** into the **left-side text editor**.</li>
+    <li>The **location marker** will automatically appear on the interactive map.</li>
+</ol>
+
+<h4><strong>Inspecting the Point’s Accuracy</strong></h4>
+
+<ul>
+    <li>Toggle between <strong>Satellite and Street View</strong> to check if the POI is correctly positioned.</li>
+    <li>Compare the **category and attributes** (e.g., business name) with known data.</li>
+    <li>If the location appears incorrect, this suggests a **possible data quality issue** (e.g., outdated coordinates).</li>
+</ul>
+
+<p>
+    This manual inspection helps verify **data reliability** before large-scale analysis.  
+    However, since verifying thousands of points individually is impractical, we will use **spatial aggregation**  
+    in the next step to analyze patterns at a broader scale.
+</p>
+
+<p><strong>Next: Data Preprocessing and Aggregation 🚀</strong></p>
+
+<h4><strong>Understanding Aggregation in Spatial Analysis</strong></h3>
+  <p>
+    Spatial Aggregation calculates statistics in areas where an input layer overlaps a boundary layer. You can perform a spatial aggregate on maps with two layers: one area layer with the boundaries that will be used for aggregation (for example, countries, cities, districts or community) and one layer to aggregate.
+    We will use area layers to summarize only the proportions of the point features that are within the input boundary. Remember that our poi data is already in categories.
+  </p>
+  
+  <p>
+      Imagine you have **100,000 individual business locations**. Instead of analyzing them **one by one**,  
+      you can **aggregate** them by:
+  </p>
+  <ul>
+      <li>Summing up **the number of businesses in each neighborhood**.</li>
+      <li>Calculating **the average economic density per region**.</li>
+      <li>Grouping data **by categories** (e.g., commercial areas vs. residential zones).</li>
+  </ul>
+  
+  <h4><strong>Aggregation Methods:</strong></h4>
+  <ul>
+      <li><strong>Grid-based Aggregation:</strong> Grouping POIs into hexagonal or square grids.</li>
+      <li><strong>Administrative Unit Aggregation:</strong> Summarizing data at municipal or district levels.</li>
+      <li><strong>Density Estimation:</strong> Calculating point density to identify **economic hotspots**.</li>
+  </ul>
+  
 <h4><strong>Step 2: Downloading POI Data</strong></h4>
 <ol>
     <li>Zoom into your area to capture detailed POI data.</li>
@@ -1499,29 +1581,6 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <li>Export as **Shapefile (.shp)**.</li>
 </ol>
 
-<h4><strong>Understanding Aggregation in Spatial Analysis</strong></h3>
-<p>
-    **Aggregation** is a geospatial technique that **groups individual data points into larger units** for analysis.  
-    This method is widely used for summarizing socio-economic data across administrative regions, city blocks, or natural landscapes.
-</p>
-
-<h4><strong>Example Use Case:</strong></h4>
-<p>
-    Imagine you have **100,000 individual business locations**. Instead of analyzing them **one by one**,  
-    you can **aggregate** them by:
-</p>
-<ul>
-    <li>Summing up **the number of businesses in each neighborhood**.</li>
-    <li>Calculating **the average economic density per region**.</li>
-    <li>Grouping data **by categories** (e.g., commercial areas vs. residential zones).</li>
-</ul>
-
-<h4><strong>Aggregation Methods:</strong></h4>
-<ul>
-    <li><strong>Grid-based Aggregation:</strong> Grouping POIs into hexagonal or square grids.</li>
-    <li><strong>Administrative Unit Aggregation:</strong> Summarizing data at municipal or district levels.</li>
-    <li><strong>Density Estimation:</strong> Calculating point density to identify **economic hotspots**.</li>
-</ul>
 
 <p>
     Now that we have **preprocessed** and **ingested the data into Google Earth Engine (GEE)**,  
