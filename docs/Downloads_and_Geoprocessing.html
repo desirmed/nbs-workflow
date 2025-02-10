@@ -1579,28 +1579,13 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     we will proceed with **spatial aggregation** in the next section.
 </p>
 
-<h3><strong>Step 1: Spatial Aggregation of Points of Interest (POIs)</strong></h3>
+<h4><strong>Step 1: Spatial Aggregation of Points of Interest (POIs)</strong></h4>
 
 <p>
     Now that we have **inspected and validated** the **Foursquare dataset**, we proceed to integrate  
     it with the **settlements dataset** using **spatial aggregation** in **Google Earth Engine (GEE)**.  
 </p>
 
-<h4><strong>Why Use Aggregation?</strong></h4>
-
-<p>
-    Aggregation is a **geoprocessing method** that summarizes point-based data over a larger region.  
-    This is especially useful for analyzing large datasets like **POIs**, as it allows us to **group and count**  
-    features within a defined boundary.
-</p>
-
-<p><strong>Example Use Cases of Aggregation:</strong></p>
-
-<ul>
-    <li>Summarizing **number of restaurants, schools, and businesses** per settlement.</li>
-    <li>Understanding **economic activity** based on the **density of commercial POIs**.</li>
-    <li>Identifying **urbanization levels** by counting **various facility types**.</li>
-</ul>
 
 <p>
     In this step, we will **aggregate** POI data by their **category levels** into the **settlement boundaries**,  
@@ -1614,7 +1599,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 </p>
 
 <ul>
-    <li><strong>Settlement Boundaries:</strong> This dataset contains polygons representing **human settlements**.</li>
+    <li><strong>Settlement Boundaries:</strong> This dataset contains polygons representing **individual settlements**.</li>
     <li><strong>POI Dataset:</strong> This dataset contains **Points of Interest**, classified into **category levels**.</li>
 </ul>
 
@@ -1626,8 +1611,8 @@ var settlements = ee.FeatureCollection("projects/ee-desmond/assets/desirmed/sett
 var poiDataset = ee.FeatureCollection('projects/ee-desmond/assets/desirmed/PointOfinterest');
 
 // Print dataset structure
-print("✅ Settlement Dataset:", settlements);
-print("✅ POI Dataset:", poiDataset);
+print(" Settlement Dataset:", settlements);
+print(" POI Dataset:", poiDataset);
 </pre>
 
 <p>
@@ -1668,10 +1653,8 @@ var enhancedSettlementsWithPOI = settlements.map(function(feature) {
 });
 
 // Print an example feature to verify the aggregation
-print("✅ Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPOI.first());
+print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPOI.first());
 </pre>
-
-<h4><strong>Understanding the Code</strong></h4>
 
 <ul>
     <li>The **<code>map()</code> function** loops over each settlement feature.</li>
@@ -1685,11 +1668,10 @@ print("✅ Example Settlement with Aggregated POI Data:", enhancedSettlementsWit
     </li>
 </ul>
 
-<h4><strong>Step 4: Expected Output</strong></h4>
 
 <p>
     Once the aggregation is complete, each **settlement feature** will contain new attributes  
-    summarizing the **number of POIs within its boundary**.
+    summarizing the type/categories of KCS and the **number of that per each category within its boundary**.
 </p>
 
 <p><strong>Example Output:</strong></p>
