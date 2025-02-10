@@ -1575,16 +1575,24 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <li>Zoom into your area to capture detailed POI data.</li>
     <li>Click <strong>"Download Viewpoint"</strong>. It automatically download all poi on map canvas in **JSON format**.</li>
     <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/35.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+    <li>Save the downloaded data into a folder or directory.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/36.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
     <li>The next step now will be to convert the json file into a **shapefile** to be used in Earth Engine.</li>
 </ol>
 
 <h4><strong>Step 3: Converting JSON to Feature Class in ArcGIS Pro</strong></h4>
 <ol>
     <li>Open **ArcGIS Pro**.</li>
-    <li>Go to <em>Analysis → Tools</em> and search for **"JSON to Features"**.</li>
-    
-    <li>Select the **downloaded JSON file** as input.</li>
+    <li>Go to <em>Analysis → Tools</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/37.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+    <li>And search for **"JSON to Features"*.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/38.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+    <li>Select the **downloaded JSON file** as input. And click run.By default, the geometry type is set to Polygon. Remember to change it to point </li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/39.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
     <li>Export as **Shapefile (.shp)**.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/40.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>
+    <li>You should now see your (.shp) poi data in where you saved it with other file extensions**.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/41.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
 </ol>
 
 <p> You can now import this data into earth engine for the spatial aggregation. You can consult previous guide to learn about how to import data into Earth engine as an asset.</p>
@@ -1731,6 +1739,7 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
         through **overlay analysis** with hazard datasets.</li>
     <li>Assess how existing KCS can support or limit the **development and implementation of Nature-based Solutions (NbS)**  
         for climate resilience and urban planning.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/42.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>
 </ul>
 
 
