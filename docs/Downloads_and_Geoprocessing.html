@@ -1579,7 +1579,163 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     we will proceed with **spatial aggregation** in the next section.
 </p>
 
+<h3><strong>Step 1: Spatial Aggregation of Points of Interest (POIs)</strong></h3>
 
+<p>
+    Now that we have **inspected and validated** the **Foursquare dataset**, we proceed to integrate  
+    it with the **settlements dataset** using **spatial aggregation** in **Google Earth Engine (GEE)**.  
+</p>
+
+<h4><strong>Why Use Aggregation?</strong></h4>
+
+<p>
+    Aggregation is a **geoprocessing method** that summarizes point-based data over a larger region.  
+    This is especially useful for analyzing large datasets like **POIs**, as it allows us to **group and count**  
+    features within a defined boundary.
+</p>
+
+<p><strong>Example Use Cases of Aggregation:</strong></p>
+
+<ul>
+    <li>Summarizing **number of restaurants, schools, and businesses** per settlement.</li>
+    <li>Understanding **economic activity** based on the **density of commercial POIs**.</li>
+    <li>Identifying **urbanization levels** by counting **various facility types**.</li>
+</ul>
+
+<p>
+    In this step, we will **aggregate** POI data by their **category levels** into the **settlement boundaries**,  
+    allowing us to assess how different **socioeconomic activities** are distributed.
+</p>
+
+<h4><strong>Step 2: Load the Required Datasets</strong></h4>
+
+<p>
+    The following script loads:
+</p>
+
+<ul>
+    <li><strong>Settlement Boundaries:</strong> This dataset contains polygons representing **human settlements**.</li>
+    <li><strong>POI Dataset:</strong> This dataset contains **Points of Interest**, classified into **category levels**.</li>
+</ul>
+
+<pre style="background: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+// Load the settlements dataset
+var settlements = ee.FeatureCollection("projects/ee-desmond/assets/desirmed/settlements_population_with_gender_age");
+
+// Load the Point of Interest (POI) dataset
+var poiDataset = ee.FeatureCollection('projects/ee-desmond/assets/desirmed/PointOfinterest');
+
+// Print dataset structure
+print("✅ Settlement Dataset:", settlements);
+print("✅ POI Dataset:", poiDataset);
+</pre>
+
+<p>
+    The **print() function** is used here to inspect the datasets before aggregation.  
+    This ensures that the **attribute structure** and **geometries** are correct before proceeding.
+</p>
+
+<h4><strong>Step 3: Aggregating POIs into Settlements</strong></h4>
+
+<p>
+    The **aggregation process** involves the following steps:
+</p>
+
+<ol>
+    <li>For each settlement, filter out **POIs that fall within its boundary**.</li>
+    <li>Use the <code>aggregate_histogram()</code> function to count POIs by category.</li>
+    <li>Add the aggregated counts as **new properties** to the settlement dataset.</li>
+</ol>
+
+<p><strong>Code Implementation:</strong></p>
+
+<pre style="background: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+// Integrate POIs into settlements
+var enhancedSettlementsWithPOI = settlements.map(function(feature) {
+  // Filter POIs within the settlement boundary
+  var poiInFeature = poiDataset.filterBounds(feature.geometry());
+  
+  // Aggregate POI data by Level 1 and Level 2 categories
+  var level1Counts = poiInFeature.aggregate_histogram('level1_cat'); // Counts by Level 1 categories
+  var level2Counts = poiInFeature.aggregate_histogram('level2_cat'); // Counts by Level 2 categories
+  
+  // Add the POI counts as new properties
+  feature = feature.set('POI_Level1_Counts', level1Counts); // Add Level 1 POI counts
+  feature = feature.set('POI_Level2_Counts', level2Counts); // Add Level 2 POI counts
+  
+  // Return the updated feature (with original attributes intact)
+  return feature;
+});
+
+// Print an example feature to verify the aggregation
+print("✅ Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPOI.first());
+</pre>
+
+<h4><strong>Understanding the Code</strong></h4>
+
+<ul>
+    <li>The **<code>map()</code> function** loops over each settlement feature.</li>
+    <li>The **<code>filterBounds()</code> function** extracts only the POIs that fall within the **settlement boundary**.</li>
+    <li>The **<code>aggregate_histogram()</code> function** computes a **frequency count** of POIs per category.</li>
+    <li>The **aggregated values** are stored as **new attributes** under:
+        <ul>
+            <li><code>POI_Level1_Counts</code>: High-level POI category counts (e.g., Food, Education).</li>
+            <li><code>POI_Level2_Counts</code>: More detailed breakdown of POI categories (e.g., Restaurants, Schools).</li>
+        </ul>
+    </li>
+</ul>
+
+<h4><strong>Step 4: Expected Output</strong></h4>
+
+<p>
+    Once the aggregation is complete, each **settlement feature** will contain new attributes  
+    summarizing the **number of POIs within its boundary**.
+</p>
+
+<p><strong>Example Output:</strong></p>
+
+<pre style="background: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+{
+  "type": "Feature",
+  "properties": {
+    "name": "Bruges",
+    "population": 117000,
+    "POI_Level1_Counts": {
+      "Food & Drink": 125,
+      "Education": 42,
+      "Retail": 87
+    },
+    "POI_Level2_Counts": {
+      "Restaurants": 89,
+      "Cafes": 30,
+      "Schools": 42,
+      "Supermarkets": 50
+    }
+  },
+  "geometry": { "type": "Polygon", "coordinates": [...] }
+}
+</pre>
+
+<p>
+    This output helps in **identifying economic hubs** within the landscape.  
+    For example, a settlement with a **high density of restaurants and cafes** might indicate a **commercial center**,  
+    while an area with **many schools and libraries** could represent an **educational zone**.
+</p>
+
+
+<p>
+    This spatial aggregation allows us to **identify clusters of key community systems**  
+    within each settlement, providing valuable insights into their **distribution and density**.  
+    By analyzing these clusters, we can:
+</p>
+
+<ul>
+    <li>Quantify the **availability and accessibility** of essential services within a given settlement.</li>
+    <li>Evaluate the **exposure and vulnerability** of community assets to various environmental and socio-economic risks  
+        through **overlay analysis** with hazard datasets.</li>
+    <li>Assess how existing KCS can support or limit the **development and implementation of Nature-based Solutions (NbS)**  
+        for climate resilience and urban planning.</li>
+</ul>
 
 
 <h3><strong>EUNIS Dataset Creation</strong></h3>
