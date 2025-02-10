@@ -1406,7 +1406,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 </div>
 
 
-<h3><strong>Socio-Economic</strong></h2>
+<h4><strong>Socio-Economic</strong></h2>
 
 <p>
     Understanding landscapes extends beyond ecological and physical characteristics; 
@@ -1422,7 +1422,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <a href="https://doi.org/10.1016/j.envsci.2022.101822" target="_blank">Turner et al., 2022</a>).
 </p>
 
-<h4><strong>Key Benefits of Socio-Economic Mapping:</strong></h4>
+<p>Mapping socio-economic indicators can include and not limited to: </p>
 <ul>
     <li>Identify <strong>economic hubs and services</strong> influencing environmental pressures (<a href="https://doi.org/10.1073/pnas.1606036114" target="_blank">Seto et al., 2017</a>).</li>
     <li>Analyze <strong>human-nature interactions</strong> affecting biodiversity conservation (<a href="https://doi.org/10.1007/s10980-016-0397-3" target="_blank">Plieninger et al., 2016</a>).</li>
@@ -1434,13 +1434,13 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     limiting its integration into landscape assessments at high resolution (<a href="https://doi.org/10.1111/gcb.15310" target="_blank">Nelson et al., 2020</a>).
 </p>
 
-<h3><strong>Leveraging Foursquare’s POI Dataset for Socio-Economic Mapping</strong></h3>
+<h4><strong>Using Foursquare’s POI Dataset for Socio-Economic indicators</strong></h3>
 <p>
     Thanks to global location intelligence, we now have access to <strong>100 million+ Points of Interest (POI)</strong> from 
     <a href="https://www.fused.io/public/UDF_Foursquare_Open_Source_Places" target="_blank">Foursquare’s Open Source Places dataset</a>.
 </p>
 
-<h4><strong>Potential Uses:</strong></h4>
+<p> Apart from for instances extracting socio-economic indicators from a land use data (which is often difficult), this is the most available dataset we can rely on. It is advisable to consult with stakeholders if these indicators align with what they will consider as receptors necessary for underdtanding their system  and the assessment and support of NbS. But we will use this dataset to:</p>
 <ul>
     <li>Map <strong>economic activity and infrastructure</strong> (e.g., businesses, services, transport hubs).</li>
     <li>Assess <strong>functional land use</strong> and socio-economic interactions with ecological areas.</li>
@@ -1476,7 +1476,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <li><strong>Categorization inconsistencies</strong> across different regions.</li>
 </ul>
 
-<h3><strong>Exploring, Downloading, and Preprocessing the Data</strong></h3>
+<h4><strong>Exploring, Downloading, and Preprocessing the Data</strong></h3>
 
 <h4><strong>Step 1: Accessing Foursquare’s POI Data</strong></h4>
 <ol>
@@ -1499,7 +1499,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <li>Export as **Shapefile (.shp)**.</li>
 </ol>
 
-<h3><strong>Understanding Aggregation in Spatial Analysis</strong></h3>
+<h4><strong>Understanding Aggregation in Spatial Analysis</strong></h3>
 <p>
     **Aggregation** is a geospatial technique that **groups individual data points into larger units** for analysis.  
     This method is widely used for summarizing socio-economic data across administrative regions, city blocks, or natural landscapes.
@@ -1523,13 +1523,10 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <li><strong>Density Estimation:</strong> Calculating point density to identify **economic hotspots**.</li>
 </ul>
 
-<h3><strong>Next Steps: Performing Aggregation in Earth Engine</strong></h3>
 <p>
     Now that we have **preprocessed** and **ingested the data into Google Earth Engine (GEE)**,  
     we will proceed with **spatial aggregation** in the next section.
 </p>
-
-<p><strong>Stay tuned for the next guide on spatial clustering and zonal statistics in Earth Engine! 🚀</strong></p>
 
 
 
