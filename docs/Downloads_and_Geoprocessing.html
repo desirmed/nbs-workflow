@@ -1405,6 +1405,135 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 <p>Following the Biophysical archetypes, we will explore additional datasets such as EUNIS, Points of Interest (POI), population, river basins, hydrosheds, and flood probability data. Similar detailed steps will be provided to guide you through the download, preprocessing, and integration of these datasets.</p>
 </div>
 
+
+<h3><strong>Socio-Economic</strong></h2>
+
+<p>
+    Understanding landscapes extends beyond ecological and physical characteristics; 
+    <strong>socio-economic factors</strong> play a crucial role in how landscapes function.  
+    Socio-economic landscape characterization refers to analyzing human activities, economic infrastructures, 
+    and demographics to assess their influence on land use, biodiversity, and resilience.
+</p>
+
+<p>
+    Recent studies emphasize that integrating socio-economic data with landscape ecological analysis 
+    enhances decision-making for <strong>Nature-Based Solutions (NBS)</strong> and sustainable land use planning  
+    (<a href="https://doi.org/10.1016/j.ecolind.2020.106322" target="_blank">Brown et al., 2020</a>;
+    <a href="https://doi.org/10.1016/j.envsci.2022.101822" target="_blank">Turner et al., 2022</a>).
+</p>
+
+<h4><strong>Key Benefits of Socio-Economic Mapping:</strong></h4>
+<ul>
+    <li>Identify <strong>economic hubs and services</strong> influencing environmental pressures (<a href="https://doi.org/10.1073/pnas.1606036114" target="_blank">Seto et al., 2017</a>).</li>
+    <li>Analyze <strong>human-nature interactions</strong> affecting biodiversity conservation (<a href="https://doi.org/10.1007/s10980-016-0397-3" target="_blank">Plieninger et al., 2016</a>).</li>
+    <li>Support <strong>climate adaptation strategies</strong> by assessing economic vulnerability (<a href="https://doi.org/10.1016/j.landurbplan.2008.09.003" target="_blank">Nassauer & Opdam, 2008</a>).</li>
+</ul>
+
+<p>
+    However, detailed socio-economic spatial data is often <strong>fragmented or inaccessible</strong>, 
+    limiting its integration into landscape assessments at high resolution (<a href="https://doi.org/10.1111/gcb.15310" target="_blank">Nelson et al., 2020</a>).
+</p>
+
+<h3><strong>Leveraging Foursquare’s POI Dataset for Socio-Economic Mapping</strong></h3>
+<p>
+    Thanks to global location intelligence, we now have access to <strong>100 million+ Points of Interest (POI)</strong> from 
+    <a href="https://www.fused.io/public/UDF_Foursquare_Open_Source_Places" target="_blank">Foursquare’s Open Source Places dataset</a>.
+</p>
+
+<h4><strong>Potential Uses:</strong></h4>
+<ul>
+    <li>Map <strong>economic activity and infrastructure</strong> (e.g., businesses, services, transport hubs).</li>
+    <li>Assess <strong>functional land use</strong> and socio-economic interactions with ecological areas.</li>
+    <li>Validate <strong>data with regional stakeholders</strong> to ensure relevance.</li>
+</ul>
+
+<h4><strong>Dataset Overview & Limitations</strong></h4>
+<p>The dataset includes:</p>
+<ul>
+    <li><strong>Location metadata</strong> (e.g., coordinates, place names).</li>
+    <li><strong>Hierarchical categorization</strong> (e.g., type of business or infrastructure).</li>
+</ul>
+
+<p>Example JSON of a POI:</p>
+<pre>
+{
+  "type": "Feature",
+  "properties": {
+    "name": "Mauricio's Manor",
+    "level2_category_name": "Accommodation"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-122.440572, 37.765877]
+  }
+}
+</pre>
+
+<h4><strong>Challenges & Limitations</strong></h4>
+<ul>
+    <li>Potential <strong>location inaccuracies</strong> (GPS shifts, outdated places).</li>
+    <li><strong>Incomplete rural coverage</strong> (urban bias in data collection).</li>
+    <li><strong>Categorization inconsistencies</strong> across different regions.</li>
+</ul>
+
+<h3><strong>Exploring, Downloading, and Preprocessing the Data</strong></h3>
+
+<h4><strong>Step 1: Accessing Foursquare’s POI Data</strong></h4>
+<ol>
+    <li>Visit <a href="https://www.fused.io/public/UDF_Foursquare_Open_Source_Places" target="_blank">Foursquare Open Source Places</a>.</li>
+    <li>Search for your region of interest.</li>
+    <li>Click on a POI to inspect its attributes.</li>
+</ol>
+
+<h4><strong>Step 2: Downloading POI Data</strong></h4>
+<ol>
+    <li>Zoom into your area to capture detailed POI data.</li>
+    <li>Click <strong>"Download Viewpoint"</strong> and select **JSON format**.</li>
+</ol>
+
+<h4><strong>Step 3: Converting JSON to Feature Class in ArcGIS Pro</strong></h4>
+<ol>
+    <li>Open **ArcGIS Pro**.</li>
+    <li>Go to <em>Analysis → Tools</em> and search for **"JSON to Features"**.</li>
+    <li>Select the **downloaded JSON file** as input.</li>
+    <li>Export as **Shapefile (.shp)**.</li>
+</ol>
+
+<h3><strong>Understanding Aggregation in Spatial Analysis</strong></h3>
+<p>
+    **Aggregation** is a geospatial technique that **groups individual data points into larger units** for analysis.  
+    This method is widely used for summarizing socio-economic data across administrative regions, city blocks, or natural landscapes.
+</p>
+
+<h4><strong>Example Use Case:</strong></h4>
+<p>
+    Imagine you have **100,000 individual business locations**. Instead of analyzing them **one by one**,  
+    you can **aggregate** them by:
+</p>
+<ul>
+    <li>Summing up **the number of businesses in each neighborhood**.</li>
+    <li>Calculating **the average economic density per region**.</li>
+    <li>Grouping data **by categories** (e.g., commercial areas vs. residential zones).</li>
+</ul>
+
+<h4><strong>Aggregation Methods:</strong></h4>
+<ul>
+    <li><strong>Grid-based Aggregation:</strong> Grouping POIs into hexagonal or square grids.</li>
+    <li><strong>Administrative Unit Aggregation:</strong> Summarizing data at municipal or district levels.</li>
+    <li><strong>Density Estimation:</strong> Calculating point density to identify **economic hotspots**.</li>
+</ul>
+
+<h3><strong>Next Steps: Performing Aggregation in Earth Engine</strong></h3>
+<p>
+    Now that we have **preprocessed** and **ingested the data into Google Earth Engine (GEE)**,  
+    we will proceed with **spatial aggregation** in the next section.
+</p>
+
+<p><strong>Stay tuned for the next guide on spatial clustering and zonal statistics in Earth Engine! 🚀</strong></p>
+
+
+
+
 <h3><strong>EUNIS Dataset Creation</strong></h3>
 <p>The <a href="https://eunis.eea.europa.eu/">EUNIS habitat classification system</a> is a vital tool for understanding habitat types across Europe, supporting biodiversity monitoring, conservation planning, and ecosystem-based management. By standardizing habitat classification, EUNIS provides a framework for consistent ecological assessments. To our knowledge, there isnt a unified EUNIS habitat map for the entire europe except smaller polygon shapes that exist as properties in other datasets. This is why we create one for the purpose of this study. While some EUNIS maps exist, they are often based on older datasets and may not reflect recent land use changes or provide adequate detail for dynamic regions.</p>
 
