@@ -1556,11 +1556,13 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
       <li>Grouping data **by categories** (e.g., commercial areas vs. residential zones).</li>
   </ul>
 
-  
+<p> To do this lets first download the data</p>
+
 <h4><strong>Step 2: Downloading POI Data</strong></h4>
 <ol>
     <li>Zoom into your area to capture detailed POI data.</li>
-    <li>Click <strong>"Download Viewpoint"</strong> and select **JSON format**.</li>
+    <li>Click <strong>"Download Viewpoint"</strong>. It automatically download all poi on map canvas in **JSON format**.</li>
+    <li>The next step now will be to convert the json file into a **shapefile** to be used in Earth Engine.</li>
 </ol>
 
 <h4><strong>Step 3: Converting JSON to Feature Class in ArcGIS Pro</strong></h4>
@@ -1571,9 +1573,9 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <li>Export as **Shapefile (.shp)**.</li>
 </ol>
 
-
+<p> You can now import this data into earth engine for the spatial aggregation. You can consult previous guide to learn about how to import data into Earth engine as an asset.</p>
 <p>
-    Now that we have **preprocessed** and **ingested the data into Google Earth Engine (GEE)**,  
+    Now that we have **ingested the data into Google Earth Engine (GEE)**,  
     we will proceed with **spatial aggregation** in the next section.
 </p>
 
