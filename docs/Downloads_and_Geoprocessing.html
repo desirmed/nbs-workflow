@@ -1543,25 +1543,19 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 <h4><strong>Understanding Aggregation in Spatial Analysis</strong></h3>
   <p>
     Spatial Aggregation calculates statistics in areas where an input layer overlaps a boundary layer. You can perform a spatial aggregate on maps with two layers: one area layer with the boundaries that will be used for aggregation (for example, countries, cities, districts or community) and one layer to aggregate.
-    We will use area layers to summarize only the proportions of the point features that are within the input boundary. Remember that our poi data is already in categories.
+    We will use area layers (in this case our community boundaries) to summarize only the proportions of the point features that are within the input boundary and group them into broader categories. So for instance, Health, Education etc. This helps us to know what categories of KCS are within a certain area which can be used for other exposure/vulnerability analysis. Remember that our poi data is already in categories.
   </p>
   
   <p>
-      Imagine you have **100,000 individual business locations**. Instead of analyzing them **one by one**,  
+      Imagine you have **100,000 individual KCS locations**. Instead of analyzing them **one by one**,  
       you can **aggregate** them by:
   </p>
   <ul>
-      <li>Summing up **the number of businesses in each neighborhood**.</li>
-      <li>Calculating **the average economic density per region**.</li>
+      <li>Summing up **the number(count) of KCS in categories in each neighborhood**.</li>
+      <li>Calculating **the average socio-economic density per region**.</li>
       <li>Grouping data **by categories** (e.g., commercial areas vs. residential zones).</li>
   </ul>
-  
-  <h4><strong>Aggregation Methods:</strong></h4>
-  <ul>
-      <li><strong>Grid-based Aggregation:</strong> Grouping POIs into hexagonal or square grids.</li>
-      <li><strong>Administrative Unit Aggregation:</strong> Summarizing data at municipal or district levels.</li>
-      <li><strong>Density Estimation:</strong> Calculating point density to identify **economic hotspots**.</li>
-  </ul>
+
   
 <h4><strong>Step 2: Downloading POI Data</strong></h4>
 <ol>
