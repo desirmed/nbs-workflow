@@ -1480,9 +1480,18 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 
 <h4><strong>Step 1: Accessing Foursquare’s POI Data</strong></h4>
 <ol>
-    <li>Visit <a href="https://www.fused.io/public/UDF_Foursquare_Open_Source_Places" target="_blank">Foursquare Open Source Places</a>.</li>
+    <li>We will first inspect how the POIS look like on a globe map.</li>
+    <li>Go to <a href="https://opensource.foursquare.com/os-places/" target="_blank">Foursquare Open Source Places</a>.</li>
+    <li>Click on Explore and then visualise pois.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/27.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+    <li>Now you can see how the data is visualise globally. You can display this differently by toggling betwwen the visualisation parameter. It was has a 2D and 3D map view.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/28.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+    <li>Thanks to Fused, they have partitioned these points into easily accessible GeoParquet files, and hosted them on <a href="https://source.coop/repositories/fused/fsq-os-places/description" target="_blank">Source Cooperative</a>. So we can easily extract this data for use.</li>
+    <li>Go to <a href="https://www.fused.io/public/UDF_Foursquare_Open_Source_Places" target="_blank">Foursquare Open Source Places</a>.</li>
     <li>Search for your region of interest.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/29.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
     <li>Click on a POI to inspect its attributes.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/30.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
 </ol>
 
 <h4><strong>Inspecting a Point Feature in the Foursquare Dataset</strong></h4>
@@ -1514,14 +1523,16 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 </pre>
 
 <p>
-    To confirm if the extracted location matches the real-world coordinates:
+    To confirm if the extracted location matches the real-world coordinates or information we need to classify this KCS:
 </p>
 
 <ol>
     <li>Copy the entire **JSON feature** from the Foursquare console.</li>
     <li>Go to <a href="https://geojson.io" target="_blank"><strong>GeoJSON.io</strong></a>.</li>
     <li>Paste the copied **JSON feature** into the **right-side text editor**.</li>
-    <li>The **location marker** will automatically appear on the interactive map.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/31.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+    <li>The **location marker** will automatically appear on the interactive map. If you have idenfitied a another socio-economic data that you will want to map, copy that and paste</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/33.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
 </ol>
 
 <h4><strong>Inspecting the Point’s Accuracy</strong></h4>
@@ -1529,6 +1540,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 <ul>
     <li>Toggle between <strong>Satellite and Street View</strong> to check if the POI is correctly positioned.</li>
     <li>Compare the **category and attributes** (e.g., business name) with known data.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/34.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
     <li>If the location appears incorrect, this suggests a **possible data quality issue** (e.g., outdated coordinates).</li>
 </ul>
 
@@ -1545,7 +1557,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     Spatial Aggregation calculates statistics in areas where an input layer overlaps a boundary layer. You can perform a spatial aggregate on maps with two layers: one area layer with the boundaries that will be used for aggregation (for example, countries, cities, districts or community) and one layer to aggregate.
     We will use area layers (in this case our community boundaries) to summarize only the proportions of the point features that are within the input boundary and group them into broader categories. So for instance, Health, Education etc. This helps us to know what categories of KCS are within a certain area which can be used for other exposure/vulnerability analysis. Remember that our poi data is already in categories.
   </p>
-  
+      <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/32.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
   <p>
       Imagine you have **100,000 individual KCS locations**. Instead of analyzing them **one by one**,  
       you can **aggregate** them by:
@@ -1562,6 +1574,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 <ol>
     <li>Zoom into your area to capture detailed POI data.</li>
     <li>Click <strong>"Download Viewpoint"</strong>. It automatically download all poi on map canvas in **JSON format**.</li>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/35.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
     <li>The next step now will be to convert the json file into a **shapefile** to be used in Earth Engine.</li>
 </ol>
 
@@ -1569,6 +1582,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 <ol>
     <li>Open **ArcGIS Pro**.</li>
     <li>Go to <em>Analysis → Tools</em> and search for **"JSON to Features"**.</li>
+    
     <li>Select the **downloaded JSON file** as input.</li>
     <li>Export as **Shapefile (.shp)**.</li>
 </ol>
