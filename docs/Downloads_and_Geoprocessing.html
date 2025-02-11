@@ -3018,51 +3018,52 @@ Wetland (C1)       → High (6)
 // ===============================
 
 var eunisNumericMapping = {
-  1: {eunisCode: 'J1', color: '#b22222', description: 'Buildings of cities, towns, and villages'}, // Deep red for urban areas
-  2: {eunisCode: 'J1.2', color: '#ff4500', description: 'Residential buildings of villages and urban peripheries'}, // Orange-red
-  3: {eunisCode: 'J2', color: '#ffa07a', description: 'Low density buildings'}, // Light coral for suburban areas
-  4: {eunisCode: 'J4', color: '#8b4513', description: 'Transport networks and other hard-surfaced areas'}, // Saddle brown for roads
-  5: {eunisCode: 'J4.5', color: '#d2691e', description: 'Hard-surfaced areas of ports'}, // Chocolate brown
-  6: {eunisCode: 'J4.4', color: '#808080', description: 'Airport runways and aprons'}, // Gray for airstrips
-  7: {eunisCode: 'J3', color: '#556b2f', description: 'Extractive industrial sites'}, // Dark olive green for industrial land
-  8: {eunisCode: 'J6', color: '#a0522d', description: 'Waste deposits'}, // Sienna for waste areas
-  9: {eunisCode: 'J1.6', color: '#d2b48c', description: 'Urban and suburban construction and demolition sites'}, // Tan
-  10: {eunisCode: 'J2.6-2012', color: '#deb887', description: 'Disused rural constructions'}, // Burlywood
-  11: {eunisCode: 'E2.6-2012', color: '#32cd32', description: 'Heavily fertilised grassland, including sports fields and grass lawns'}, // Lime green for managed grass
-  12: {eunisCode: 'I1.1', color: '#adff2f', description: 'Intensive unmixed crops'}, // Green-yellow for intensive crops
-  13: {eunisCode: 'J2.43-2012', color: '#ff7f50', description: 'Greenhouses'}, // Coral for greenhouses
-  14: {eunisCode: 'V5', color: '#8fbc8f', description: 'Shrub plantations'}, // Dark sea green for shrubs
-  15: {eunisCode: 'T24', color: '#228b22', description: 'Olea europaea-Ceratonia siliqua forest'}, // Forest green
-  16: {eunisCode: 'B15', color: '#f4a460', description: 'Bare tilled, fallow or recently abandoned arable land'}, // Sandy brown
-  17: {eunisCode: 'V12', color: '#ffe4b5', description: 'Mixed crops of market gardens and horticulture'}, // Moccasin
-  18: {eunisCode: 'V13', color: '#f0e68c', description: 'Arable land with unmixed crops grown by low-intensity agricultural methods'}, // Khaki
-  19: {eunisCode: 'V6', color: '#6b8e23', description: 'Tree dominated man-made habitats'}, // Olive drab
-  20: {eunisCode: 'T1', color: '#008000', description: 'Deciduous broadleaved forest'}, // Green for forest
-  21: {eunisCode: 'T29', color: '#2e8b57', description: 'Broadleaved evergreen plantation of non site-native trees'}, // Sea green
-  22: {eunisCode: 'V14', color: '#f2cca6', description: 'Agro-forestry areas'}, // Sandy orange for CORINE class 244
-  23: {eunisCode: 'T3', color: '#3cb371', description: 'Coniferous forest'}, // Medium sea green
-  24: {eunisCode: 'T3N', color: '#66cdaa', description: 'Coniferous plantation of site-native trees'}, // Medium aquamarine
-  25: {eunisCode: 'G4-2012', color: '#20b2aa', description: 'Mixed deciduous and coniferous woodland'}, // Light sea green
-  26: {eunisCode: 'G4.F-2012', color: '#5f9ea0', description: 'Mixed forestry plantations'}, // Cadet blue
-  27: {eunisCode: 'T41', color: '#4682b4', description: 'Early-stage natural and semi-natural forest and regrowth'}, // Steel blue
-  28: {eunisCode: 'T42', color: '#87cefa', description: 'Early-stage natural and semi-natural forest and regrowth'}, // Light sky blue
-  29: {eunisCode: 'T43', color: '#d3d3d3', description: 'Recently felled areas'}, // Light gray
-  30: {eunisCode: 'V3', color: '#7cfc00', description: 'Artificial grasslands and herb dominated habitats'}, // Lawn green
-  31: {eunisCode: 'R2', color: '#006400', description: 'Mesic grasslands'}, // Dark green
-  32: {eunisCode: 'R4', color: '#556b2f', description: 'Alpine and subalpine grasslands'}, // Dark olive green
-  33: {eunisCode: 'S4', color: '#8b0000', description: 'Temperate shrub heathland'}, // Dark red
-  34: {eunisCode: 'F5', color: '#b0c4de', description: 'Maquis, arborescent matorral, and thermo-Mediterranean brushes'}, // Light steel blue
-  35: {eunisCode: 'U2', color: '#708090', description: 'Screes'}, // Slate gray
-  36: {eunisCode: 'N1', color: '#fa8072', description: 'Coastal dunes and sandy shores'}, // Salmon
-  37: {eunisCode: 'C3.6-2012', color: '#add8e6', description: 'Sparsely vegetated shores'}, // Light blue
-  38: {eunisCode: 'C2', color: '#4169e1', description: 'Surface running waters'}, // Royal blue
-  39: {eunisCode: 'C1', color: '#00bfff', description: 'Surface standing waters'}, // Deep sky blue
-  40: {eunisCode: 'MA2', color: '#6495ed', description: 'Littoral biogenic habitat'}, // Cornflower blue
-  41: {eunisCode: 'J5.1', color: '#1e90ff', description: 'Highly artificial saline and brackish waters'}, // Dodger blue
-  42: {eunisCode: 'MA5', color: '#ffdab9', description: 'Littoral sand'}, // Peach puff
-  43: {eunisCode: 'X02-2012', color: '#87ceeb', description: 'Saline coastal lagoons'}, // Sky blue
-  44: {eunisCode: 'X01', color: '#2171b5', description: 'Estuaries'} // Dark blue
+  1: {eunisCode: 'J1', color: '#b22222', description: 'Buildings of cities, towns, and villages'},
+  2: {eunisCode: 'J1.2', color: '#ff4500', description: 'Residential buildings of villages and urban peripheries'},
+  3: {eunisCode: 'J2', color: '#ffa07a', description: 'Low density buildings'},
+  4: {eunisCode: 'J4', color: '#8b4513', description: 'Transport networks and other hard-surfaced areas'},
+  5: {eunisCode: 'J4.5', color: '#d2691e', description: 'Hard-surfaced areas of ports'},
+  6: {eunisCode: 'J4.4', color: '#808080', description: 'Airport runways and aprons'},
+  7: {eunisCode: 'J3', color: '#556b2f', description: 'Extractive industrial sites'},
+  8: {eunisCode: 'J6', color: '#a0522d', description: 'Waste deposits'},
+  9: {eunisCode: 'J1.6', color: '#d2b48c', description: 'Urban and suburban construction and demolition sites'},
+  10: {eunisCode: 'X11-2012', color: '#deb887', description: 'Large parks'}, 	
+  1: {eunisCode: 'J1-2012', color: '#b22222', description: 'Buildings of cities, towns, and villages'},
+  11: {eunisCode: 'V1', color: '#32cd32', description: 'Arable land and market gardens'},
+  12: {eunisCode: 'V11', color: '#adff2f', description: 'Intensive unmixed crops'},
+  13: {eunisCode: 'V14', color: '#ff7f50', description: 'Inundated or inundatable croplands, including rice fields'},
+  14: {eunisCode: 'V54', color: '#8fbc8f', description: 'Vineyards'},
+  15: {eunisCode: 'V53', color: '#228b22', description: 'Shrub plantations for ornamental purposes or for fruit, other than vineyards'},
+  16: {eunisCode: 'T24', color: '#f4a460', description: 'Olea europaea-Ceratonia siliqua woodland'},
+  17: {eunisCode: 'R2', color: '#006400', description: 'Mesic grasslands'},
+  18: {eunisCode: 'V1', color: '#ffe4b5', description: 'Arable land and market gardens'},
+  19: {eunisCode: 'V2', color: '#6b8e23', description: 'Cultivated areas of gardens and parks'},
+  20: {eunisCode: 'V13', color: '#f0e68c', description: 'Arable land with unmixed crops grown by low-intensity agricultural methods'},
+  21: {eunisCode: 'R7', color: '#d2b48c', description: 'Sparsely wooded grasslands'},
+  22: {eunisCode: 'T1', color: '#008000', description: 'Broadleaved deciduous woodland'},
+  23: {eunisCode: 'T3', color: '#3cb371', description: 'Coniferous woodland'},
+  24: {eunisCode: 'G4-2012', color: '#20b2aa', description: 'Mixed deciduous and coniferous woodland'},
+  25: {eunisCode: 'R1', color: '#7cfc00', description: 'Dry grasslands'},
+  26: {eunisCode: 'S4', color: '#8b0000', description: 'Temperate shrub heathland'},
+  27: {eunisCode: 'F5', color: '#b0c4de', description: 'Maquis, arborescent matorral, and thermo-Mediterranean brushes'},
+  28: {eunisCode: 'R5', color: '#87cefa', description: 'Woodland fringes and clearings and tall forb stands'},
+  29: {eunisCode: 'N1', color: '#fa8072', description: 'Coastal dunes and sandy shores'},
+  30: {eunisCode: 'MA1', color: '#add8e6', description: 'Littoral rock and other hard substrata'},
+  31: {eunisCode: 'U5', color: '#708090', description: 'Miscellaneous inland habitats with very sparse or no vegetation'},
+  32: {eunisCode: 'H5.5-2012', color: '#d3d3d3', description: 'Burnt areas with very sparse or no vegetation'},
+  33: {eunisCode: 'U4', color: '#556b2f', description: 'Snow or ice-dominated habitats'},
+  34: {eunisCode: 'C3-2012', color: '#4169e1', description: 'Littoral zone of inland surface waterbodies'},
+  35: {eunisCode: 'D1-2012', color: '#00bfff', description: 'Raised and blanket bogs'},
+  36: {eunisCode: 'A2.5', color: '#1e90ff', description: 'Coastal saltmarshes and saline reedbeds'},
+  37: {eunisCode: 'J5.1-2012', color: '#6495ed', description: 'Highly artificial saline and brackish waters'},
+  38: {eunisCode: 'MA5', color: '#ffdab9', description: 'Littoral sand'},
+  39: {eunisCode: 'C2-2012', color: '#87ceeb', description: 'Surface running waters'},
+  40: {eunisCode: 'C1-2012', color: '#2171b5', description: 'Surface standing waters'},
+  41: {eunisCode: 'X02-2012', color: '#ffdab9', description: 'Saline coastal lagoons'},
+  42: {eunisCode: 'X01-2012', color: '#2171b5', description: 'Estuaries'},
+  43: {eunisCode: 'MB5', color: '#87cefa', description: 'Infralittoral sand'}
 };
+
 
 // Define visualization parameters for EUNIS habitats
 var eunisVisParams = {
