@@ -876,7 +876,6 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
           </ul>
           <p><strong>➡ Next: Analyzing Ecosystem Services & Mapping Resilience </strong></p>
 
-
           <h2>Step 3: Analyzing Ecosystem Services</h2>
           <p>Now that we have calculated **flood exposure**, we will analyze **ecosystem services** within these flood-prone areas. Understanding ecosystem services is crucial because:</p>
           <ul>
@@ -1027,7 +1026,18 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
               <li>**Green areas** indicate **Low Risk Settlements**.</li>
               <li>The **Resilience Score map** helps **visualize ecosystem contributions**.</li>
           </ul>
-
+          
+          <h2>Final Step: Exporting the Results</h2>
+          <p>Finally, we will export our final dataset for further analysis.</p>
+          
+          <pre class="code-block">
+          // Export final dataset
+          Export.table.toDrive({
+              collection: settlementsWithFloodRisk,
+              description: 'Settlements_Impact_Chain_Analysis',
+              fileFormat: 'CSV'
+          });
+          </pre>
           
           <p><strong> Summary:</strong> We have now successfully:</p>
           <ul>
@@ -1035,11 +1045,13 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
               <li>Computed the role of ecosystem services in buffering flood risks.</li>
               <li>Assigned resilience scores to settlements.</li>
               <li>Classified settlements into **High, Medium, and Low Risk** zones.</li>
-              <li>Visualized the results</li>
-              
+              <li>Visualized the results on a **Google Earth Engine Map**.</li>
+              <li>Exported the final dataset for further analysis.</li>
           </ul>
           
+          <p><strong>Next:</strong> We will explore how these results can support **Nature-based Solutions (NbS) planning**.</p>
           
+
   
     
     
