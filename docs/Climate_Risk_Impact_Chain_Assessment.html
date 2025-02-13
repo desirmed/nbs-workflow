@@ -800,9 +800,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
       <strong>ℹ️ Note:</strong> The richness of this impact chain assessment largely depends on the quality of datasets available for the region which we used for the <a href="https://deltares-desirmed.github.io/nbs-workflow/Downloads_and_Geoprocessing.html#Landscape_Archetype_Classification">Landscape Characterisation</a> exercise, especially on socio-economic and governance aspects. However, we do not expect much biophysical factors to change in mapping.
   </div>
   
-
-
-    <h2> Step 1: Load Required Datasets</h2>
+    <h4> Step 1: Load Required Datasets</h4>
     <p>Before conducting any analysis, we need to <strong>load the necessary datasets</strong> in GEE.</p>
     <ul>
         <li><strong>Settlement Data:</strong> Contains population and demographic information.</li>
@@ -831,7 +829,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
         <li>Helps in identifying potential exposure and risk patterns.</li>
     </ul>
 
-          <h2> Step 2: Calculate Flood Exposure for Each Settlement</h2>
+          <h4> Step 2: Calculate Flood Exposure for Each Settlement</h4>
           <p>Now that we have the required datasets, we will calculate the <strong>flood exposure for each settlement</strong>. This involves:</p>
           <ul>
               <li>Overlaying flood hazard rasters with the settlement boundaries.</li>
@@ -877,7 +875,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
           <p><strong>➡ Next: Analyzing Ecosystem Services & Mapping Resilience </strong></p>
 
 
-          <h2>Step 3: Analyzing Ecosystem Services</h2>
+          <h4>Step 3: Analyzing Ecosystem Services</h4>
           <p>Now that we have calculated **flood exposure**, we will analyze **ecosystem services** within these flood-prone areas. Understanding ecosystem services is crucial because:</p>
           <ul>
               <li>They <strong>act as natural flood buffers</strong> (e.g., wetlands absorb excess water).</li>
@@ -933,7 +931,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
               <li><code>Ecosystem_Class_Percentages</code> helps in **comparing settlements** based on their ecosystem support.</li>
           </ul>
           
-          <h2>Step 4: Resilience Scoring & Risk Categorization</h2>
+          <h4>Step 4: Resilience Scoring & Risk Categorization</h4>
           <p>Now that we have both **flood exposure** and **ecosystem service metrics**, we will compute a <strong>Resilience Score</strong> to evaluate the ability of each settlement to cope with floods.</p>
           
           <h3>Why Compute a Resilience Score?</h3>
@@ -969,7 +967,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
               <li>Settlements with **low resilience scores** will need **urgent intervention**.</li>
           </ul>
           
-          <h3>Step 5: Classify Settlements by Flood Risk</h3>
+          <h4>Step 5: Classify Settlements by Flood Risk</h4>
           <p>We will now classify each settlement into **High, Medium, and Low Flood Risk Categories** based on its total flood exposure.</p>
           
           <pre class="code-block">
@@ -997,7 +995,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
               <li>Settlements **below 5 km²** of flood exposure are <strong>Low Risk</strong>.</li>
           </ul>
           
-          <h2>Step 6: Visualizing Resilience Scores on a Map</h2>
+          <h4>Step 6: Visualizing Resilience Scores on a Map</h4>
           <p>Now that we have calculated **flood risk and resilience**, we will visualize the results on a map with appropriate styling.</p>
           
           <pre class="code-block">
