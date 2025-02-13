@@ -800,29 +800,9 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
       <strong>ℹ️ Note:</strong> The richness of this impact chain assessment largely depends on the quality of datasets available for the region which we used for the <a href="https://deltares-desirmed.github.io/nbs-workflow/Downloads_and_Geoprocessing.html#Landscape_Archetype_Classification">Landscape Characterisation</a> exercise, especially on socio-economic and governance aspects. However, we do not expect much biophysical factors to change in mapping.
   </div>
   
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Impact Chain Assessment Guide</title>
-      <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; padding: 20px; background-color: #f9f9f9; }
-          h2, h3 { color: #2c3e50; }
-          p { margin-bottom: 10px; }
-          code { background-color: #e6ffe6; padding: 5px; border-radius: 3px; }
-          .note { background-color: #fff3cd; padding: 10px; border-left: 5px solid #ffcc00; margin: 15px 0; }
-          .step { background-color: #e3f2fd; padding: 15px; border-left: 5px solid #42a5f5; margin: 20px 0; }
-          .code-block { background-color: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; }
-      </style>
-  </head>
-  <body>
-      
-      <h1>🌍 Impact Chain Assessment in Google Earth Engine</h1>
-      <p><strong>Objective:</strong> This guide walks you through the step-by-step process of conducting an <strong>Impact Chain Assessment</strong> in Google Earth Engine (GEE). We will assess flood risk, population exposure, ecosystem services, and landscape archetypes to support <strong>Nature-based Solutions (NbS)</strong>.</p>
-      
+
       <div class="step">
-          <h2>📌 Step 1: Load Required Datasets</h2>
+          <h2> Step 1: Load Required Datasets</h2>
           <p>Before conducting any analysis, we need to <strong>load the necessary datasets</strong> in GEE.</p>
           <ul>
               <li><strong>Settlement Data:</strong> Contains population and demographic information.</li>
@@ -853,7 +833,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
       </div>
   
       <div class="step">
-          <h2>📌 Step 2: Calculate Flood Exposure for Each Settlement</h2>
+          <h2> Step 2: Calculate Flood Exposure for Each Settlement</h2>
           <p>Now that we have the required datasets, we will calculate the <strong>flood exposure for each settlement</strong>. This involves:</p>
           <ul>
               <li>Overlaying flood hazard rasters with the settlement boundaries.</li>
