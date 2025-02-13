@@ -313,7 +313,7 @@ div.tocify {
 </div>
 </div>
 
-< class="toc-content col-xs-12 col-sm-8 col-md-9">
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -801,19 +801,18 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
   </div>
   
 
-  <h2>Step 1: Load Required Datasets</h2>
-  <p>Before conducting any analysis, we need to <strong>load the necessary datasets</strong> in GEE.</p>
-  <ul>
-      <li><strong>Settlement Data:</strong> Contains population and demographic information.</li>
-      <li><strong>Flood Probability Raster Data:</strong> Represents flood hazard probability at different levels.</li>
-      <li><strong>Ecosystem Services Data:</strong> Provides information on environmental functions.</li>
-      <li><strong>EUNIS Habitat Classification:</strong> A habitat classification system used for land cover analysis.</li>
-      <li><strong>Landscape Archetypes:</strong> Defines land character types based on morphology, vegetation, and land use.</li>
-      <li><strong>Point of Interest (POI) Data:</strong> Captures socio-economic infrastructure and service locations.</li>
-  </ul>
-  
-  <pre class="code-block">
-  // Load required datasets in GEE
+
+          <h2> Step 1: Load Required Datasets</h2>
+          <p>Before conducting any analysis, we need to <strong>load the necessary datasets</strong> in GEE.</p>
+          <ul>
+              <li><strong>Settlement Data:</strong> Contains population and demographic information.</li>
+              <li><strong>Flood Probability Raster Data:</strong> Represents flood hazard probability at different levels.</li>
+              <li><strong>Ecosystem Services Data:</strong> Provides information on environmental functions.</li>
+              <li><strong>EUNIS Habitat Classification:</strong> A habitat classification system used for land cover analysis.</li>
+              <li><strong>Landscape Archetypes:</strong> Defines land character types based on morphology, vegetation, and land use.</li>
+              <li><strong>Point of Interest (POI) Data:</strong> Captures socio-economic infrastructure and service locations.</li>
+          </ul>
+          <pre class="code-block">// Load required datasets in GEE
   var settlements = ee.FeatureCollection("projects/ee-desmond/assets/desirmed/settlements_population_with_gender_age");
   var floodsHPRaster = ee.Image("projects/ee-desmond/assets/desirmed/floods_High_Probability_Raster");
   var floodsLPRaster = ee.Image("projects/ee-desmond/assets/desirmed/floods_Low_Probability_Raster");
@@ -821,26 +820,25 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
   var ecosystemServices = ee.Image("projects/ee-desmond/assets/desirmed/Ecosystem_Services_2018_Raster_Asset");
   var eunis = ee.Image("projects/ee-desmond/assets/desirmed/EUNIS_2018_TIFF");
   var archetypes = ee.Image("projects/ee-desmond/assets/desirmed/Archetype_2018_TIF");
-  var poiDataset = ee.FeatureCollection('projects/ee-desmond/assets/desirmed/PointOfinterest');
-  </pre>
+  var poiDataset = ee.FeatureCollection('projects/ee-desmond/assets/desirmed/PointOfinterest');</pre>
+      </div>
   
-  <p><strong>Why is this step important?</strong></p>
-  <ul>
-      <li>Ensures that all relevant datasets are loaded for analysis.</li>
-      <li>Allows us to overlay multiple spatial datasets for comparison.</li>
-      <li>Helps in identifying potential exposure and risk patterns.</li>
-  </ul>
-  
-  <h2>Step 2: Calculate Flood Exposure for Each Settlement</h2>
-  <p>Now that we have the required datasets, we will calculate the <strong>flood exposure for each settlement</strong>. This involves:</p>
-  <ul>
-      <li>Overlaying flood hazard rasters with the settlement boundaries.</li>
-      <li>Computing the total area affected by floods.</li>
-      <li>Storing the flood exposure values as attributes for further analysis.</li>
-  </ul>
-  
-  <pre class="code-block">
-  // Function to compute flood exposure for settlements
+
+    <p> <strong>In this steps we</strong></p>
+    <ul>
+        <li>Ensures that all relevant datasets are loaded for analysis.</li>
+        <li>Allows us to overlay multiple spatial datasets for comparison.</li>
+        <li>Helps in identifying potential exposure and risk patterns.</li>
+    </ul>
+
+          <h2> Step 2: Calculate Flood Exposure for Each Settlement</h2>
+          <p>Now that we have the required datasets, we will calculate the <strong>flood exposure for each settlement</strong>. This involves:</p>
+          <ul>
+              <li>Overlaying flood hazard rasters with the settlement boundaries.</li>
+              <li>Computing the total area affected by floods.</li>
+              <li>Storing the flood exposure values as attributes for further analysis.</li>
+          </ul>
+          <pre class="code-block">// Function to compute flood exposure for settlements
   function calculateFloodExposure(feature, floodRaster, floodType) {
       var floodArea = floodRaster.reduceRegion({
           reducer: ee.Reducer.sum(),
@@ -859,80 +857,26 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
       feature = calculateFloodExposure(feature, floodsMPRaster, 'Flood_MP_Area_km2');
       feature = calculateFloodExposure(feature, floodsLPRaster, 'Flood_LP_Area_km2');
       return feature;
-  });
-  </pre>
+  });</pre>
+      </div>
+      
+      
+
+          <ul>
+              <li>We use <code>reduceRegion()</code> to sum the flooded area within a settlement boundary.</li>
+              <li>The result is converted into square kilometers (km²) for better interpretation.</li>
+              <li>We apply this function to <strong>all three flood scenarios</strong> (high, medium, and low probability).</li>
+          </ul>
   
-  <ul>
-      <li>We use <code>reduceRegion()</code> to sum the flooded area within a settlement boundary.</li>
-      <li>The result is converted into square kilometers (km²) for better interpretation.</li>
-      <li>We apply this function to <strong>all three flood scenarios</strong> (high, medium, and low probability).</li>
-  </ul>
-  
-  <h2>Next Steps</h2>
-  <ul>
-      <li>We will now analyze <strong>ecosystem services within flood-prone settlements</strong>.</li>
-      <li>Calculate <strong>resilience scores</strong> based on ecosystem coverage and exposure.</li>
-      <li>Use <strong>visualization techniques</strong> to map and interpret the results.</li>
-  </ul>
-  
-  <p><strong>➡ Next: Analyzing Ecosystem Services & Mapping Resilience</strong></p>
-  
-  <h2>Step 3: Analyzing Ecosystem Services</h2>
-  <p>Now that we have calculated <strong>flood exposure</strong>, we will analyze <strong>ecosystem services</strong> within these flood-prone areas. Understanding ecosystem services is crucial because:</p>
-  <ul>
-      <li>They <strong>act as natural flood buffers</strong> (e.g., wetlands absorb excess water).</li>
-      <li>They <strong>contribute to climate adaptation</strong> by reducing vulnerabilities.</li>
-      <li>They help in designing <strong>Nature-based Solutions (NbS)</strong> for flood risk management.</li>
-  </ul>
-  
-  <h3>Extracting Ecosystem Services for Settlements</h3>
-  <p>To compute the <strong>total ecosystem service contribution</strong>, we will:</p>
-  <ul>
-      <li>Extract <strong>ecosystem service values</strong> for each settlement.</li>
-      <li>Aggregate different <strong>ecosystem service areas</strong> within a region.</li>
-      <li>Calculate the <strong>proportion of each ecosystem service class</strong>.</li>
-  </ul>
-  
-  <pre class="code-block">
-  // Function to compute ecosystem service contribution for each settlement
-  function calculateEcosystemMetrics(feature) {
-      var classAreas = ecosystemClasses.reduce(function(dict, classValue) {
-          var classArea = ecosystemServices.eq(classValue).reduceRegion({
-              reducer: ee.Reducer.sum(),
-              geometry: feature.geometry(),
-              scale: 30,
-              maxPixels: 1e13
-          }).get('remapped'); // Ensure the band name matches
-  
-          classArea = ee.Number(classArea || 0).multiply(900).divide(1e6); // Convert pixels to km²
-          return dict.set(classValue.toString(), classArea);
-      }, ee.Dictionary({}));
-  
-      // Calculate total ecosystem area
-      var totalEcosystemArea = ee.Number(
-          classAreas.values().reduce(ee.Reducer.sum()) // Sum of all ecosystem areas
-      );
-  
-      // Compute the percentage contribution of each ecosystem class
-      var classPercentages = classAreas.map(function(key, value) {
-          return ee.Number(value).divide(totalEcosystemArea).multiply(100);
-      });
-  
-      return feature.set('Ecosystem_Class_Areas', classAreas)
-                    .set('Total_Ecosystem_Area_km2', totalEcosystemArea)
-                    .set('Ecosystem_Class_Percentages', classPercentages);
-  }
-  
-  // Apply function to settlements
-  var settlementsWithEcosystemMetrics = settlementsWithFloodMetrics.map(calculateEcosystemMetrics);
-  </pre>
-  
-  <ul>
-      <li><code>reduceRegion()</code> extracts <strong>specific ecosystem service values</strong> for each settlement.</li>
-      <li><code>map()</code> applies this function to <strong>all settlements</strong> in the dataset.</li>
-      <li><code>Ecosystem_Class_Percentages</code> helps in <strong>comparing settlements</strong> based on their ecosystem support.</li>
-  </ul>
-         
+            <h2> Next Steps</h2>
+          <ul>
+              <li>We will now analyze **ecosystem services within flood-prone settlements**.</li>
+              <li>Calculate **resilience scores** based on ecosystem coverage and exposure.</li>
+              <li>Use **visualization techniques** to map and interpret the results.</li>
+          </ul>
+          <p><strong>➡ Next: Analyzing Ecosystem Services & Mapping Resilience </strong></p>
+
+
 
   
     
