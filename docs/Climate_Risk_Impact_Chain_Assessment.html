@@ -802,17 +802,17 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
   
 
 
-          <h2> Step 1: Load Required Datasets</h2>
-          <p>Before conducting any analysis, we need to <strong>load the necessary datasets</strong> in GEE.</p>
-          <ul>
-              <li><strong>Settlement Data:</strong> Contains population and demographic information.</li>
-              <li><strong>Flood Probability Raster Data:</strong> Represents flood hazard probability at different levels.</li>
-              <li><strong>Ecosystem Services Data:</strong> Provides information on environmental functions.</li>
-              <li><strong>EUNIS Habitat Classification:</strong> A habitat classification system used for land cover analysis.</li>
-              <li><strong>Landscape Archetypes:</strong> Defines land character types based on morphology, vegetation, and land use.</li>
-              <li><strong>Point of Interest (POI) Data:</strong> Captures socio-economic infrastructure and service locations.</li>
-          </ul>
-          <pre class="code-block">// Load required datasets in GEE
+    <h2> Step 1: Load Required Datasets</h2>
+    <p>Before conducting any analysis, we need to <strong>load the necessary datasets</strong> in GEE.</p>
+    <ul>
+        <li><strong>Settlement Data:</strong> Contains population and demographic information.</li>
+        <li><strong>Flood Probability Raster Data:</strong> Represents flood hazard probability at different levels.</li>
+        <li><strong>Ecosystem Services Data:</strong> Provides information on environmental functions.</li>
+        <li><strong>EUNIS Habitat Classification:</strong> A habitat classification system used for land cover analysis.</li>
+        <li><strong>Landscape Archetypes:</strong> Defines land character types based on morphology, vegetation, and land use.</li>
+        <li><strong>Point of Interest (POI) Data:</strong> Captures socio-economic infrastructure and service locations.</li>
+    </ul>
+    <pre class="code-block">// Load required datasets in GEE
   var settlements = ee.FeatureCollection("projects/ee-desmond/assets/desirmed/settlements_population_with_gender_age");
   var floodsHPRaster = ee.Image("projects/ee-desmond/assets/desirmed/floods_High_Probability_Raster");
   var floodsLPRaster = ee.Image("projects/ee-desmond/assets/desirmed/floods_Low_Probability_Raster");
