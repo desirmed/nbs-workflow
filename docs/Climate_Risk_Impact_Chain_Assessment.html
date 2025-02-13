@@ -801,7 +801,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
   </div>
   
 
-      <div class="step">
+
           <h2> Step 1: Load Required Datasets</h2>
           <p>Before conducting any analysis, we need to <strong>load the necessary datasets</strong> in GEE.</p>
           <ul>
@@ -823,16 +823,14 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
   var poiDataset = ee.FeatureCollection('projects/ee-desmond/assets/desirmed/PointOfinterest');</pre>
       </div>
   
-      <div class="note">
-          <p>🔍 <strong>Why is this step important?</strong></p>
-          <ul>
-              <li>Ensures that all relevant datasets are loaded for analysis.</li>
-              <li>Allows us to overlay multiple spatial datasets for comparison.</li>
-              <li>Helps in identifying potential exposure and risk patterns.</li>
-          </ul>
-      </div>
-  
-      <div class="step">
+
+    <p> <strong>In this steps we</strong></p>
+    <ul>
+        <li>Ensures that all relevant datasets are loaded for analysis.</li>
+        <li>Allows us to overlay multiple spatial datasets for comparison.</li>
+        <li>Helps in identifying potential exposure and risk patterns.</li>
+    </ul>
+
           <h2> Step 2: Calculate Flood Exposure for Each Settlement</h2>
           <p>Now that we have the required datasets, we will calculate the <strong>flood exposure for each settlement</strong>. This involves:</p>
           <ul>
@@ -862,25 +860,185 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
   });</pre>
       </div>
       
-      <div class="note">
-          <p> <strong>What is happening in this function?</strong></p>
+      
+
           <ul>
               <li>We use <code>reduceRegion()</code> to sum the flooded area within a settlement boundary.</li>
               <li>The result is converted into square kilometers (km²) for better interpretation.</li>
               <li>We apply this function to <strong>all three flood scenarios</strong> (high, medium, and low probability).</li>
           </ul>
-      </div>
   
-      <div class="step">
-          <h2> Next Steps</h2>
+            <h2> Next Steps</h2>
           <ul>
               <li>We will now analyze **ecosystem services within flood-prone settlements**.</li>
               <li>Calculate **resilience scores** based on ecosystem coverage and exposure.</li>
               <li>Use **visualization techniques** to map and interpret the results.</li>
           </ul>
-          <p><strong>➡ Next: Analyzing Ecosystem Services & Mapping Resilience 🚀</strong></p>
-      </div>
+          <p><strong>➡ Next: Analyzing Ecosystem Services & Mapping Resilience </strong></p>
 
+
+          <h2>Step 3: Analyzing Ecosystem Services</h2>
+          <p>Now that we have calculated **flood exposure**, we will analyze **ecosystem services** within these flood-prone areas. Understanding ecosystem services is crucial because:</p>
+          <ul>
+              <li>They <strong>act as natural flood buffers</strong> (e.g., wetlands absorb excess water).</li>
+              <li>They <strong>contribute to climate adaptation</strong> by reducing vulnerabilities.</li>
+              <li>They help in designing **Nature-based Solutions (NbS)** for flood risk management.</li>
+          </ul>
+          
+          <h3>Extracting Ecosystem Services for Settlements</h3>
+          <p>To compute the **total ecosystem service contribution**, we will:</p>
+          <ul>
+              <li>Extract **ecosystem service values** for each settlement.</li>
+              <li>Aggregate different **ecosystem service areas** within a region.</li>
+              <li>Calculate the **proportion of each ecosystem service class**.</li>
+          </ul>
+          
+          <pre class="code-block">
+          // Function to compute ecosystem service contribution for each settlement
+          function calculateEcosystemMetrics(feature) {
+              var classAreas = ecosystemClasses.reduce(function(dict, classValue) {
+                  var classArea = ecosystemServices.eq(classValue).reduceRegion({
+                      reducer: ee.Reducer.sum(),
+                      geometry: feature.geometry(),
+                      scale: 30,
+                      maxPixels: 1e13
+                  }).get('remapped'); // Ensure the band name matches
+          
+                  classArea = ee.Number(classArea || 0).multiply(900).divide(1e6); // Convert pixels to km²
+                  return dict.set(classValue.toString(), classArea);
+              }, ee.Dictionary({}));
+          
+              // Calculate total ecosystem area
+              var totalEcosystemArea = ee.Number(
+                  classAreas.values().reduce(ee.Reducer.sum()) // Sum of all ecosystem areas
+              );
+          
+              // Compute the percentage contribution of each ecosystem class
+              var classPercentages = classAreas.map(function(key, value) {
+                  return ee.Number(value).divide(totalEcosystemArea).multiply(100);
+              });
+          
+              return feature.set('Ecosystem_Class_Areas', classAreas)
+                            .set('Total_Ecosystem_Area_km2', totalEcosystemArea)
+                            .set('Ecosystem_Class_Percentages', classPercentages);
+          }
+          
+          // Apply function to settlements
+          var settlementsWithEcosystemMetrics = settlementsWithFloodMetrics.map(calculateEcosystemMetrics);
+          </pre>
+          
+          <ul>
+              <li><code>reduceRegion()</code> extracts **specific ecosystem service values** for each settlement.</li>
+              <li><code>map()</code> applies this function to **all settlements** in the dataset.</li>
+              <li><code>Ecosystem_Class_Percentages</code> helps in **comparing settlements** based on their ecosystem support.</li>
+          </ul>
+          
+          <h2>Step 4: Resilience Scoring & Risk Categorization</h2>
+          <p>Now that we have both **flood exposure** and **ecosystem service metrics**, we will compute a <strong>Resilience Score</strong> to evaluate the ability of each settlement to cope with floods.</p>
+          
+          <h3>Why Compute a Resilience Score?</h3>
+          <ul>
+              <li>It quantifies the <strong>buffering capacity of nature</strong> against flood risks.</li>
+              <li>It helps to **prioritize settlements** for Nature-based Solutions (NbS).</li>
+              <li>It provides insights into **risk reduction strategies** for policymakers.</li>
+          </ul>
+          
+          <pre class="code-block">
+          // Function to compute resilience score
+          var settlementsWithResilience = settlementsWithEcosystemMetrics.map(function(feature) {
+              var totalEcosystemArea = ee.Number(feature.get('Total_Ecosystem_Area_km2'));
+              var floodHP = ee.Number(feature.get('Flood_HP_Area_km2'));
+              var floodMP = ee.Number(feature.get('Flood_MP_Area_km2'));
+              var floodLP = ee.Number(feature.get('Flood_LP_Area_km2'));
+          
+              var totalFloodExposure = floodHP.add(floodMP).add(floodLP);
+          
+              // Compute resilience score
+              var resilienceScore = ee.Algorithms.If(
+                  totalFloodExposure.neq(0),
+                  totalEcosystemArea.divide(totalFloodExposure),
+                  0 // Default resilience score if flood exposure is zero
+              );
+          
+              return feature.set('Resilience_Score', resilienceScore);
+          });
+          </pre>
+          
+          <ul>
+              <li>The <strong>higher the resilience score</strong>, the **better the ecosystem coverage** compared to flood exposure.</li>
+              <li>Settlements with **low resilience scores** will need **urgent intervention**.</li>
+          </ul>
+          
+          <h3>Step 5: Classify Settlements by Flood Risk</h3>
+          <p>We will now classify each settlement into **High, Medium, and Low Flood Risk Categories** based on its total flood exposure.</p>
+          
+          <pre class="code-block">
+          // Function to classify settlements into risk categories
+          function classifyFloodRisk(feature) {
+              var totalFloodExposure = ee.Number(feature.get('Flood_HP_Area_km2'))
+                  .add(ee.Number(feature.get('Flood_MP_Area_km2')))
+                  .add(ee.Number(feature.get('Flood_LP_Area_km2')));
+          
+              var floodRiskCategory = ee.Algorithms.If(
+                  totalFloodExposure.gt(10),
+                  'High',
+                  ee.Algorithms.If(totalFloodExposure.gt(5), 'Medium', 'Low')
+              );
+          
+              return feature.set('Flood_Risk_Category', floodRiskCategory);
+          }
+          
+          var settlementsWithFloodRisk = settlementsWithResilience.map(classifyFloodRisk);
+          </pre>
+          
+          <ul>
+              <li>Settlements **with more than 10 km²** of flood exposure are classified as <strong>High Risk</strong>.</li>
+              <li>Settlements **between 5–10 km²** of flood exposure are <strong>Medium Risk</strong>.</li>
+              <li>Settlements **below 5 km²** of flood exposure are <strong>Low Risk</strong>.</li>
+          </ul>
+          
+          <h2>Step 6: Visualizing Resilience Scores on a Map</h2>
+          <p>Now that we have calculated **flood risk and resilience**, we will visualize the results on a map with appropriate styling.</p>
+          
+          <pre class="code-block">
+          // Define styling for resilience scores
+          var resilienceVis = {
+              min: 0,
+              max: 5,
+              palette: ['#d73027', '#f46d43', '#fdae61', '#fee08b', '#d9ef8b', '#a6d96a', '#1a9850']
+          };
+          
+          // Define flood risk color scheme
+          var floodRiskVis = {
+              min: 0,
+              max: 2,
+              palette: ['#ff0000', '#ffa500', '#008000'] // Red = High Risk, Orange = Medium Risk, Green = Low Risk
+          };
+          
+          // Add layers to map
+          Map.centerObject(settlements, 10);
+          Map.addLayer(settlementsWithFloodRisk, floodRiskVis, "Flood Risk Classification");
+          Map.addLayer(settlementsWithResilience, resilienceVis, "Resilience Score");
+          </pre>
+          
+          <ul>
+              <li>**Red areas** indicate **High Risk Settlements**.</li>
+              <li>**Orange areas** indicate **Medium Risk Settlements**.</li>
+              <li>**Green areas** indicate **Low Risk Settlements**.</li>
+              <li>The **Resilience Score map** helps **visualize ecosystem contributions**.</li>
+          </ul>
+          
+          <p><strong> Summary:</strong> We have now successfully:</p>
+          <ul>
+              <li>Loaded and analyzed flood exposure across settlements.</li>
+              <li>Computed the role of ecosystem services in buffering flood risks.</li>
+              <li>Assigned resilience scores to settlements.</li>
+              <li>Classified settlements into **High, Medium, and Low Risk** zones.</li>
+              <li>Visualized the results</li>
+              
+          </ul>
+          
+          
   
     
     
