@@ -1814,6 +1814,31 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
 
 <h3>Efficient Processing with ModelBuilder</h3>
 <p>If you plan to work with multiple governance layers, **ModelBuilder** provides a more efficient workflow.</p>
+<p>To help you even understand the effienciency of the modelbuilder, we make a simple illustration here with the Hydrosheds dataset
+
+<ol>
+  <li>Go to <a href="https://www.hydrosheds.org/products/hydrorivers" target="_blank">Hydroshed website</a></li>
+  <li>Look for Europe and Middle East as **Extent** and click on the downloads.</li>
+  <li>You can download the entire Europe and Middle East dataset as Geodatabase file format.</li>
+  <li>Import the **HydroRIVERS dataset** into **ArcGIS Pro**.</li>
+  <li>Add the **Split-Dalmatia County boundary** to your project.</li>
+  <li>Click on the <strong>Analysis</strong> button in the ArcGIS toolbar.</li>
+  
+  <li>Find and click on <strong>ModelBuilder</strong> to open the interface.</li>
+  <li>Click on **Tools** to open the **Geoprocessing Search Bar**.</li>
+  <li>Search for **Clip** and **drag it into your model canvas**.</li>
+  <li>Drag your **HydroRIVERS dataset** into the **Input Features**.</li>
+  <li>Drag your **Split-Dalmatia County boundary** into the **Clip Features**.</li>
+  <li>Right-click on the **Clip tool** and select **Run**.</li>
+  <li>Once the process is complete, **right-click on the new clipped feature** and select **Add to Display**.</li>
+  <li>Inspect the **attribute table** to determine relevant fields.</li>
+</ol>
+
+<h4>🔍 Why Inspect the Attributes?</h4>
+<ul>
+  <li>To check if the dataset includes **river management authorities**.</li>
+  <li>To determine if additional **data updates** are required.</li>
+</ul>
 
 <h4>Advantages of ModelBuilder:</h4>
 <ul>
