@@ -1774,7 +1774,7 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
     <li>It is linked to **climate risk impact chains** – where <strong>policy frameworks</strong> dictate the implementation of <strong>Nature-based Solutions (NbS)</strong>.</li>
 </ul>
 
-<h3>Data Sources for Governance Layers</h3>
+<h4>Data Sources for Governance Layers</h4>
 <p>We will use various governance datasets to map political and administrative structures relevant to **landscape characterization**.</p>
 
 <ul>
@@ -1798,10 +1798,10 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
 <p>For this tutorial, we will not go through all the steps in downloading these layers</p>
 <p>We will rather demonstrate <strong>clipping a governance dataset</strong> to a defined **Region of Interest (ROI)** – in this case, <strong>Split-Dalmatia County</strong>.</p>
 
-<h2>Clipping a Governance Dataset in ArcGIS Pro</h2>
+<h4>Clipping a Governance Dataset in ArcGIS Pro</h4>
 <p>Once we have downloaded the governance unit layers, we need to <strong>clip them to our study area</strong>.</p>
 
-<h3>Steps to Clip a Dataset</h3>
+<h4>Steps to Clip a Dataset</h4>
 <ol>
     <li>Open <strong>ArcGIS Pro</strong> and create a new project.</li>
     <li>Add the governance dataset (e.g., <em>Local Administrative Units</em>).</li>
@@ -1812,7 +1812,7 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
     <li>Run the tool and save the output to your workspace.</li>
 </ol>
 
-<h3>Efficient Processing with ModelBuilder</h3>
+<h4>Efficient Processing with ModelBuilder</h4>
 <p>If you plan to work with multiple governance layers, **ModelBuilder** provides a more efficient workflow.</p>
 <p>To help you even understand the effienciency of the modelbuilder, we make a simple illustration here with the Hydrosheds dataset
 
@@ -1853,7 +1853,7 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
     <li>Saves time by running multiple processes in one workflow.</li>
 </ul>
 
-<h3>Pre-Processed Governance Data</h3>
+<h4>Pre-Processed Governance Data</h4>
 <p>For convenience, we have <strong>downloaded, processed, and clipped</strong> all governance layers for the Split-Dalmatia region.</p>
 
 <p>➡ <a href="https://deltares-desirmed.github.io/nbs-workflow/Download_Resources.html" target="_blank"><strong>Download Processed Governance Data Here</strong></a></p>
@@ -1861,14 +1861,14 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
 <h2>Using the Exported Python Model</h2>
 <p>We have also exported the **ModelBuilder workflow** as a Python script. This allows you to automate similar tasks in different regions.</p>
 
-<h3>How to Use the Python Script</h3>
+<h4>How to Use the Python Script</h4>
 <ol>
     <li>Ensure **ArcGIS Pro with arcpy** is installed.</li>
     <li>Update the **input dataset paths** in the script.</li>
     <li>Run the script in **Python or ArcGIS Pro's Python window**.</li>
 </ol>
 
-<h3>Breaking Down the Script</h3>
+<h4>Breaking Down the Script</h4>
 <p>Below is an overview of how the script works and how you can modify it for your own datasets.</p>
 
 <h4>1. Setting Up the Environment</h4>
@@ -1922,7 +1922,7 @@ arcpy.analysis.Clip(in_features=governance_layer,
     <li>Execute the script to process the governance layers.</li>
 </ol>
 
-<h3>Download the Full Script</h3>
+<h4>Download the Full Script</h4>
 <p>To access the complete Python script and modify it for your own project:</p>
 <p>➡ <a href="https://github.com/deltares-desirmed/WP4-Tasks/blob/main/Task%203/Data%20Mapping%20and%20Monitoring/governanceModel.py" target="_blank"><strong>Download the Python Clipping Script Here</strong></a></p>
 
