@@ -1757,6 +1757,139 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
     <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/42.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>
 </ul>
 
+<h2>Step 7: Integrating the Governance Domain</h2>
+<p>Governance is a crucial aspect of landscape characterization within the <strong>Desirmed Project</strong>. It provides insights into <strong>decision-making structures, land management, environmental protection, and policy influence</strong>. Understanding governance layers helps in:</p>
+<ul>
+    <li>Defining <strong>territorial boundaries</strong> for analysis and policymaking.</li>
+    <li>Assessing the <strong>institutional capacity</strong> to manage natural hazards and resilience strategies.</li>
+    <li>Linking governance structures to <strong>landscape risks, ecosystem services, and socio-economic factors</strong>.</li>
+</ul>
+
+<p><strong>Where does governance fit into Desirmed?</strong></p>
+<ul>
+    <li>Governance influences <strong>land-use decisions</strong>, urban expansion, and environmental conservation.</li>
+    <li>It defines <strong>jurisdictional authority</strong> for <strong>risk management</strong> (e.g., flood control, protected areas).</li>
+    <li>It is linked to **climate risk impact chains** – where <strong>policy frameworks</strong> dictate the implementation of <strong>Nature-based Solutions (NbS)</strong>.</li>
+</ul>
+
+<h3>Data Sources for Governance Layers</h3>
+<p>We will use various governance datasets to map political and administrative structures relevant to **landscape characterization**.</p>
+
+<ul>
+    <li><strong>Administrative Boundaries</strong>: Define the **national, regional, and local** governance units.</li>
+    <li><strong>Statistical Units (NUTS & LAU)</strong>: Used for socio-economic and policy analysis.</li>
+    <li><strong>Basic Services</strong>: Includes public facilities such as **hospitals and transport hubs**.</li>
+    <li><strong>River Basin Authorities</strong>: Important for **water resource management**.</li>
+    <li><strong>Protected Areas</strong>: Biodiversity conservation zones such as **Natura 2000 sites**.</li>
+</ul>
+
+<h4>Accessing Governance Data</h4>
+<p>The datasets we will use are sourced from various **European Commission & EU environmental agencies**:</p>
+<ul>
+    <li><a href="https://ec.europa.eu/eurostat/web/gisco/geodata/administrative-units/communes" target="_blank">Local Administrative Units (LAU)</a></li>
+    <li><a href="https://ec.europa.eu/eurostat/web/gisco/geodata/administrative-units/countries" target="_blank">National Boundaries</a></li>
+    <li><a href="https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/territorial-units-statistics" target="_blank">NUTS Statistical Units</a></li>
+    <li><a href="https://joint-research-centre.ec.europa.eu/scientific-tools-databases/catchment-characterisation-and-modelling-ccm_en" target="_blank">Catchment Characterization (River Basins)</a></li>
+    <li><a href="https://sdi.eea.europa.eu/datashare/s/pXs62gbQFxQYk45/download" target="_blank">Marine Protected Areas</a></li>
+</ul>
+<p>For this tutorial, we will demonstrate <strong>clipping a governance dataset</strong> to a defined **Region of Interest (ROI)** – in this case, <strong>Split-Dalmatia County</strong>.</p>
+
+<h2>Step 9: Clipping a Governance Dataset in ArcGIS Pro</h2>
+<p>Once we have downloaded the governance unit layers, we need to <strong>clip them to our study area</strong>.</p>
+
+<h3>Steps to Clip a Dataset</h3>
+<ol>
+    <li>Open <strong>ArcGIS Pro</strong> and create a new project.</li>
+    <li>Add the governance dataset (e.g., <em>Local Administrative Units</em>).</li>
+    <li>Add the <strong>Split-Dalmatia County boundary</strong> as the **clip feature**.</li>
+    <li>Go to <strong>Analysis → Tools</strong>, search for **Clip**.</li>
+    <li>Set the governance layer as the <strong>Input Feature</strong>.</li>
+    <li>Set the Split-Dalmatia boundary as the <strong>Clip Feature</strong>.</li>
+    <li>Run the tool and save the output to your workspace.</li>
+</ol>
+
+<h3>Efficient Processing with ModelBuilder</h3>
+<p>If you plan to work with multiple governance layers, **ModelBuilder** provides a more efficient workflow.</p>
+
+<h4>Advantages of ModelBuilder:</h4>
+<ul>
+    <li>Automates **batch processing** of multiple layers.</li>
+    <li>Ensures **consistency** in data extraction.</li>
+    <li>Saves time by running multiple processes in one workflow.</li>
+</ul>
+
+<h3>Pre-Processed Governance Data</h3>
+<p>For convenience, we have <strong>downloaded, processed, and clipped</strong> all governance layers for the Split-Dalmatia region.</p>
+
+<p>➡ <a href="https://your-link-to-governance-data.com" target="_blank"><strong>Download Processed Governance Data Here</strong></a></p>
+
+<h2>Step 10: Using the Exported Python Model</h2>
+<p>We have also exported the **ModelBuilder workflow** as a Python script. This allows you to automate similar tasks in different regions.</p>
+
+<h3>How to Use the Python Script</h3>
+<ol>
+    <li>Ensure **ArcGIS Pro with arcpy** is installed.</li>
+    <li>Update the **input dataset paths** in the script.</li>
+    <li>Run the script in **Python or ArcGIS Pro's Python window**.</li>
+</ol>
+
+<h3>Breaking Down the Script</h3>
+<p>Below is an overview of how the script works and how you can modify it for your own datasets.</p>
+
+<h4>1. Setting Up the Environment</h4>
+<pre class="code-block">
+# Import ArcPy
+import arcpy
+
+# Enable overwrite
+arcpy.env.overwriteOutput = True
+</pre>
+
+<ul>
+    <li>This imports the **ArcPy** library, used for geospatial processing in ArcGIS.</li>
+    <li>It enables **overwriteOutput**, allowing files to be replaced if they already exist.</li>
+</ul>
+
+<h4>2. Defining Input and Output Data</h4>
+<pre class="code-block">
+# Define input features
+governance_layer = "C:\\Data\\Governance\\Local_Admin_Units.shp"
+clip_boundary = "C:\\Data\\Regions\\Split_Dalmatia.shp"
+
+# Define output path
+clipped_output = "C:\\ProcessedData\\Governance_Clipped.shp"
+</pre>
+
+<ul>
+    <li>Modify **governance_layer** to match your downloaded dataset.</li>
+    <li>Update **clip_boundary** with the boundary of your region.</li>
+    <li>Set **clipped_output** to where the processed file should be saved.</li>
+</ul>
+
+<h4>3. Running the Clipping Tool</h4>
+<pre class="code-block">
+# Perform the clip operation
+arcpy.analysis.Clip(in_features=governance_layer, 
+                    clip_features=clip_boundary, 
+                    out_feature_class=clipped_output)
+</pre>
+
+<ul>
+    <li>This line **clips the governance data** to the region.</li>
+    <li>It ensures that only relevant administrative units are kept.</li>
+</ul>
+
+<h4>4. Running the Script</h4>
+<p>To run the script:</p>
+<ol>
+    <li>Open **ArcGIS Pro**.</li>
+    <li>Go to **Python Window** or use a **Python IDE (e.g., Jupyter, PyCharm).**</li>
+    <li>Execute the script to process the governance layers.</li>
+</ol>
+
+<h3>Download the Full Script</h3>
+<p>To access the complete Python script and modify it for your own project:</p>
+<p>➡ <a href="https://your-link-to-python-script.com" target="_blank"><strong>Download the Python Clipping Script Here</strong></a></p>
 
 <h3><strong>EUNIS Dataset Creation</strong></h3>
 <p>The <a href="https://eunis.eea.europa.eu/">EUNIS habitat classification system</a> is a vital tool for understanding habitat types across Europe, supporting biodiversity monitoring, conservation planning, and ecosystem-based management. By standardizing habitat classification, EUNIS provides a framework for consistent ecological assessments. To our knowledge, there isnt a unified EUNIS habitat map for the entire europe except smaller polygon shapes that exist as properties in other datasets. This is why we create one for the purpose of this study. While some EUNIS maps exist, they are often based on older datasets and may not reflect recent land use changes or provide adequate detail for dynamic regions.</p>
