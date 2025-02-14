@@ -907,7 +907,7 @@ wflow_publish("analysis/Downloads_and_Geoprocessing.Rmd")
 
 <h5><strong>Step 6: Verify Dataset in GEE</strong></h5>
 <p>After uploading, navigate to the Assets tab in the GEE Code Editor to ensure that the dataset appears as expected. Import the dataset into your script by copying the Asset ID and creating a FeatureCollection in your script:</p>
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>
 // Import the uploaded dataset
 var landUseDataset = ee.FeatureCollection('users/your_username/your_asset_id');
@@ -927,7 +927,7 @@ Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 <h4><strong>Step 1: Load Land Use Datasets</strong></h4>
 <p>We start by loading the land use datasets for 2012 and 2018. These datasets provide detailed land cover information for Croatia, which will be analyzed for changes over time.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Load the assetar lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal');
 var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal');
 </code>
@@ -938,7 +938,7 @@ var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatia
 <h4><strong>Step 2: Define the Color Palette for Land Cover Classes</strong></h4>
 <p>To enhance visualization, we define a color palette and descriptions for each land cover class. This ensures that each class is visually distinct and easy to interpret.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Define the color palette for each land use class
   var landCoverClasses = {
     11110: {color: '#d20000', description: 'Continuous urban fabric (IMD >= 80%)'},
@@ -1021,7 +1021,7 @@ var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatia
 <h4><strong>Step 3: Define Croatia Coastal Boundaries</strong></h4>
 <p>We focus the analysis on Croatia's coastal region by defining a geographic boundary. This ensures that only relevant features are included in the dataset.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Define Croatia's coastal bounds
 var croatiaCoastalBounds = ee.Geometry.Polygon([
   [13.5, 44.0], [18.5, 44.0], [18.5, 42.0], [13.5, 42.0], [13.5, 44.0]
@@ -1034,7 +1034,7 @@ var croatiaCoastalBounds = ee.Geometry.Polygon([
 <h4><strong>Step 4: Filter the Dataset to the Coastal Region</strong></h4>
 <p>The land use datasets are filtered to include only features within the coastal boundaries. This reduces computational overhead and focuses the analysis on the area of interest.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Filter datasets for 2012 and 2018 to the coastal region
 var coastalLulc2012 = lulc2012.filterBounds(croatiaCoastalBounds);
 var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);
@@ -1046,7 +1046,7 @@ var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);
 <h4><strong>Step 5: Rasterize the Dataset</strong></h4>
 <p>We convert the feature collections into raster images, which are more suitable for pixel-based analyses and visualizations.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Rasterize the 2012 dataset
 var rasterized2012 = coastalLulc2012.map(function(feature) {
   var code = feature.get('CODE_5_12'); // Use the field for the 2012 dataset
@@ -1066,7 +1066,7 @@ var rasterized2018 = coastalLulc2018.map(function(feature) {
 <h4><strong>Step 6: Style and Visualize the Rasterized Datasets</strong></h4>
 <p>We apply the color palette to the rasterized datasets and visualize them on the map for inspection.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Extract the color palette from landCoverClasses
 var palette = Object.keys(landCoverClasses).map(function(key) {
   return landCoverClasses[key].color; // Ensure only colors are extracted
@@ -1085,7 +1085,7 @@ Map.addLayer(rasterized2018, {min: 11110, max: 84200, palette: palette}, 'Coasta
 <h4><strong>Step 7: Add a Legend for Visualization</strong></h4>
 <p>To enhance interpretability, we create a legend that displays the color and description for each land use class.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Create the legend container
 var legend = ui.Panel({
   style: {
@@ -1168,7 +1168,7 @@ Map.add(legend);
 <h4><strong>Step 8: Export the Rasterized Datasets</strong></h4>
 <p>Finally, we export the rasterized datasets as assets for further analysis or sharing.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Export rasterized 2012 dataset
 Export.image.toAsset({
   image: rasterized2012,
@@ -1205,7 +1205,7 @@ Export.image.toAsset({
 <h4><strong>Step 1: Load Land Use Data</strong></h4>
 <p>The first step involves loading the land use datasets for 2012 and 2018. These datasets will serve as the basis for reclassifying landscape archetypes.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Load the asset
 var lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal');
 var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal');</code>
@@ -1216,7 +1216,7 @@ var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatia
 <h4><strong>Step 2: Define Croatia’s Coastal Boundaries</strong></h4>
 <p>To limit our analysis to the coastal region of Croatia, we define a geographic boundary using a polygon geometry.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Define Croatia's coastal bounds
 var croatiaCoastalBounds = ee.Geometry.Polygon([
   [13.5, 44.0], [18.5, 44.0], [18.5, 42.0], [13.5, 42.0], [13.5, 44.0]
@@ -1228,7 +1228,7 @@ var croatiaCoastalBounds = ee.Geometry.Polygon([
 <h4><strong>Step 3: Filter the Dataset to the Coastal Region</strong></h4>
 <p>Once the study boundary is established, we filter the dataset to retain only the features that fall within this region.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Filter the datasets to Croatia's coastal region
 var coastalLulc2012 = lulc2012.filterBounds(croatiaCoastalBounds);
 var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);</code>
@@ -1239,7 +1239,7 @@ var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);</code>
 <h4><strong>Step 4: Define Landscape Archetypes</strong></h4>
 <p>We define a classification scheme that groups land cover classes into broader landscape archetypes based on their ecological and functional similarities.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Define landscape archetypes
 var landscapeArchetypes = {
 // Urban: Highly urbanized areas including industrial, commercial, and residential zones.
@@ -1347,7 +1347,7 @@ var landscapeArchetypes = {
 <h4><strong>Step 5: Remap Land Cover Classes</strong></h4>
 <p>To convert the original land cover classifications into archetypes, we create a mapping function that translates each class into its corresponding archetype.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Prepare lists for remapping
 var fromList = [];
 var toList = [];
@@ -1371,7 +1371,7 @@ Object.keys(landscapeArchetypes).forEach(function(archetypeId) {
 <h4><strong>Step 6: Apply Reclassification</strong></h4>
 <p>The final step involves reclassifying the 2012 and 2018 datasets based on the remapping criteria.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Reclassify the datasets
 var codeImage2012 = coastalLulc2012.reduceToImage(['CODE_5_12'], ee.Reducer.first()).rename('code2012');
 var codeImage2018 = coastalLulc2018.reduceToImage(['CODE_5_18'], ee.Reducer.first()).rename('code2018');
@@ -2056,7 +2056,7 @@ arcpy.analysis.Clip(in_features=governance_layer,
 <h5><strong>Step 1: Define Land Cover Datasets</strong></h5>
 <p>To start, we need to define the datasets that represent land cover for the years 2012 and 2018. These datasets will form the basis of our EUNIS habitat classification.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Define the land cover datasets
 var landCoverYears = {
   '2012': ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal'),
@@ -2070,7 +2070,7 @@ var landCoverYears = {
 <h5><strong>Step 2: Define the Crosswalk Mapping</strong></h5>
 <p>In this step, we define how land cover classes from the datasets are translated into EUNIS habitat codes. This mapping is essential for accurate reclassification.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Define the crosswalk mapping from land cover classes to EUNIS habitats
   var landCoverToEunisNumeric = {
     11110: 1,  // J1 - Buildings of cities, towns, and villages
@@ -2155,7 +2155,7 @@ var landCoverYears = {
 <h5><strong>Step 3: Define the EUNIS Properties</strong></h5>
 <p>Here, we assign properties like color and descriptions to EUNIS habitat types. This enhances visualization and understanding of the output.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Define the EUNIS properties mapping
   var eunisNumericMapping = {
     1: {eunisCode: 'J1', color: '#b22222', description: 'Buildings of cities, towns, and villages'}, // Deep red for urban areas
@@ -2225,7 +2225,7 @@ var landCoverYears = {
 <h5><strong>Step 4: Reclassify Land Cover to EUNIS</strong></h5>
 <p>Now, we write a function to reclassify the land cover dataset into EUNIS habitats based on the mapping we defined earlier.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Function to reclassify land cover data into EUNIS numeric codes
 var reclassifyToEunis = function(dataset, codeField, mapping) {
   var mappingKeys = Object.keys(mapping).map(Number); // Input land cover class codes as numbers
@@ -2246,7 +2246,7 @@ var reclassifyToEunis = function(dataset, codeField, mapping) {
 <h5><strong>Step 5: Visualize the Reclassified Dataset</strong></h5>
 <p>We create another function to style the reclassified EUNIS image for visualization in Google Earth Engine.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Function to style the reclassified EUNIS image
 var styleEunisImage = function(image) {
   var palette = Object.keys(eunisNumericMapping).map(function(key) {
@@ -2267,7 +2267,7 @@ var styleEunisImage = function(image) {
 <h5><strong>Step 6: Define Croatia Coastal Boundaries</strong></h5>
 <p>We define the geographic bounds of Croatia's coastal regions to limit the analysis to the relevant area.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Define Croatia's coastal bounds
 var croatiaCoastalBounds = ee.Geometry.Polygon([
   [13.5, 44.0], [18.5, 44.0], [18.5, 42.0], [13.5, 42.0], [13.5, 44.0]
@@ -2280,7 +2280,7 @@ var croatiaCoastalBounds = ee.Geometry.Polygon([
 <h5><strong>Step 7: Reclassify and Style the 2012 Dataset</strong></h5>
 <p>Using the reclassification and visualization functions, we process the 2012 land cover dataset.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Reclassify and style 2012 dataset
 var reclassified2012 = reclassifyToEunis(
   landCoverYears['2012'].filterBounds(croatiaCoastalBounds).reduceToImage(['CODE_5_12'], ee.Reducer.first()),
@@ -2303,7 +2303,7 @@ Map.addLayer(reclassified2012, {
 <h5><strong>Step 8: Reclassify and Style the 2018 Dataset</strong></h5>
 <p>We repeat the process for the 2018 dataset, ensuring consistency in approach and visualization.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 <code>// Reclassify and style 2018 dataset
 var reclassified2018 = reclassifyToEunis(
   landCoverYears['2018'].filterBounds(croatiaCoastalBounds).reduceToImage(['CODE_5_18'], ee.Reducer.first()),
@@ -2328,7 +2328,7 @@ Map.addLayer(reclassified2018, {
 <h5><strong>Step 9: Create a Chart for Comparing EUNIS Areas</h5>strong></strong></h5>
 <p><strong>Explanation:</strong> Comparing habitat areas across years provides insights into ecological changes. This is done by computing areas of each EUNIS class and displaying them in bar and pie charts for better visualization.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"><code>// Function to compute EUNIS areas
+<pre class="code-block"><code>// Function to compute EUNIS areas
 var computeEunisAreas = function(image, year, geometry) {
   var areaImage = ee.Image.pixelArea().divide(1e6).addBands(image.rename('class')); // Area in km²
   var areas = areaImage.reduceRegion({
@@ -2355,7 +2355,7 @@ var computeEunisAreas = function(image, year, geometry) {
 <h5><strong>Step 10: Export the Reclassified Data</strong></h5>
 <p><strong>Explanation:</strong> To facilitate further analysis or sharing, the reclassified datasets for 2012 and 2018 are exported in raster and vector formats. These exports allow users to inspect and validate the data in desktop GIS tools.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"><code>// Export reclassified 2018 dataset as raster
+<pre class="code-block"><code>// Export reclassified 2018 dataset as raster
 Export.image.toDrive({
   image: reclassified2018,
   description: 'EUNIS_2018_TIFF',
@@ -2366,7 +2366,7 @@ Export.image.toDrive({
   maxPixels: 1e13
 });</code></pre>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"><code>// Export reclassified 2018 dataset as vector
+<pre class="code-block"><code>// Export reclassified 2018 dataset as vector
 var vectorEunis2018 = reclassified2018.reduceToVectors({
   geometryType: 'polygon',
   reducer: ee.Reducer.countEvery(),
@@ -2388,7 +2388,7 @@ Export.table.toDrive({
 <h5><strong>Step 11: Add User Interaction for Drawing Analysis</strong></h5>
 <p><strong>Explanation:</strong> Drawing tools allow users to interactively analyze specific areas on the map. The drawn geometry serves as the input for computing EUNIS class areas.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"><code>// Enable drawing tools on the map
+<pre class="code-block"><code>// Enable drawing tools on the map
 var drawingTools = ui.Map.DrawingTools();
 drawingTools.setShown(true);
 drawingTools.setDrawModes(['polygon']);
@@ -2405,7 +2405,7 @@ drawingTools.onDraw(function(geometry) {
 <h5><strong>Step 12: Create a Legend</strong></h5>
 <p><strong>Explanation:</strong> A legend helps users understand the mapping of EUNIS classes to colors. This is essential for interpreting the visualized data accurately.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"><code>// Create a legend panel
+<pre class="code-block"><code>// Create a legend panel
 var legend = ui.Panel({
   style: { position: 'bottom-left', padding: '8px' }
 });
@@ -2434,7 +2434,7 @@ Map.add(legend);</code></pre>
 <h5><strong>Step 13: Finalize and Share the Workflow</strong></h5>
 <p><strong>Explanation:</strong> The completed workflow can now be shared with stakeholders or team members. This step involves documenting the methodology and ensuring all data outputs are correctly exported and stored.</p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"><code>// Save the script and export as needed
+<pre class="code-block"><code>// Save the script and export as needed
 print('Workflow completed successfully.');</code></pre>
 
 <p>At this stage, the habitat classification workflow is finalized and ready for application.</p>
@@ -2698,7 +2698,7 @@ else:
         The following script loads the datasets and prints basic information for validation:
     </p>
 
-    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">// Create a legend panel
+    <pre class="code-block">// Create a legend panel
 // ===============================
 // **LOAD EXISTING EUNIS & BWK DATA**
 // ===============================
@@ -2817,7 +2817,7 @@ print(" BWK First Feature:", bwk.first());  // Inspect BWK structure
     The following script **applies the mapping function to the BWK dataset**:
 </p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 // ===============================
 // **STEP 2: CONVERT BWK 'EVAL' PROPERTY TO NUMERIC**
 // ===============================
@@ -2862,7 +2862,7 @@ print("BWK First Feature with Numeric 'EVAL_NUM':", bwkNumeric.first());
     After running the script, the **first feature in the BWK dataset** should now have a new property:
 </p>
 
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 Feature {
 geometry: (Polygon)
 properties: {
@@ -2904,7 +2904,7 @@ properties: {
         **EVAL_NUM field** (which we created in Step 2).
     </p>
 
-    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+    <pre class="code-block">
 // ===============================
 // **STEP 3: RASTERIZE BWK TO MATCH EUNIS RESOLUTION**
 // ===============================
@@ -2949,7 +2949,7 @@ print(" Reprojected BWK Raster:", bwkValues);
         ecological valuation score.
     </p>
 
-    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+    <pre class="code-block">
 Raster Properties:
 - Band Name: ecological_value
 - Pixel Size: Matches EUNIS raster
@@ -2988,7 +2988,7 @@ Raster Properties:
             used for **sampling and crosswalk table generation**.
         </p>
     
-        <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <pre class="code-block">
     // ===============================
     // **STEP 4: EXPORT BWK DATASET AS A RASTER**
     // ===============================
@@ -3026,7 +3026,7 @@ Raster Properties:
             After running this export command, you should find the **EUNIS_BWK_EcoValue_TIFF**  
             stored under **"Assets" in Google Earth Engine**.
         </p>
-        <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <pre class="code-block">
         projects/ee-desmond/assets/EUNIS_BWK_EcoValue_TIFF
         </pre>
     
@@ -3064,7 +3064,7 @@ Raster Properties:
                 and creates a **crosswalk table linking habitat types to their ecological value**.
             </p>
         
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 // ===============================
 // **STEP 5: CROSSWALK TABLE GENERATION**
 // ===============================
@@ -3157,7 +3157,7 @@ print(" Export Task Created: Run it manually in the 'Tasks' tab!");
     After running this script, you will find a **crosswalk table**  
     available in Google Drive as a **CSV file**, which links:
 </p>
-<pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 EUNIS Habitat Type → BWK Ecological Value
 ----------------------------------------
 Forest (T1)        → Very High (7)
@@ -3196,7 +3196,7 @@ Wetland (C1)       → High (6)
         with a **legend showing ecological value classifications**.
     </p>
 
-    <pre style="background-color: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+    <pre class="code-block">
 // ===============================
 // **STEP 6: MAP VISUALIZATION**
 // ===============================
