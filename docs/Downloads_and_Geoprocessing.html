@@ -1528,7 +1528,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 
 <p><strong>Example JSON Feature:</strong></p>
 
-<pre style="background: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 {
   "type": "Feature",
   "properties": {
@@ -1645,7 +1645,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
     <li><strong>POI Dataset:</strong> This dataset contains **Points of Interest**, classified into **category levels**.</li>
 </ul>
 
-<pre style="background: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 // Load the settlements dataset
 var settlements = ee.FeatureCollection("projects/ee-desmond/assets/desirmed/settlements_population_with_gender_age");
 
@@ -1675,7 +1675,7 @@ print(" POI Dataset:", poiDataset);
 </ol>
 
 
-<pre style="background: #e6ffe6; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+<pre class="code-block">
 // Integrate POIs into settlements
 var enhancedSettlementsWithPOI = settlements.map(function(feature) {
   // Filter POIs within the settlement boundary
@@ -3373,7 +3373,7 @@ Map.addLayer(eunis, eunisVisParams, "EUNIS Habitat Classification");
         and nature-based solutions based on their ecological value.
     </p>
     <div class="note" style="background-color: #fcffcc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;">
-      <strong>ℹ️ Note:</strong> Note that this map is based on the Flemish data. If your region has an ecological value dataset, you can follow and implement similar approach.
+      <strong>ℹ️ Note:</strong> This map is based on the Flemish data. If your region has an ecological value dataset, you can follow and implement similar approach.
       Also note that you cannot unformily/universaly establish a relationship between a natural habitat and it ecological value/importance. From the insights we gathered from this exercise, we have learnt that the ecological value of a habitat largely depends on it location.
       Example, an Arable land and market gardern (V1) may not necessarily have high ecoological value everywhere even within a smaller land unit.
   </div>
