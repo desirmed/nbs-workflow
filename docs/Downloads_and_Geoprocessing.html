@@ -934,7 +934,7 @@ var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatia
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>ee.FeatureCollection</code> function is used to load the datasets. Each dataset contains land use features for Croatia, which are stored in a structured format compatible with Earth Engine operations.</p>
+<p>The <code>ee.FeatureCollection</code> function is used to load the datasets. Each dataset contains land use features for Croatia, which are stored in a structured format compatible with Earth Engine operations.</p>
 
 <h4><strong>Step 2: Define the Color Palette for Land Cover Classes</strong></h4>
 <p>To enhance visualization, we define a color palette and descriptions for each land cover class. This ensures that each class is visually distinct and easy to interpret.</p>
@@ -1017,7 +1017,7 @@ var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatia
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>landCoverClasses</code> object maps class codes to their respective colors and descriptions. These properties are later used for styling the dataset in Earth Engine.</p>
+<p>The <code>landCoverClasses</code> object maps class codes to their respective colors and descriptions. These properties are later used for styling the dataset in Earth Engine.</p>
 
 <h4><strong>Step 3: Define Croatia Coastal Boundaries</strong></h4>
 <p>We focus the analysis on Croatia's coastal region by defining a geographic boundary. This ensures that only relevant features are included in the dataset.</p>
@@ -1030,7 +1030,7 @@ var croatiaCoastalBounds = ee.Geometry.Polygon([
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> A polygon geometry is created to delineate the coastal region of Croatia. The <code>filterBounds</code> function will use this boundary to extract relevant features from the datasets.</p>
+<p>A polygon geometry is created to delineate the coastal region of Croatia. The <code>filterBounds</code> function will use this boundary to extract relevant features from the datasets.</p>
 
 <h4><strong>Step 4: Filter the Dataset to the Coastal Region</strong></h4>
 <p>The land use datasets are filtered to include only features within the coastal boundaries. This reduces computational overhead and focuses the analysis on the area of interest.</p>
@@ -1042,7 +1042,7 @@ var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>filterBounds</code> method is used to extract features that intersect the defined coastal region. This step ensures that only relevant data is included in subsequent analyses.</p>
+<p>The <code>filterBounds</code> method is used to extract features that intersect the defined coastal region. This step ensures that only relevant data is included in subsequent analyses.</p>
 
 <h4><strong>Step 5: Rasterize the Dataset</strong></h4>
 <p>We convert the feature collections into raster images, which are more suitable for pixel-based analyses and visualizations.</p>
@@ -1062,7 +1062,7 @@ var rasterized2018 = coastalLulc2018.map(function(feature) {
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>reduceToImage</code> function is used to generate raster images from the feature collections. Each pixel in the raster represents a land use class, with values corresponding to the <code>class</code> property.</p>
+<p>The <code>reduceToImage</code> function is used to generate raster images from the feature collections. Each pixel in the raster represents a land use class, with values corresponding to the <code>class</code> property.</p>
 
 <h4><strong>Step 6: Style and Visualize the Rasterized Datasets</strong></h4>
 <p>We apply the color palette to the rasterized datasets and visualize them on the map for inspection.</p>
@@ -1081,7 +1081,7 @@ Map.addLayer(rasterized2018, {min: 11110, max: 84200, palette: palette}, 'Coasta
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> The color palette ensures that each class is visually distinct, making it easier to interpret the rasterized datasets. Adding the layers to the map allows for visual inspection and verification.</p>
+<p>The color palette ensures that each class is visually distinct, making it easier to interpret the rasterized datasets. Adding the layers to the map allows for visual inspection and verification.</p>
 
 <h4><strong>Step 7: Add a Legend for Visualization</strong></h4>
 <p>To enhance interpretability, we create a legend that displays the color and description for each land use class.</p>
@@ -1164,7 +1164,7 @@ Map.add(legend);
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> The legend provides a visual reference for interpreting the land use classes, making the map more user-friendly and informative.</p>
+<p>The legend provides a visual reference for interpreting the land use classes, making the map more user-friendly and informative.</p>
 
 <h4><strong>Step 8: Export the Rasterized Datasets</strong></h4>
 <p>Finally, we export the rasterized datasets as assets for further analysis or sharing.</p>
@@ -1194,7 +1194,7 @@ Export.image.toAsset({
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> Exporting the datasets ensures that they are available for future analyses or integration into other workflows. The <code>Export.image.toAsset</code> function saves the data as assets within the Earth Engine environment.</p>
+<p>Exporting the datasets ensures that they are available for future analyses or integration into other workflows. The <code>Export.image.toAsset</code> function saves the data as assets within the Earth Engine environment.</p>
 
 <p>Our Land use/cover data is ready for further analysis in Google Earth Engine. We will use this data as the functional unit and the basis for vreating other datasets like EUNIS, landscape Archetypes, Ecosystem service Map and risk exposures</p>
 
@@ -1213,7 +1213,7 @@ var lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatia
 var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal');</code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>ee.FeatureCollection</code> function is used to load the vector datasets containing land use classifications for Croatia in 2012 and 2018. Each dataset consists of multiple features representing distinct land cover classes.</p>
+<p><strong>The <code>ee.FeatureCollection</code> function is used to load the vector datasets containing land use classifications for Croatia in 2012 and 2018. Each dataset consists of multiple features representing distinct land cover classes.</p>
 
 <h4><strong>Step 2: Define Croatia’s Coastal Boundaries</strong></h4>
 <p>To limit our analysis to the coastal region of Croatia, we define a geographic boundary using a polygon geometry.</p>
@@ -1225,7 +1225,7 @@ var croatiaCoastalBounds = ee.Geometry.Polygon([
 ]);</code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>ee.Geometry.Polygon</code> function creates a polygon that defines the spatial extent of the study area. This boundary is later used to filter the dataset and extract only the relevant features.</p>
+<p>The <code>ee.Geometry.Polygon</code> function creates a polygon that defines the spatial extent of the study area. This boundary is later used to filter the dataset and extract only the relevant features.</p>
 
 <h4><strong>Step 3: Filter the Dataset to the Coastal Region</strong></h4>
 <p>Once the study boundary is established, we filter the dataset to retain only the features that fall within this region.</p>
@@ -1236,7 +1236,7 @@ var coastalLulc2012 = lulc2012.filterBounds(croatiaCoastalBounds);
 var coastalLulc2018 = lulc2018.filterBounds(croatiaCoastalBounds);</code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>filterBounds</code> method is applied to extract only those features that intersect with the defined polygon, ensuring that our analysis focuses solely on Croatia’s coastal areas.</p>
+<p>The <code>filterBounds</code> method is applied to extract only those features that intersect with the defined polygon, ensuring that our analysis focuses solely on Croatia’s coastal areas.</p>
 
 <h4><strong>Step 4: Define Landscape Archetypes</strong></h4>
 <p>We define a classification scheme that groups land cover classes into broader landscape archetypes based on their ecological and functional similarities.</p>
@@ -1344,7 +1344,7 @@ var landscapeArchetypes = {
 };</code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>landscapeArchetypes</code> object maps groups of land cover codes to their corresponding archetypes. Each archetype is associated with a unique color and description to facilitate interpretation.</p>
+<p>The <code>landscapeArchetypes</code> object maps groups of land cover codes to their corresponding archetypes. Each archetype is associated with a unique color and description to facilitate interpretation.</p>
 
 <h4><strong>Step 5: Remap Land Cover Classes</strong></h4>
 <p>To convert the original land cover classifications into archetypes, we create a mapping function that translates each class into its corresponding archetype.</p>
@@ -1368,10 +1368,10 @@ Object.keys(landscapeArchetypes).forEach(function(archetypeId) {
 });</code>
 </pre>
 
-<p><strong>Explanation:</strong> The <code>remap</code> function is used to convert the original land cover class values into landscape archetypes by replacing each class with its respective archetype ID. This step ensures that each pixel is assigned a meaningful category that aligns with the predefined archetype classification.</p>
+<p>The <code>remap</code> function is used to convert the original land cover class values into landscape archetypes by replacing each class with its respective archetype ID. This step ensures that each pixel is assigned a meaningful category that aligns with the predefined archetype classification.</p>
 
 <h4><strong>Step 6: Apply Reclassification</strong></h4>
-<p>The final step involves reclassifying the 2012 and 2018 datasets based on the remapping criteria.</p>
+<p>This step involves reclassifying the 2012 and 2018 datasets based on the remapping criteria.</p>
 
 <pre class="code-block">
 <code>// Reclassify the datasets
@@ -1382,7 +1382,64 @@ var archetypeImage2012 = codeImage2012.remap(fromList, toList).rename('archetype
 var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype2018');</code>
 </pre>
 
-<p><strong>Explanation:</strong> Here you will realise we use 'CODE_5_12' and CODE_5_18' as columns to remap, this is because both datasets contains the class ids or class values to the land use. The <code>reduceToImage</code> function converts the vector dataset into a raster, while <code>remap</code> assigns each pixel a new value based on the archetype classification.</p>
+<p>Here you will realise we use 'CODE_5_12' and CODE_5_18' as columns to remap, this is because both datasets contains the class ids or class values to the land use. The <code>reduceToImage</code> function converts the vector dataset into a raster, while <code>remap</code> assigns each pixel a new value based on the archetype classification.</p>
+
+<h4><strong>Step 7: Apply Reclassification and visualise</strong></h4>
+<pre class="code-block">
+  <code>// Mask out any pixels not in the 'toList' (i.e., archetypes)
+  archetypeImage2012 = archetypeImage2012.updateMask(archetypeImage2012.neq(0));
+  archetypeImage2018 = archetypeImage2018.updateMask(archetypeImage2018.neq(0));
+  
+  // Add the reclassified raster layers to the map
+  Map.addLayer(archetypeImage2012.clip(croatiaCoastalBounds), {min: 1, max: 14, palette: palette}, 'Reclassified Landscape Archetypes 2012');
+  Map.addLayer(archetypeImage2018.clip(croatiaCoastalBounds), {min: 1, max: 14, palette: palette}, 'Reclassified Landscape Archetypes 2018');
+  
+  // Center the map on Croatia's coastal region
+  Map.centerObject(croatiaCoastalBounds, 12);
+  
+  // Create the legend container
+  var legend = ui.Panel({
+    style: {
+      position: 'bottom-left',
+      padding: '8px',
+      backgroundColor: '#f0f0f0'
+    }
+  });
+  
+  legend.add(ui.Label({
+    value: 'Landscape Archetypes',
+    style: {fontWeight: 'bold', fontSize: '14px', margin: '0 0 8px 0'}
+  }));
+  
+  for (var i = 0; i < descriptions.length; i++) {
+    var colorBox = ui.Label({
+      style: {
+        backgroundColor: palette[i],
+        padding: '8px',
+        margin: '0 8px 8px 0'
+      }
+    });
+    var label = ui.Label({
+      value: descriptions[i],
+      style: {margin: '0 0 8px 0'}
+    });
+    legend.add(ui.Panel({
+      widgets: [colorBox, label],
+      layout: ui.Panel.Layout.Flow('horizontal')
+    }));
+  }
+  
+  // Add the legend to the map
+  Map.add(legend);
+  Map.setCenter(16.3521, 43.5384, 12);
+  </code>
+  </pre>
+
+
+<p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/50.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>        
+<p> You can inspect a pixel and try to understand the result by corresponding the values to their respective legen class names
+  You can toggle betweeen both years to see which archetypes are changing from what. An example of this in your image.
+</p>
 
 <h4><strong>Technical Process Overview</strong></h4>
 
@@ -1761,6 +1818,11 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
     <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/42.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);" /></p>
 </ul>
 
+<div style="background-color: #e6f2ff; padding: 15px; border-radius: 5px; border-left: 5px solid #008cba;">
+  <strong>Note</strong>
+  <p>You can see that the first asset<strong> "settlements_population_with_gender_age"</strong> is used as the defined boundary this time. The reason is that this is already a datasets with extra info about each settlement within the SDC. We do not cover how to make this dataset in this guide. But we have made it publicly accessible. Also if you don't specify an area within the list of settlemes, Earth engine by default will compute the aggreage on the first settlement 'Hvar'. This settlement have NO point of interest. So you need to first apply a filter to specify different area. We leave that to you.</p>
+</div>
+
 <h4 style="background-color: #ccfffc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;"><strong>Governance Domain</strong></h4>
 <p>Governance is a crucial aspect of landscape characterization within the <strong>Desirmed Project</strong>. It provides insights into <strong>decision-making structures, land management, environmental protection, and policy influence</strong>. Understanding governance layers helps in:</p>
 <ul>
@@ -2067,7 +2129,7 @@ var landCoverYears = {
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> This step initializes an object containing the FeatureCollections for the two datasets. Each dataset represents the land cover of Croatia for a specific year.</p>
+<p>This step initializes an object containing the FeatureCollections for the two datasets. Each dataset represents the land cover of Croatia for a specific year.</p>
 
 <h5><strong>Step 2: Define the Crosswalk Mapping</strong></h5>
 <p>In this step, we define how land cover classes from the datasets are translated into EUNIS habitat codes. This mapping is essential for accurate reclassification.</p>
@@ -2152,7 +2214,7 @@ var landCoverYears = {
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> This object maps numeric land cover codes to their corresponding EUNIS numeric codes. Each mapping represents a habitat type, allowing us to translate land cover data into the EUNIS classification system.</p>
+<p>This object maps numeric land cover codes to their corresponding EUNIS numeric codes. Each mapping represents a habitat type, allowing us to translate land cover data into the EUNIS classification system.</p>
 
 <h5><strong>Step 3: Define the EUNIS Properties</strong></h5>
 <p>Here, we assign properties like color and descriptions to EUNIS habitat types. This enhances visualization and understanding of the output.</p>
@@ -2222,7 +2284,7 @@ var landCoverYears = {
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> Each EUNIS code is assigned a color and description. This is useful for visualization and interpretation of the classified datasets.</p>
+<p>Each EUNIS code is assigned a color and description. This is useful for visualization and interpretation of the classified datasets.</p>
 
 <h5><strong>Step 4: Reclassify Land Cover to EUNIS</strong></h5>
 <p>Now, we write a function to reclassify the land cover dataset into EUNIS habitats based on the mapping we defined earlier.</p>
@@ -2243,7 +2305,7 @@ var reclassifyToEunis = function(dataset, codeField, mapping) {
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> This function accepts a dataset, a code field, and the mapping object. It uses the <code>remap</code> function to reclassify the dataset based on the mapping.</p>
+<p>This function accepts a dataset, a code field, and the mapping object. It uses the <code>remap</code> function to reclassify the dataset based on the mapping.</p>
 
 <h5><strong>Step 5: Visualize the Reclassified Dataset</strong></h5>
 <p>We create another function to style the reclassified EUNIS image for visualization in Google Earth Engine.</p>
@@ -2264,7 +2326,7 @@ var styleEunisImage = function(image) {
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> This function applies a color palette to the reclassified dataset for better visualization. The palette is derived from the EUNIS properties defined earlier.</p>
+<p>This function applies a color palette to the reclassified dataset for better visualization. The palette is derived from the EUNIS properties defined earlier.</p>
 
 <h5><strong>Step 6: Define Croatia Coastal Boundaries</strong></h5>
 <p>We define the geographic bounds of Croatia's coastal regions to limit the analysis to the relevant area.</p>
@@ -2277,7 +2339,7 @@ var croatiaCoastalBounds = ee.Geometry.Polygon([
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> This polygon defines the region of interest, focusing the analysis on Croatia's coastal area and excluding inland or irrelevant regions.</p>
+<p>This polygon defines the region of interest, focusing the analysis on Croatia's coastal area and excluding inland or irrelevant regions.</p>
 
 <h5><strong>Step 7: Reclassify and Style the 2012 Dataset</strong></h5>
 <p>Using the reclassification and visualization functions, we process the 2012 land cover dataset.</p>
@@ -2300,7 +2362,7 @@ Map.addLayer(reclassified2012, {
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> This step filters, reclassifies, and visualizes the 2012 dataset for Croatia's coastal regions.</p>
+<p>This step filters, reclassifies, and visualizes the 2012 dataset for Croatia's coastal regions.</p>
 
 <h5><strong>Step 8: Reclassify and Style the 2018 Dataset</strong></h5>
 <p>We repeat the process for the 2018 dataset, ensuring consistency in approach and visualization.</p>
@@ -2323,12 +2385,12 @@ Map.addLayer(reclassified2018, {
 </code>
 </pre>
 
-<p><strong>Explanation:</strong> The 2018 dataset is processed in the same way, enabling direct comparison with the 2012 dataset.</p>
+<p>The 2018 dataset is processed in the same way, enabling direct comparison with the 2012 dataset.</p>
 
 <p>Now that the 2018 dataset is visualized, comparisons between 2012 and 2018 are possible.</p>
 
 <h5><strong>Step 9: Create a Chart for Comparing EUNIS Areas</h5>strong></strong></h5>
-<p><strong>Explanation:</strong> Comparing habitat areas across years provides insights into ecological changes. This is done by computing areas of each EUNIS class and displaying them in bar and pie charts for better visualization.</p>
+<p>Comparing habitat areas across years provides insights into ecological changes. This is done by computing areas of each EUNIS class and displaying them in bar and pie charts for better visualization.</p>
 
 <pre class="code-block"><code>// Function to compute EUNIS areas
 var computeEunisAreas = function(image, year, geometry) {
@@ -2355,7 +2417,7 @@ var computeEunisAreas = function(image, year, geometry) {
 <p>The computed areas for both 2012 and 2018 datasets are visualized in a bar chart for direct comparison.</p>
 
 <h5><strong>Step 10: Export the Reclassified Data</strong></h5>
-<p><strong>Explanation:</strong> To facilitate further analysis or sharing, the reclassified datasets for 2012 and 2018 are exported in raster and vector formats. These exports allow users to inspect and validate the data in desktop GIS tools.</p>
+<p>To facilitate further analysis or sharing, the reclassified datasets for 2012 and 2018 are exported in raster and vector formats. These exports allow users to inspect and validate the data in desktop GIS tools.</p>
 
 <pre class="code-block"><code>// Export reclassified 2018 dataset as raster
 Export.image.toDrive({
@@ -2388,7 +2450,7 @@ Export.table.toDrive({
 <p>These outputs can now be used for detailed GIS-based analysis and validation.</p>
 
 <h5><strong>Step 11: Add User Interaction for Drawing Analysis</strong></h5>
-<p><strong>Explanation:</strong> Drawing tools allow users to interactively analyze specific areas on the map. The drawn geometry serves as the input for computing EUNIS class areas.</p>
+<p>Drawing tools allow users to interactively analyze specific areas on the map. The drawn geometry serves as the input for computing EUNIS class areas.</p>
 
 <pre class="code-block"><code>// Enable drawing tools on the map
 var drawingTools = ui.Map.DrawingTools();
@@ -2405,7 +2467,7 @@ drawingTools.onDraw(function(geometry) {
 <p>This interactive feature enhances user engagement by allowing custom area analysis.</p>
 
 <h5><strong>Step 12: Create a Legend</strong></h5>
-<p><strong>Explanation:</strong> A legend helps users understand the mapping of EUNIS classes to colors. This is essential for interpreting the visualized data accurately.</p>
+<p>A legend helps users understand the mapping of EUNIS classes to colors. This is essential for interpreting the visualized data accurately.</p>
 
 <pre class="code-block"><code>// Create a legend panel
 var legend = ui.Panel({
@@ -2434,7 +2496,7 @@ Map.add(legend);</code></pre>
 <p>Now users can reference the legend to understand the visualized classifications.</p>
 
 <h5><strong>Step 13: Finalize and Share the Workflow</strong></h5>
-<p><strong>Explanation:</strong> The completed workflow can now be shared with stakeholders or team members. This step involves documenting the methodology and ensuring all data outputs are correctly exported and stored.</p>
+<p>The completed workflow can now be shared with stakeholders or team members. This step involves documenting the methodology and ensuring all data outputs are correctly exported and stored.</p>
 
 <pre class="code-block"><code>// Save the script and export as needed
 print('Workflow completed successfully.');</code></pre>
