@@ -929,13 +929,12 @@ Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 <p>We start by loading the land use datasets for 2012 and 2018. These datasets provide detailed land cover information for Croatia, which will be analyzed for changes over time.</p>
 
 <pre class="code-block">
-<code>// Load the asset
-var lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal');
+<code>// Load the assetar lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal');
 var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal');
 </code>
 </pre>
 
-<p>The ee.FeatureCollection function is used to load the datasets. Each dataset contains land use features for Croatia, which are stored in a structured format compatible with Earth Engine operations.</p>
+<p>The <code>ee.FeatureCollection</code> function is used to load the datasets. Each dataset contains land use features for Croatia, which are stored in a structured format compatible with Earth Engine operations.</p>
 
 <h4><strong>Step 2: Define the Color Palette for Land Cover Classes</strong></h4>
 <p>To enhance visualization, we define a color palette and descriptions for each land cover class. This ensures that each class is visually distinct and easy to interpret.</p>
@@ -2137,81 +2136,81 @@ var landCoverYears = {
 
 <pre class="code-block">
 <code>// Define the crosswalk mapping from land cover classes to EUNIS habitats
-  var landCoverToEunisNumeric = {
-    11110: 1,  // J1 - Buildings of cities, towns, and villages
-    11120: 2,  // J1.2 - Residential buildings of villages and urban peripheries
-    11130: 3,  // J2 - Low density buildings
-    11210: 4,  // J4 - Transport networks and other hard-surfaced areas
-    11220: 5,  // J4.5 - Hard-surfaced areas of ports
-    12100: 6,  // J4.4 - Airport runways and aprons
-    12200: 7,  // J3 - Extractive industrial sites
-    12310: 5,  // J4.5 - Hard-surfaced areas of ports
-    12320: 5,  // J4.5 - Hard-surfaced areas of ports
-    12330: 5,  // J4.5 - Hard-surfaced areas of ports
-    12340: 5,  // J4.5 - Hard-surfaced areas of ports
-    12350: 5,  // J4.5 - Hard-surfaced areas of ports
-    12360: 5,  // J4.5 - Hard-surfaced areas of ports
-    12370: 5,  // J4.5 - Hard-surfaced areas of ports
-    12400: 6,  // J4.4 - Airport runways and aprons
-    13110: 7,  // J3 - Extractive industrial sites
-    13120: 8,  // J6 - Waste deposits
-    13130: 9,  // J1.6 - Urban and suburban construction and demolition sites
-    14000: 10,	//J2.6-2012	Disused rural constructions
-    21100: 11,	//E2.6-2012'	Heavily fertilised grassland, including sports fields and grass lawns
-    21200: 12,	//I1.1	Intensive unmixed crops
-    22100: 13,	//J2.43-2012	Greenhouses
-    22200: 14,	//V5	Shrub plantations
-    23100: 15,	//T24	Olea europaea-Ceratonia siliqua forest
-    23200: 16,	//	//B15	Bare tilled, fallow or recently abandoned arable land
-    23300:	17,	//	V12	Mixed crops of market gardens and horticulture
-    23400:	18,	//	V13	Arable land with unmixed crops grown by low-intensity agricultural methods
-    31100:	19,	//	V6	Tree dominated man-made habitats
-    31200:	20,	//	T1	Deciduous broadleaved forest
-    31300:	21,	//	T29	Broadleaved evergreen plantation of non site-native trees
-    32100:	22,	//	T3	Coniferous forest
-    32200:	23,	//	T3N	Coniferous plantation of site-native trees
-    33100:	24,	//	G4-2012	Mixed deciduous and coniferous woodland
-    33200:  25,	//	G4.F-2012	Mixed forestry plantations
-    34000:	26,	//	T41	Early-stage natural and semi-natural forest and regrowth
-    35000:	27,	//	T42	Early-stage natural and semi-natural forest and regrowth
-    36000:	28,	//	T43	Recently felled areas
-    41000:	29,	//	V3	Artificial grasslands and herb dominated habitats
-    42100:	30,	//	R2	Mesic grasslands
-    42200:	31,	//	R4	Alpine and subalpine grasslands
-    51000:	32,	//	S4	Temperate shrub heathland
-    52000:	33,	//	S2	Arctic, alpine and subalpine scrub
-    53000:	34,	//	F5	Maquis, arborescent matorral, and thermo-Mediterranean brushes
-    61100:	35,	//	U2	Screes
-    61200:	35,	//	U2	Screes
-    62111:	36,	//	N1	Coastal dunes and sandy shores
-    62112:	36,	//	N1	Coastal dunes and sandy shores
-    62120:	37,	//	N14	Mediterranean, Macaronesian and Black Sea shifting coastal dune
-    62200:	38,	//	C3.6-2012	Unvegetated or sparsely vegetated shores with soft or mobile sediments
-    63110:	39,	//	U3	Inland cliffs, rock pavements and outcrops
-    63120:	39,	//	U3	Inland cliffs, rock pavements and outcrops
-    63200:	40,	//	U5	Miscellaneous inland habitats usually with very sparse or no vegetation
-    63300:	41,	//	U4	Snow or ice-dominated habitats
-    71100:	42,	//	D2-2012	Valley mires, poor fens and transition mires
-    71210:	43,	//	D1	Raised and blanket bogs
-    71220:	43,	//	D1	Raised and blanket bogs
-    72100:	44,	//	MA2	Littoral biogenic habitat
-    72200:	45,	//	J5.1	Highly artificial saline and brackish standing waters
-    72300:	46,	//	MA5	Littoral sand
-    81100:	47,	//	C2	Surface running waters
-    81200:	48,	//	J5-2012	Highly artificial man-made waters and associated structures
-    81300:	49,	//	C2.5-2012	Temporary running waters
-    82100:	50,	//	C1	Surface standing waters
-    82200:	51,	//	J5.3-2012	Highly artificial non-saline standing waters
-    82300:	52,	//	J5.32-2012	Intensively managed fish ponds
-    82400:	53,	//	J5.34-2013	Standing waterbodies of extractive industrial sites with extreme chemistry
-    83100:	54,	//	X02-2012	Saline coastal lagoons
-    83200:	55,	//	X01	Estuaries
-    83300:	56,	//	MB1	Infralittoral rock
-    84100:	57,	//	MC5	Circalittoral sand
-    84200:	58,	//	MB5	Infralittoral sand
-  
-  
-  };
+var landCoverToEunisNumeric = {
+  11110: 1,  // J1 - Buildings of cities, towns, and villages
+  11120: 2,  // J1.2 - Residential buildings of villages and urban peripheries
+  11130: 3,  // J2 - Low density buildings
+  11210: 4,  // J4 - Transport networks and other hard-surfaced areas
+  11220: 5,  // J4.5 - Hard-surfaced areas of ports
+  12100: 6,  // J4.4 - Airport runways and aprons
+  12200: 7,  // J3 - Extractive industrial sites
+  12310: 5,  // J4.5 - Hard-surfaced areas of ports
+  12320: 5,  // J4.5 - Hard-surfaced areas of ports
+  12330: 5,  // J4.5 - Hard-surfaced areas of ports
+  12340: 5,  // J4.5 - Hard-surfaced areas of ports
+  12350: 5,  // J4.5 - Hard-surfaced areas of ports
+  12360: 5,  // J4.5 - Hard-surfaced areas of ports
+  12370: 5,  // J4.5 - Hard-surfaced areas of ports
+  12400: 6,  // J4.4 - Airport runways and aprons
+  13110: 7,  // J3 - Extractive industrial sites
+  13120: 8,  // J6 - Waste deposits
+  13130: 9,  // J1.6 - Urban and suburban construction and demolition sites
+  14000: 10,	//J2.6-2012	Disused rural constructions
+  21100: 11,	//E2.6-2012'	Heavily fertilised grassland, including sports fields and grass lawns
+  21200: 12,	//I1.1	Intensive unmixed crops
+  22100: 13,	//J2.43-2012	Greenhouses
+  22200: 14,	//V5	Shrub plantations
+  23100: 15,	//T24	Olea europaea-Ceratonia siliqua forest
+  23200: 16,	//	//B15	Bare tilled, fallow or recently abandoned arable land
+  23300:	17,	//	V12	Mixed crops of market gardens and horticulture
+  23400:	18,	//	V13	Arable land with unmixed crops grown by low-intensity agricultural methods
+  31100:	19,	//	V6	Tree dominated man-made habitats
+  31200:	20,	//	T1	Deciduous broadleaved forest
+  31300:	21,	//	T29	Broadleaved evergreen plantation of non site-native trees
+  32100:	22,	//	T3	Coniferous forest
+  32200:	23,	//	T3N	Coniferous plantation of site-native trees
+  33100:	24,	//	G4-2012	Mixed deciduous and coniferous woodland
+  33200:  25,	//	G4.F-2012	Mixed forestry plantations
+  34000:	26,	//	T41	Early-stage natural and semi-natural forest and regrowth
+  35000:	27,	//	T42	Early-stage natural and semi-natural forest and regrowth
+  36000:	28,	//	T43	Recently felled areas
+  41000:	29,	//	V3	Artificial grasslands and herb dominated habitats
+  42100:	30,	//	R2	Mesic grasslands
+  42200:	31,	//	R4	Alpine and subalpine grasslands
+  51000:	32,	//	S4	Temperate shrub heathland
+  52000:	33,	//	S2	Arctic, alpine and subalpine scrub
+  53000:	34,	//	F5	Maquis, arborescent matorral, and thermo-Mediterranean brushes
+  61100:	35,	//	U2	Screes
+  61200:	35,	//	U2	Screes
+  62111:	36,	//	N1	Coastal dunes and sandy shores
+  62112:	36,	//	N1	Coastal dunes and sandy shores
+  62120:	37,	//	N14	Mediterranean, Macaronesian and Black Sea shifting coastal dune
+  62200:	38,	//	C3.6-2012	Unvegetated or sparsely vegetated shores with soft or mobile sediments
+  63110:	39,	//	U3	Inland cliffs, rock pavements and outcrops
+  63120:	39,	//	U3	Inland cliffs, rock pavements and outcrops
+  63200:	40,	//	U5	Miscellaneous inland habitats usually with very sparse or no vegetation
+  63300:	41,	//	U4	Snow or ice-dominated habitats
+  71100:	42,	//	D2-2012	Valley mires, poor fens and transition mires
+  71210:	43,	//	D1	Raised and blanket bogs
+  71220:	43,	//	D1	Raised and blanket bogs
+  72100:	44,	//	MA2	Littoral biogenic habitat
+  72200:	45,	//	J5.1	Highly artificial saline and brackish standing waters
+  72300:	46,	//	MA5	Littoral sand
+  81100:	47,	//	C2	Surface running waters
+  81200:	48,	//	J5-2012	Highly artificial man-made waters and associated structures
+  81300:	49,	//	C2.5-2012	Temporary running waters
+  82100:	50,	//	C1	Surface standing waters
+  82200:	51,	//	J5.3-2012	Highly artificial non-saline standing waters
+  82300:	52,	//	J5.32-2012	Intensively managed fish ponds
+  82400:	53,	//	J5.34-2013	Standing waterbodies of extractive industrial sites with extreme chemistry
+  83100:	54,	//	X02-2012	Saline coastal lagoons
+  83200:	55,	//	X01	Estuaries
+  83300:	56,	//	MB1	Infralittoral rock
+  84100:	57,	//	MC5	Circalittoral sand
+  84200:	58,	//	MB5	Infralittoral sand
+
+
+};
 </code>
 </pre>
 
