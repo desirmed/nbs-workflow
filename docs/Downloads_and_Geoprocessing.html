@@ -928,7 +928,7 @@ Map.addLayer(landUseDataset, {}, 'Land Use Dataset');
 <h4><strong>Step 1: Load Land Use Datasets</strong></h4>
 <p>We start by loading the land use datasets for 2012 and 2018. These datasets provide detailed land cover information for Croatia, which will be analyzed for changes over time.</p>
 
-<!--<pre class="code-block">
+<pre class="code-block">
 <code>// Load the assetar lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatiafinal');
 var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal');
 </code>
@@ -1214,7 +1214,7 @@ var lulc2012 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2012_Croatia
 var lulc2018 = ee.FeatureCollection('projects/ee-desmond/assets/lulc2018_Croatiafinal');</code>
 </pre>
 
-<p><strong>The <code>ee.FeatureCollection</code> function is used to load the vector datasets containing land use classifications for Croatia in 2012 and 2018. Each dataset consists of multiple features representing distinct land cover classes.</p>
+<p>The ee.FeatureCollection function is used to load the vector datasets containing land use classifications for Croatia in 2012 and 2018. Each dataset consists of multiple features representing distinct land cover classes.</p>
 
 <h4><strong>Step 2: Define Croatia’s Coastal Boundaries</strong></h4>
 <p>To limit our analysis to the coastal region of Croatia, we define a geographic boundary using a polygon geometry.</p>
