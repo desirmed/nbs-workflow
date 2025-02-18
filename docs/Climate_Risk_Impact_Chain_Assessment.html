@@ -901,37 +901,61 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
     </ul>
     
     <pre class="code-block">
-    // Function to compute ecosystem service contribution for each settlement
-    function calculateEcosystemMetrics(feature) {
-        var classAreas = ecosystemClasses.reduce(function(dict, classValue) {
-            var classArea = ecosystemServices.eq(classValue).reduceRegion({
-                reducer: ee.Reducer.sum(),
-                geometry: feature.geometry(),
-                scale: 30,
-                maxPixels: 1e13
-            }).get('remapped'); // Ensure the band name matches
-    
-            classArea = ee.Number(classArea || 0).multiply(900).divide(1e6); // Convert pixels to km²
-            return dict.set(classValue.toString(), classArea);
-        }, ee.Dictionary({}));
-    
-        // Calculate total ecosystem area
-        var totalEcosystemArea = ee.Number(
-            classAreas.values().reduce(ee.Reducer.sum()) // Sum of all ecosystem areas
-        );
-    
-        // Compute the percentage contribution of each ecosystem class
-        var classPercentages = classAreas.map(function(key, value) {
-            return ee.Number(value).divide(totalEcosystemArea).multiply(100);
-        });
-    
-        return feature.set('Ecosystem_Class_Areas', classAreas)
-                      .set('Total_Ecosystem_Area_km2', totalEcosystemArea)
-                      .set('Ecosystem_Class_Percentages', classPercentages);
-    }
-    
-    // Apply function to settlements
-    var settlementsWithEcosystemMetrics = settlementsWithFloodMetrics.map(calculateEcosystemMetrics);
+      // Define ecosystem classes and their names
+      var ecosystemClasses = [
+        21100, 22100, 23100, 31100, 32100, 33100, 42100, 42200,
+        51000, 71100, 71220, 72100, 81100, 82100
+      ];
+      
+      var ecosystemServiceNames = {
+        21100: 'Arable Land',
+        22100: 'Vineyards & Orchards',
+        23100: 'Annual Crops',
+        31100: 'Broadleaved Forest',
+        32100: 'Coniferous Forest',
+        33100: 'Mixed Forest',
+        42100: 'Semi-Natural Grassland',
+        42200: 'Alpine Grassland',
+        51000: 'Heathland',
+        71100: 'Inland Marshes',
+        71220: 'Peat Bogs',
+        72100: 'Salt Marshes',
+        81100: 'Natural Water Courses',
+        82100: 'Natural Lakes'
+      };
+
+     // Function to compute ecosystem service contribution for each settlement
+  function calculateEcosystemMetrics(feature) {
+    var classAreas = ecosystemClasses.reduce(function(dict, classValue) {
+      var classArea = ecosystemServices.eq(classValue).reduceRegion({
+        reducer: ee.Reducer.sum(),
+        geometry: feature.geometry(),
+        scale: 30,
+        maxPixels: 1e13
+      }).get('remapped'); // Ensure the band name matches
+
+      classArea = ee.Number(classArea || 0).multiply(900).divide(1e6); // Convert pixels to km²
+      return dict.set(classValue.toString(), classArea);
+    }, ee.Dictionary({}));
+
+    // Calculate total ecosystem area
+    var totalEcosystemArea = ee.Number(
+      classAreas.values().reduce(ee.Reducer.sum()) // Sum of all ecosystem areas
+    );
+
+    // Calculate percentages for each class
+    var classPercentages = classAreas.map(function(key, value) {
+      return ee.Number(value).divide(totalEcosystemArea).multiply(100);
+    });
+
+    return feature.set('Ecosystem_Class_Areas', classAreas)
+                  .set('Total_Ecosystem_Area_km2', totalEcosystemArea)
+                  .set('Ecosystem_Class_Percentages', classPercentages);
+  }
+
+  var settlementsWithEcosystemMetrics = settlementsWithFloodMetrics.map(calculateEcosystemMetrics);
+
+  print(settlementsWithEcosystemMetrics)
     </pre>
     
     <ul>
