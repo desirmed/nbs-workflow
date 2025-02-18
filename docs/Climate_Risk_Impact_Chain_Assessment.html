@@ -968,31 +968,29 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
     <h2>Step 4: Resilience Scoring & Risk Categorization</h2>
     <p>Now that we have both <strong>flood exposure</strong> and <strong>ecosystem service metrics</strong>, we will compute a <strong>Resilience Score</strong> to evaluate the ability of each settlement to cope with floods.</p>
     
-    <h3>Why Compute a Resilience Score?</h3>
+    <h3>Compute a Resilience Score - option 1?</h3>
     <ul>
         <li>It quantifies the <strong>buffering capacity of nature</strong> against flood risks.</li>
-        <li>It helps to <strong>prioritize settlements</strong> for Nature-based Solutions (NbS).</li>
-        <li>It provides insights into <strong>risk reduction strategies</strong> for policymakers.</li>
+        <li>We will <strong>prioritize total ecosystems services produced in that area compared to the total risk area</strong> for Nature-based Solutions (NbS).</li>
+        <li>This will provide some insights to the resiliency of this area for<strong>risk reduction strategies</strong> for policymakers.</li>
     </ul>
     
     <pre class="code-block">
     // Function to compute resilience score
     var settlementsWithResilience = settlementsWithEcosystemMetrics.map(function(feature) {
-        var totalEcosystemArea = ee.Number(feature.get('Total_Ecosystem_Area_km2'));
-        var floodHP = ee.Number(feature.get('Flood_HP_Area_km2'));
-        var floodMP = ee.Number(feature.get('Flood_MP_Area_km2'));
-        var floodLP = ee.Number(feature.get('Flood_LP_Area_km2'));
+      var totalEcosystemArea = ee.Number(feature.get('Total_Ecosystem_Area_km2'));
+      var floodHP = ee.Number(feature.get('Flood_HP_Area_km2'));
+      var floodMP = ee.Number(feature.get('Flood_MP_Area_km2'));
+      var floodLP = ee.Number(feature.get('Flood_LP_Area_km2'));
+      var totalFloodExposure = floodHP.add(floodMP).add(floodLP);
     
-        var totalFloodExposure = floodHP.add(floodMP).add(floodLP);
+      var resilienceScore = ee.Algorithms.If(
+        totalFloodExposure.neq(0),
+        totalEcosystemArea.divide(totalFloodExposure),
+        0 // Default resilience score if flood exposure is zero
+      );
     
-        // Compute resilience score
-        var resilienceScore = ee.Algorithms.If(
-            totalFloodExposure.neq(0),
-            totalEcosystemArea.divide(totalFloodExposure),
-            0 // Default resilience score if flood exposure is zero
-        );
-    
-        return feature.set('Resilience_Score', resilienceScore);
+      return feature.set('Resilience_Score1', resilienceScore); //fragementation and ecosytem connectiveity(locational), imporve opiton 2
     });
     </pre>
     
@@ -1000,6 +998,87 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
         <li>The <strong>higher the resilience score</strong>, the better the ecosystem coverage compared to flood exposure.</li>
         <li>Settlements with <strong>low resilience scores</strong> will need urgent intervention.</li>
     </ul>
+
+
+        <h3>Resilience Score Option 2 </h3>
+        <p>This method calculates a resilience score based on ecosystem contribution and hazard exposure. It integrates ecosystem services and flood risk exposure to estimate resilience levels.</p>
+        
+        <h3>Methodology</h3>
+        <p>The resilience score is computed using the following formula:</p>
+        <pre>
+        Resilience Score = ( Σ (Ecosystem_Area / Total_Settlement_Area × Weight) / Flood_Exposure_Area ) × 100
+        </pre>
+        <p>Where:</p>
+        <ul>
+            <li><strong>Ecosystem_Area</strong>: Area covered by a specific ecosystem class.</li>
+            <li><strong>Total_Settlement_Area</strong>: Total area of the settlement.</li>
+            <li><strong>Weight</strong>: Importance of the ecosystem in providing resilience.</li>
+            <li><strong>Flood_Exposure_Area</strong>: Total flood-prone area (sum of high, medium, and low probability flood areas).</li>
+        </ul>
+        
+
+        <pre><code>
+    function computeResilienceScore(feature) {
+      var weightsDict = ee.Dictionary({
+        21100: 0.25,  22100: 0.3,  23100: 0.25,  31100: 0.86,  32100: 0.7,
+        33100: 0.84,  42100: 0.75,  42200: 0.65,  51000: 0.65,  71100: 0.95,
+        71220: 1, 72100: 0.9,  81100: 0.95, 82100: 0.95
+      });
+    
+      var ecosystemAreas = ee.Dictionary(feature.get('Ecosystem_Class_Areas'));
+      var totalSettlementArea = ee.Number(feature.geometry().area().divide(1e6)); // Convert to km²
+      var validTotalArea = totalSettlementArea.max(1e-6); // Avoid division by zero
+    
+      var floodHP = ee.Number(feature.get('Flood_HP_Area_km2'));
+      var floodMP = ee.Number(feature.get('Flood_MP_Area_km2'));
+      var floodLP = ee.Number(feature.get('Flood_LP_Area_km2'));
+      var totalFloodExposure = floodHP.add(floodMP).add(floodLP).max(1e-6);
+    
+      var resilienceScore = ecosystemAreas.map(function(classValue, area) {
+        var classNumber = ee.Number.parse(ee.String(classValue));
+        var weight = weightsDict.get(classNumber, 0);
+        return ee.Number(area).divide(validTotalArea).multiply(ee.Number(weight));
+      }).values().reduce(ee.Reducer.sum());
+    
+      var scaledScore = ee.Number(resilienceScore).divide(totalFloodExposure).multiply(100);
+    
+      return feature.set({
+        'Resilience_Score2': scaledScore,
+        'Total_Settlement_Area_km2': totalSettlementArea,
+        'Total_Ecosystem_Area_km2': ecosystemAreas.values().reduce(ee.Reducer.sum()),
+        'Total_Flood_Exposure_km2': totalFloodExposure,
+        'Ecosystem_Areas_Dict': ecosystemAreas
+      });
+    }
+    
+    // Apply function to feature collection
+    var settlementsWithResilience2 = settlementsWithEcosystemMetrics.map(computeResilienceScore);
+    
+    // Print results
+    print(settlementsWithResilience2.limit(5));
+        </code></pre>
+        
+        <h3>Explanation of the Code</h3>
+        <ul>
+            <li><strong>weightsDict</strong>: Defines the resilience weight for different ecosystem classes.</li>
+            <li><strong>ecosystemAreas</strong>: Retrieves the dictionary of ecosystem areas from the feature.</li>
+            <li><strong>totalSettlementArea</strong>: Computes the total settlement area in square kilometers.</li>
+            <li><strong>totalFloodExposure</strong>: Sums up flood-prone areas to quantify risk exposure.</li>
+            <li><strong>ecosystemAreas.map()</strong>: Loops through each ecosystem class and calculates its contribution.</li>
+            <li><strong>resilienceScore</strong>: Aggregates all ecosystem contributions based on their weight.</li>
+            <li><strong>scaledScore</strong>: Normalizes the resilience score by dividing it by total flood exposure.</li>
+        </ul>
+        
+        <h3>Why This is an Enhancement Over Option 1</h3>
+        <p>Option 1 simply took the ratio of total ecosystem area to flood exposure area, which does not account for ecosystem diversity or weighting.</p>
+        <p>This enhanced option improves upon that by:</p>
+        <ul>
+            <li>Using ecosystem-specific weights to capture their individual contributions.</li>
+            <li>Normalizing the resilience score based on the settlement area and flood exposure.</li>
+            <li>Making resilience a function of both hazard exposure and ecosystem services.</li>
+        </ul>
+        <p> If you consider both **ecosystem weight and flood exposure**, this option provides a more comprehensive understanding of resilience dynamics.</p>
+
     
     <h3>Step 5: Classify Settlements by Flood Risk</h3>
     <p>We will now classify each settlement into <strong>High, Medium, and Low Flood Risk Categories</strong> based on its total flood exposure.</p>
