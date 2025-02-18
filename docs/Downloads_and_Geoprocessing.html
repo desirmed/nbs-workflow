@@ -738,7 +738,7 @@ wflow_publish("analysis/Downloads_and_Geoprocessing.Rmd")
 <p>Functional units of the landscape form the basis for understanding and analyzing the interaction between natural and human systems. Land use and land cover data are critical in delineating these units, providing insights into spatial distribution, land patterns, and ecosystem functionality. The selection of appropriate datasets ensures accurate characterization and reliable impact assessments for Nature-based Solutions (NbS) portfolios.</p>
 
 <div id="land-use-data" class="section level3">
-<h3><strong>Land Use Data</strong></h3>
+<h2><strong>Land Use Data</strong></h2>
 <p>Copernicus provides comprehensive datasets on land use at various scales and resolutions. These datasets are crucial for understanding spatial heterogeneity and characterizing landscape types. In this section, we focus on three primary datasets widely used for land use classification:</p>
 
 <h4><strong>1. Urban Atlas</strong></h4>
@@ -1199,12 +1199,12 @@ Export.image.toAsset({
 
 <p>Our Land use/cover data is ready for further analysis in Google Earth Engine. We will use this data as the functional unit and the basis for vreating other datasets like EUNIS, landscape Archetypes, Ecosystem service Map and risk exposures</p>
 
-<h3><strong>Landscape Characterisation</strong></h3>
+<h2><strong>Landscape Characterisation</strong></h2>
 <p>Understanding landscape archetypes is a critical step in spatial analysis, providing insights into how different land use and land cover classes interact across a given region. The concept of landscape archetypes integrates bio-physical, socio-economic, and governance layers to create meaningful spatial patterns that aid in decision-making for environmental planning, impact assessments, and conservation strategies.</p>
 
 <p>In this guide, we will develop a classification scheme for landscape archetypes i.e bio-physical using the land use dataset we created earlier. The workflow includes loading datasets, defining classifications, applying a reclassification technique, and visualizing the results. The classification process is based on CORINE land cover data, which serves as the basis for defining unique landscape archetypes according to their spatial patterns.</p>
 
-<h4 style="background-color: #ccfffc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;"><strong>Bio-physical Domain</strong></h4>
+<h3 style="background-color: #ccfffc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;"><strong>Bio-physical Domain</strong></h3>
 <h4><strong>Step 1: Load Land Use Data</strong></h4>
 <p>The first step involves loading the land use datasets for 2012 and 2018. These datasets will serve as the basis for reclassifying landscape archetypes.</p>
 
