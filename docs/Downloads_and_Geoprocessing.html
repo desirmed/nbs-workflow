@@ -1824,7 +1824,7 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
   <p>You can see that the first asset<strong> "settlements_population_with_gender_age"</strong> is used as the defined boundary this time. The reason is that this is already a datasets with extra info about each settlement within the SDC. We do not cover how to make this dataset in this guide. But we have made it publicly accessible. Also if you don't specify an area within the list of settlemes, Earth engine by default will compute the aggreage on the first settlement 'Hvar'. This settlement have NO point of interest. So you need to first apply a filter to specify different area. We leave that to you.</p>
 </div>
 
-<h4 style="background-color: #ccfffc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;"><strong>Governance Domain</strong></h4>
+<h3 style="background-color: #ccfffc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;"><strong>Governance Domain</strong></h3>
 <p>Governance is a crucial aspect of landscape characterization within the <strong>Desirmed Project</strong>. It provides insights into <strong>decision-making structures, land management, environmental protection, and policy influence</strong>. Understanding governance layers helps in:</p>
 <ul>
     <li>Defining <strong>territorial boundaries</strong> for analysis and policymaking.</li>
@@ -1991,7 +1991,7 @@ arcpy.analysis.Clip(in_features=governance_layer,
 <p>To access the complete Python script and modify it for your own project:</p>
 <p>➡ <a href="https://github.com/deltares-desirmed/WP4-Tasks/blob/main/Task%203/Data%20Mapping%20and%20Monitoring/governanceModel.py" target="_blank"><strong>Download the Python Clipping Script Here</strong></a></p>
 
-<h3><strong>EUNIS Dataset Creation</strong></h3>
+<h2><strong>EUNIS Dataset Creation</strong></h2>
 <p>The <a href="https://eunis.eea.europa.eu/">EUNIS habitat classification system</a> is a vital tool for understanding habitat types across Europe, supporting biodiversity monitoring, conservation planning, and ecosystem-based management. By standardizing habitat classification, EUNIS provides a framework for consistent ecological assessments. To our knowledge, there isnt a unified EUNIS habitat map for the entire europe except smaller polygon shapes that exist as properties in other datasets. This is why we create one for the purpose of this study. While some EUNIS maps exist, they are often based on older datasets and may not reflect recent land use changes or provide adequate detail for dynamic regions.</p>
 
 <p>Our workflow builds upon the foundational work conducted in the <a href="https://www.rest-coast.eu/">RESTCOAST project</a>. In Resct-coast, researchers used corine land cover data to derive EUNIS classifications using 1-to-1 tabular translation. But this create some limitations that we aim to address using a more detailed landuse/cover classes at higher resolution.</p>
