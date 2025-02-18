@@ -1040,7 +1040,7 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
         return ee.Number(area).divide(validTotalArea).multiply(ee.Number(weight));
       }).values().reduce(ee.Reducer.sum());
     
-      var scaledScore = ee.Number(resilienceScore).divide(totalFloodExposure).multiply(100);
+      var scaledScore = ee.Number(resilienceScore).divide(totalFloodExposure).multiply(10);
     
       return feature.set({
         'Resilience_Score2': scaledScore,
