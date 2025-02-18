@@ -969,11 +969,21 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
     <p>Now that we have both <strong>flood exposure</strong> and <strong>ecosystem service metrics</strong>, we will compute a <strong>Resilience Score</strong> to evaluate the ability of each settlement to cope with floods.</p>
     
     <h3>Compute a Resilience Score - option 1?</h3>
+    <h3>Methodology</h3>
+    <p>The resilience score for Option 1 is computed using the following formula:</p>
+    <pre>
+    Resilience Score = Total_Ecosystem_Area / ∑(Flood_HP_Area + Flood_MP_Area + Flood_LP_Area)
+    </pre>
+    <p>Where:</p>
     <ul>
-        <li>It quantifies the <strong>buffering capacity of nature</strong> against flood risks.</li>
-        <li>We will <strong>prioritize total ecosystems services produced in that area compared to the total risk area</strong> for Nature-based Solutions (NbS).</li>
-        <li>This will provide some insights to the resiliency of this area for<strong>risk reduction strategies</strong> for policymakers.</li>
+        <li><strong>Total_Ecosystem_Area</strong>: The total area (km²) covered by ecosystem services in the settlement.</li>
+        <li><strong>Flood_HP_Area</strong>: The area (km²) exposed to high-probability flooding.</li>
+        <li><strong>Flood_MP_Area</strong>: The area (km²) exposed to medium-probability flooding.</li>
+        <li><strong>Flood_LP_Area</strong>: The area (km²) exposed to low-probability flooding.</li>
+        <li><strong>∑ (Summation Symbol)</strong>: Indicates that we sum the flood exposure values across different probability levels.</li>
     </ul>
+    <p>This formula evaluates how much ecological space is available to mitigate flood exposure. A higher resilience score suggests that the settlement has more ecosystem services available relative to its flood exposure, which improves flood resilience.</p>
+    
     
     <pre class="code-block">
     // Function to compute resilience score
