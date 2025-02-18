@@ -1485,7 +1485,7 @@ var archetypeImage2018 = codeImage2018.remap(fromList, toList).rename('archetype
 
 
 <h3 style="background-color: #ccfffc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;"><strong>Socio-Economic</strong></h3>
-<h3 style="background-color: #ccfffc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;"><strong>Bio-physical Domain</strong></h3>
+
 <p>
     Understanding landscapes extends beyond ecological and physical characteristics; 
     <strong>socio-economic factors</strong> play a crucial role in how landscapes function.  
@@ -1825,6 +1825,7 @@ print(" Example Settlement with Aggregated POI Data:", enhancedSettlementsWithPO
 </div>
 
 <h3 style="background-color: #ccfffc; border-left: 6px solid #ff2600; padding: 15px; margin: 20px 0; font-size: 16px;"><strong>Governance Domain</strong></h3>
+
 <p>Governance is a crucial aspect of landscape characterization within the <strong>Desirmed Project</strong>. It provides insights into <strong>decision-making structures, land management, environmental protection, and policy influence</strong>. Understanding governance layers helps in:</p>
 <ul>
     <li>Defining <strong>territorial boundaries</strong> for analysis and policymaking.</li>
@@ -2113,9 +2114,7 @@ arcpy.analysis.Clip(in_features=governance_layer,
 
 <p>Some EUNIS codes repeat for different land use classes, such as port-related classes (e.g., cargo port, passenger port) mapping to J4.5. This repetition reflects the shared ecological characteristics of these land uses. However, it also underscores the need for careful validation to ensure that such overlaps do not introduce ambiguities into habitat assessments. From a special point of view, we have added a 2012 Eunis habitat map just to compare changes. This helps to also validate if a change of a classified eunis class make sense or not</p>
 
----
 
-<h4><strong>Next Steps</strong></h4>
 <p>We will proceed to outline the step-by-step process for creating a EUNIS habitat map.</p>
 
 <h5><strong>Step 1: Define Land Cover Datasets</strong></h5>
