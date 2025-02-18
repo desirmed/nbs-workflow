@@ -1108,6 +1108,92 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
         <li>Settlements below <strong>5 km²</strong> of flood exposure are classified as <strong>Low Risk</strong>.</li>
     </ul>
     
+
+
+        <h3>Impact Assessment</h3>
+        <p>Now we will demonstrate how to establish an interdependence between landscape charcaterisation and their various systems. We will integrate points of interest (POI), governance and environmental factors, and flood impact evaluation on settlements and link them with the archetypes.</p>
+        
+        <h2>Step 1: Points of Interest (POI) Analysis</h2>
+        <p>The first step analyzes key socio-economic infrastructure within settlement areas. This is done by overlaying a POI dataset with settlements.</p>
+        <h3>Technical Breakdown:</h3>
+        <ul>
+            <li><strong>Input:</strong> Settlement feature collection and POI dataset.</li>
+            <li><strong>Processing:</strong> Filters POI data within settlement boundaries.</li>
+            <li><strong>Output:</strong> A new settlement dataset with POI counts at Level 1 and Level 2 categories.</li>
+        </ul>
+        <pre>
+    var settlementsWithPOI = settlements.map(function(feature) {
+      var poiInFeature = poiDataset.filterBounds(feature.geometry());
+      var level1Counts = poiInFeature.aggregate_histogram('level1_cat');
+      var level2Counts = poiInFeature.aggregate_histogram('level2_cat');
+      return feature.set('POI_Level1_Counts', level1Counts)
+                    .set('POI_Level2_Counts', level2Counts);
+    });
+        </pre>
+        
+        <h2>Step 2: Governance & Environmental Management</h2>
+        <p>This step incorporates environmental governance factors such as sea outlets, rivers, and protected areas (Natura 2000 sites).</p>
+        <h3>Technical Breakdown:</h3>
+        <ul>
+            <li><strong>Input:</strong> Settlements with POI data, Sea Outlets, HydroRivers, Natura 2000 sites.</li>
+            <li><strong>Processing:</strong> Counts water-based features and calculates protected area coverage.</li>
+            <li><strong>Output:</strong> An updated settlement dataset with governance attributes.</li>
+        </ul>
+        <pre>
+    var settlementsWithGovernance = settlementsWithPOI.map(function(feature) {
+      var seaOutletCount = seaOutlets.filterBounds(feature.geometry()).size();
+      var riverCount = hydroRivers.filterBounds(feature.geometry()).size();
+      var naturaCount = natura2000.filterBounds(feature.geometry()).size();
+      var naturaArea = natura2000.filterBounds(feature.geometry()).area().divide(1e6);
+      return feature.set('Sea_Outlet_Count', seaOutletCount)
+                    .set('River_Count', riverCount)
+                    .set('Natura2000_Count', naturaCount)
+                    .set('Natura2000_Area', naturaArea);
+    });
+        </pre>
+        
+        <h2>Step 3: Flood Impact Assessment</h2>
+        <p>The final step evaluates flood exposure across different probability scenarios and assesses impacts on ecosystems, archetypes, land classification (EUNIS), and population groups.</p>
+        
+        <h3>Technical Breakdown:</h3>
+        <ul>
+            <li><strong>Input:</strong> Settlements with governance data, flood datasets (HP, MP, LP), ecosystem services, EUNIS classification, archetypes, and WorldPop demographic data.</li>
+            <li><strong>Processing:</strong> For each settlement:
+                <ul>
+                    <li>Identifies flood exposure using the flood dataset.</li>
+                    <li>Extracts affected population across different demographic groups.</li>
+                    <li>Computes changes in ecosystem service functions.</li>
+                    <li>Analyzes land use classification via EUNIS.</li>
+                    <li>Evaluates landscape archetype shifts.</li>
+                </ul>
+            </li>
+            <li><strong>Output:</strong> A dataset enriched with multi-hazard risk and exposure analytics.</li>
+        </ul>
+        
+        <pre>
+    var unifiedAnalysis = settlementsWithGovernance.map(function(feature) {
+      var floodHP = floodHPDataset.filterBounds(feature.geometry());
+      var floodMP = floodMPDataset.filterBounds(feature.geometry());
+      var floodLP = floodLPDataset.filterBounds(feature.geometry());
+    
+      var floodHPImpact = {
+        affectedPopulation: computeAffectedPopulation(feature, floodHPDataset, years),
+        population: computePopulationImpact(floodHP, feature),
+        ecosystem: computeEcosystemImpact(floodHP, feature),
+        eunis: computeEUNISImpact(floodHP, feature),
+        archetypes: computeArchetypeImpact(floodHP, feature),
+        pois: computePOIImpact(floodHP, feature)
+      };
+      
+      return feature.set('Flood_HP_Impact', floodHPImpact);
+    });
+        </pre>
+        
+        <h2>Conclusion</h2>
+        <p>This structured approach enables comprehensive impact chain assessments, linking socio-economic factors with environmental risks.</p>
+    
+        
+
     <h2>Step 6: Visualizing Resilience Scores on a Map</h2>
     <p>Now that we have calculated <strong>flood risk and resilience</strong>, we will visualize the results on a map with appropriate styling.</p>
     
