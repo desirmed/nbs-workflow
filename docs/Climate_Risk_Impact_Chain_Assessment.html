@@ -827,11 +827,15 @@ wflow_publish("analysis/Climate Risk Impact Chain Assessment.Rmd")
     var poiDataset = ee.FeatureCollection('projects/ee-desmond/assets/desirmed/PointOfinterest');
     </pre>
     
-    <p><strong>Why is this step important?</strong></p>
+    <div style="background-color: #e6f2ff; padding: 15px; border-radius: 5px; border-left: 5px solid #008cba;">
+      <strong>Note</strong>
+      <p>You can see that some of the datasets we are using for the impact chain assessment are new. <strong>These are already geoprocessed datasets which we dont cover how to make them in the workflow</strong> but we have made them all publicly available for you to use for this workshop.</p>
+    </div>
+
     <ul>
-        <li>Ensures that all relevant datasets are loaded for analysis.</li>
-        <li>Allows us to overlay multiple spatial datasets for comparison.</li>
-        <li>Helps in identifying potential exposure and risk patterns.</li>
+        <li>Ensure that all relevant datasets are loaded for analysis.</li>
+        <li>We can then overlay multiple spatial datasets.</li>
+        <li>Identify potential exposure and risk patterns.</li>
     </ul>
     
     <h2>Step 2: Calculate Flood Exposure for Each Settlement</h2>
