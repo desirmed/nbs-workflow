@@ -873,7 +873,7 @@ wflow_publish("analysis/Working_with_Flood_data.Rmd")
 
 <p>In this case, we reproject all rasters to the <strong>Belgian Lambert 72</strong> coordinate reference system (EPSG:31370) and use a common spatial resolution of <strong>2.05 meters</strong>. This resolution was chosen because it is the median of the native resolutions from the datasets (which ranged from approximately 2.025 to 2.054 meters). Choosing 2.05 m preserves most of the original spatial detail while aligning the grid across all inputs.</p>
 
-<p>The storm surge datasets, however, had a much coarser resolution of approximately 20.37 meters. Since this would have caused a major mismatch in pixel size during the mosaicking stage, we resampled and reprojected those layers as well, using bilinear resampling to preserve depth gradients over larger areas.</p>
+<p>The storm surge datasets, however, had a much coarser resolution of approximately 20.37 meters. Since this would have caused a major mismatch in pixel size during the mosaicking stage, we resampled and reprojected those layers as well, <a href="https://www.spiedigitallibrary.org/journals/journal-of-electronic-imaging/volume-17/issue-2/023005/Nearest-neighbor-and-bilinear-resampling-factor-estimation-to-detect-blockiness/10.1117/1.2912053.short"> using bilinear resampling</a> to preserve depth gradients over larger areas.</p>
 
 <h3><strong>Reprojecting and Mosaicking</strong></h3>
 <pre class="javascript"><code>// Define target projection (EPSG:31370) and common scale
