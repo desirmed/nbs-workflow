@@ -779,9 +779,9 @@ wflow_publish("analysis/Working_with_Flood_data.Rmd")
     <div id="interpolating-stormsurge" class="section level2">
       <h2><strong>Interpolating Missing Time Points for Storm Surge</strong></h2>
       <p>In many climate hazard datasets, we often lack predictions for every year of interest. In our case, we want to combine the flood layers at different scenarios. This makes much sense in comparisons if we already have uniform comparison years, and ofcourse also in scale and in resolution. The storm surge model data we have downloaded provided predictions for the years 2017 and 2075, but the year 2050 (a key planning milestone) was missing. The best way to estimate or get flood values for unaccounted or mapped years is to perform an interpolation.
-      There are different kinds of interpolation techniques. But for this particular task, You will ordinarily perform a <strong>linear interpolation</strong> between the known rasters for 2017 and 2075 to estimate 2050 storm surge depths.</p>
+      There are different kinds of <a href="https://iri.columbia.edu/~rijaf/CDTUserGuide/html/interpolation_methods.html" target="_blank"> interpolation techniques</a>. But for this particular task, You will ordinarily perform a <strong>linear interpolation</strong> between the known rasters for 2017 and 2075 to estimate 2050 storm surge depths.</p>
       
-      <p>Below is the code used in Google Earth Engine to achieve this:</p>
+      <p>Lets now write a function to achieve this:</p>
       
       <pre class="javascript"><code>// Load storm surge datasets for 2017 and 2075
       var img2017 = ee.Image("projects/ee-desmond/assets/nbracer/Astormesurge2017_effectenenimpacts_s0_stormvloedWaterdiepteCm_huidig_2017_t1000");
@@ -820,7 +820,309 @@ wflow_publish("analysis/Working_with_Flood_data.Rmd")
       
       <p>This method allows you to estimate critical missing flood layers based on existing data, which is essential for consistent multi-year scenario comparisons and risk modeling.</p>
       </div>
+      <p>Before conducting any geospatial analysis, it is essential to inspect and document the metadata of the input datasets. This step allows you to understand the underlying resolution, projection, and data value characteristics, which will influence further processing such as mosaicking, reprojection, or statistical extraction.</p>
+
+      <h3><strong>Flood Raster Metadata Summary Table</strong></h3>
+      <h3><strong>Flood Raster Metadata Summary Table</strong></h3>
+      <table>
+      <thead>
+      <tr>
+      <th>Dataset</th>
+      <th>Projection (CRS)</th>
+      <th>Resolution (m)</th>
+      <th>Min Water Depth (cm)</th>
+      <th>Max Water Depth (cm)</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr><td>DeHaan_pluvial2050</td><td>EPSG:31370</td><td>2.0258</td><td>0.09999</td><td>313.55</td></tr>
+      <tr><td>Gistel_pluvial2050</td><td>EPSG:31370</td><td>2.0335</td><td>0.01678</td><td>455.24</td></tr>
+      <tr><td>Ichtegem_pluvial2050</td><td>EPSG:31370</td><td>2.0386</td><td>0.03009</td><td>455.24</td></tr>
+      <tr><td>Oostende_pluvial2050</td><td>EPSG:31370</td><td>2.0364</td><td>0.00973</td><td>554.53</td></tr>
+      <tr><td>Oudenburg_pluvial2050</td><td>EPSG:31370</td><td>2.0305</td><td>0.00043</td><td>410.66</td></tr>
+      <tr><td>Bredene_pluvial2050</td><td>EPSG:31370</td><td>2.0288</td><td>0.00973</td><td>311.70</td></tr>
+      <tr><td>Middelkerke_pluvial2050</td><td>EPSG:31370</td><td>2.0363</td><td>0.03033</td><td>300.72</td></tr>
+      <tr><td>Ostend_pluvial2017</td><td>EPSG:31370</td><td>2.0364</td><td>0.03388</td><td>376.91</td></tr>
+      <tr><td>DeHaan_pluvial2017</td><td>EPSG:31370</td><td>2.0258</td><td>0.09999</td><td>309.12</td></tr>
+      <tr><td>Bredene_pluvial2017</td><td>EPSG:31370</td><td>2.0288</td><td>0.03388</td><td>309.95</td></tr>
+      <tr><td>Ichtegem_pluvial2017</td><td>EPSG:31370</td><td>2.0386</td><td>0.00124</td><td>407.66</td></tr>
+      <tr><td>Gistel_pluvial2017</td><td>EPSG:31370</td><td>2.0335</td><td>0.00167</td><td>212.44</td></tr>
+      <tr><td>Middelkerk_pluvial2017</td><td>EPSG:31370</td><td>2.0363</td><td>0.01924</td><td>291.65</td></tr>
+      <tr><td>Oudenburg_pluvial2017</td><td>EPSG:31370</td><td>2.0305</td><td>0.00796</td><td>407.66</td></tr>
+      <tr><td>Oudenburg_fluvial2050</td><td>EPSG:31370</td><td>2.0455</td><td>1</td><td>406</td></tr>
+      <tr><td>Bredene_fluvial2017</td><td>EPSG:31370</td><td>2.0281</td><td>1</td><td>337</td></tr>
+      <tr><td>DeHaan_fluvial2017</td><td>EPSG:31370</td><td>2.025</td><td>1</td><td>141</td></tr>
+      <tr><td>Gistel_fluvial2017</td><td>EPSG:31370</td><td>2.0328</td><td>1</td><td>228</td></tr>
+      <tr><td>Ichtegem_fluvial2017</td><td>EPSG:31370</td><td>2.0378</td><td>1</td><td>51</td></tr>
+      <tr><td>Ostend_fluvial2017</td><td>EPSG:31370</td><td>2.0357</td><td>1</td><td>336</td></tr>
+      <tr><td>Middelkereke_fluvial2017</td><td>EPSG:31370</td><td>2.0356</td><td>1</td><td>415</td></tr>
+      <tr><td>Bredene_fluvial2050</td><td>EPSG:31370</td><td>2.0438</td><td>1</td><td>406</td></tr>
+      <tr><td>DeHaan_fluvial2050</td><td>EPSG:31370</td><td>2.0407</td><td>1</td><td>147</td></tr>
+      <tr><td>Gistel_fluvial2050</td><td>EPSG:31370</td><td>2.0485</td><td>1</td><td>280</td></tr>
+      <tr><td>Ichtegem_fluvial2050</td><td>EPSG:31370</td><td>2.0536</td><td>1</td><td>103</td></tr>
+      <tr><td>Middelkerke_fluvial2050</td><td>EPSG:31370</td><td>2.0514</td><td>1</td><td>231</td></tr>
+      <tr><td>Ostend_fluvial2050</td><td>EPSG:31370</td><td>2.0357</td><td>1</td><td>336</td></tr>
+      <tr><td>Stormsurge2017</td><td>EPSG:31370</td><td>20.368</td><td>1</td><td>2589</td></tr>
+      <tr><td>Stormsurge2075</td><td>EPSG:31370</td><td>20.368</td><td>1</td><td>2571</td></tr>
+      </tbody>
+      </table>
+
+      <h2><strong>Reprojecting and Merging Flood Hazard Data</strong></h2>
       
+<p>Once the metadata has been inspected and the missing storm surge year interpolated, you need to ensure that all raster datasets are harmonized. This means every raster must have the same spatial resolution, projection, and alignment for consistent geospatial analysis—especially when mosaicking or overlaying data with analysis units like a hexagonal grid.</p>
+
+<p>In this case, we reproject all rasters to the <strong>Belgian Lambert 72</strong> coordinate reference system (EPSG:31370) and use a common spatial resolution of <strong>2.05 meters</strong>. This resolution was chosen because it is the median of the native resolutions from the datasets (which ranged from approximately 2.025 to 2.054 meters). Choosing 2.05 m preserves most of the original spatial detail while aligning the grid across all inputs.</p>
+
+<p>The storm surge datasets, however, had a much coarser resolution of approximately 20.37 meters. Since this would have caused a major mismatch in pixel size during the mosaicking stage, we resampled and reprojected those layers as well, using bilinear resampling to preserve depth gradients over larger areas.</p>
+
+<h3><strong>Reprojecting and Mosaicking</strong></h3>
+<pre class="javascript"><code>// Define target projection (EPSG:31370) and common scale
+var targetProj = ee.Projection('EPSG:31370').atScale(2.05);
+
+// Utility function to reproject and mosaic a list of assets
+function processAssets(assetList) {
+  return ee.ImageCollection(assetList.map(function(path) {
+    return ee.Image(path).reproject({crs: targetProj});
+  })).mosaic();
+}</code></pre>
+
+<h3><strong>Grouped Raster Sets and Storm Surge Resampling</strong></h3>
+<pre class="javascript"><code>// Define grouped asset collections
+  var pluvial2017_assets = [
+    "projects/ee-desmond/assets/nbracer/Aostend_pluvial2017_effectenenimpacts_s0_wateroverlastWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Adehaan_pluvial2017_effectenenimpacts_s0_wateroverlastWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Abredene_pluvial2017_effectenenimpacts_s0_wateroverlastWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Aichtegem_pluvial2017_effectenenimpacts_s0_wateroverlastWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Agistel_pluvial2017_effectenenimpacts_s0_wateroverlastWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Amiddelkerk_pluvial2017_effectenenimpacts_s0_wateroverlastWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Aoudenburg_pluvial2017_effectenenimpacts_s0_wateroverlastWaterdiepteCm_huidig_2017_t1000"
+  ];
+  
+  var pluvial2050_assets = [
+    "projects/ee-desmond/assets/nbracer/ADeHaan_pluvial2050_effectenenimpacts_s0_wateroverlastWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/AGistel_pluvial2050_effectenenimpacts_s0_wateroverlastWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/AIchtegem_pluvial2050_effectenenimpacts_s0_wateroverlastWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/AOostende_pluvial2050_effectenenimpacts_s0_wateroverlastWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/AOudenburg_pluvial2050_effectenenimpacts_s0_wateroverlastWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/Bredene_pluvial2050_effectenenimpacts_s0_wateroverlastWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/AMiddelkerke_pluvial2050_effectenenimpacts_s0_wateroverlastWaterdiepteCm_hoog_2050_t1000"
+  ];
+  
+  var fluvial2017_assets = [
+    "projects/ee-desmond/assets/nbracer/Aoudenburg_fluvial2017_effectenenimpacts_s0_overstromingWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Abredene_fluvial2017_effectenenimpacts_s0_overstromingWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Adehaan_fluvial2017_effectenenimpacts_s0_overstromingWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Agistel_fluvial2017_effectenenimpacts_s0_overstromingWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Aichtegem_fluvial2017_effectenenimpacts_s0_overstromingWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Aostend_fluvial2017_effectenenimpacts_s0_overstromingWaterdiepteCm_huidig_2017_t1000",
+    "projects/ee-desmond/assets/nbracer/Amiddelkereke_fluvial2017_effectenenimpacts_s0_overstromingWaterdiepteCm_huidig_2017_t1000"
+  ];
+  
+  var fluvial2050_assets = [
+    "projects/ee-desmond/assets/nbracer/Aoudenburg_fluvial2050_effectenenimpacts_s0_overstromingWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/Abredene_fluvial2050_effectenenimpacts_s0_overstromingWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/Adehaan_fluvial2050_effectenenimpacts_s0_overstromingWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/Agistel_fluvial2050_effectenenimpacts_s0_overstromingWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/Aichtegem_fluvial2050_effectenenimpacts_s0_overstromingWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/Amiddelkerke_fluvial2050_effectenenimpacts_s0_overstromingWaterdiepteCm_hoog_2050_t1000",
+    "projects/ee-desmond/assets/nbracer/Aostend_fluvial2050_effectenenimpacts_s0_overstromingWaterdiepteCm_hoog_2050_t1000"
+  ];
+  
+  var stormsurge2017 = ee.Image("projects/ee-desmond/assets/nbracer/Astormesurge2017_effectenenimpacts_s0_stormvloedWaterdiepteCm_huidig_2017_t1000")
+    .resample('bilinear')
+    .reproject({crs: targetProj});
+  
+  var stormsurge2050 = ee.Image("projects/ee-desmond/assets/nbracer/Astormesurge2050_interpolated")
+    .resample('bilinear')
+    .reproject({crs: targetProj});</code></pre>
+
+
+<p>Realigning all datasets ensures compatibility with downstream exposure modeling, particularly when using a <strong>100 m² hexagonal grid</strong> as the unit of analysis. Without this alignment:</p>
+<ul>
+  <li>Values from different flood types and years could fall on misaligned pixels.</li>
+  <li>Exposure results would be over- or under-estimated due to pixel shifts or area mismatches.</li>
+  <li>Storm surge impacts would appear blurred or displaced because of coarse resolution if not resampled.</li>
+</ul>
+
+<p>With harmonized spatial scales, each pixel accurately represents surface water depth at a resolution compatible with the final unit of analysis.</p>
+</div>
+      
+      <h3><strong>Exporting Merged Rasters</strong></h3>
+      <p>Finally, export each raster to your Earth Engine Asset folder.</p>
+      <pre class="javascript"><code>// Export example for Pluvial 2017
+        Export.image.toAsset({
+          image: flood_pluvial2017,
+          description: 'Export_Plulvial2017_Merged',
+          assetId: 'projects/ee-desmond/assets/nbracer/flood_pluvial2017_merged',
+          region: flood_pluvial2017.geometry(),
+          scale: 2.05,
+          maxPixels: 1e13
+        });
+        
+        Export.image.toAsset({
+          image: flood_pluvial2050,
+          description: 'Export_Plulvial2050_Merged',
+          assetId: 'projects/ee-desmond/assets/nbracer/flood_pluvial2050_merged',
+          region: flood_pluvial2050.geometry(),
+          scale: 2.05,
+          maxPixels: 1e13
+        });
+        
+        Export.image.toAsset({
+          image: flood_fluvial2017,
+          description: 'Export_Fluvial2017_Merged',
+          assetId: 'projects/ee-desmond/assets/nbracer/flood_fluvial2017_merged',
+          region: flood_fluvial2017.geometry(),
+          scale: 2.05,
+          maxPixels: 1e13
+        });
+        
+        Export.image.toAsset({
+          image: flood_fluvial2050,
+          description: 'Export_Fluvial2050_Merged',
+          assetId: 'projects/ee-desmond/assets/nbracer/flood_fluvial2050_merged',
+          region: flood_fluvial2050.geometry(),
+          scale: 2.05,
+          maxPixels: 1e13
+        });
+        
+        Export.image.toAsset({
+          image: stormsurge2017,
+          description: 'Export_StormSurge2017',
+          assetId: 'projects/ee-desmond/assets/nbracer/stormsurge_2017_resampled',
+          region: stormsurge2017.geometry(),
+          scale: 2.05,
+          maxPixels: 1e13
+        });
+        
+        Export.image.toAsset({
+          image: stormsurge2050,
+          description: 'Export_StormSurge2050',
+          assetId: 'projects/ee-desmond/assets/nbracer/stormsurge_2050_resampled',
+          region: stormsurge2050.geometry(),
+          scale: 2.05,
+          maxPixels: 1e13
+        });
+        </code></pre>
+      
+      
+
+      <div id="resolution-analysis" class="section level2">
+        <h2><strong>Resolution vs. Unit-of-Analysis: Hexagonal Grid at 100 m²</strong></h2>
+        
+        <h3>Technical Consideration</h3>
+        <ul>
+          <li><strong>Raster resolution:</strong> 2.05 m → Pixel area ≈ 4.2 m²</li>
+          <li><strong>Vector unit:</strong> 100 m² hexagon → Hexagon radius ≈ 5.3 m</li>
+          <li>This implies each hexagon contains ≈ 24 raster pixels (100 / 4.2)</li>
+        </ul>
+        
+        <h3>Implications</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="border: 1px solid #000; padding: 8px;">Scenario</th>
+              <th style="border: 1px solid #000; padding: 8px;">Effect on Exposure Estimation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="border: 1px solid #000; padding: 8px;">Raster resolution &lt;&lt; hex size</td>
+              <td style="border: 1px solid #000; padding: 8px;">Reduces precision at fine-scale impact</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid #000; padding: 8px;">Raster variation within hex</td>
+              <td style="border: 1px solid #000; padding: 8px;">Requires summarizing (e.g., max, mean)</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid #000; padding: 8px;">Misalignment of grid centroids</td>
+              <td style="border: 1px solid #000; padding: 8px;">May introduce edge effect distortions</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid #000; padding: 8px;">Flood footprint near boundaries</td>
+              <td style="border: 1px solid #000; padding: 8px;">Partial inundation may be exaggerated</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <h3>Recommendations</h3>
+        <ul>
+          <li>Use <code>reduceRegions()</code> with <code>ee.Reducer.max()</code> or <code>mean()</code> to capture meaningful hazard statistics.</li>
+          <li>Consider spatial smoothing if using categorical thresholds.</li>
+          <li>Validate exposure results with high-resolution reference data if available.</li>
+        </ul>
+        
+        <h4><strong> What Does It Mean to Use 2.05 m Data with a 100 m² Hexagon?</strong></h4>
+        <p>
+      
+          Each pixel in our flood data is like a small tile on the ground that's about 2 meters wide (covering ~4.2 m²).
+          Each hexagon we’ll use for exposure analysis is like a big honeycomb cell that covers 100 square meters.
+        </p>
+        <p>
+          Now, each hexagon will contain about 24–25 of these smaller flood pixels. So when we try to say how flooded a hexagon is, we need to summarize the information from those 24 small tiles into a single number — like the <strong>maximum water depth</strong> or the <strong>average</strong> across the hexagon.
+        </p>
+        <ul>
+          <li><strong>Max value</strong> — good for understanding worst-case hazards (e.g. critical infrastructure).</li>
+          <li><strong>Mean value</strong> — better for general trends and average conditions (e.g. ecosystems).</li>
+        </ul>
+        <p><strong>Summary:</strong> Each flood raster pixel is about 2 meters wide, covering ~4.2 m². Your hexagon covers 100 m², meaning it encloses ~24 such pixels. To calculate exposure at the hexagon level, you need to summarize those 24 flood pixels into one value. That could be:</p>
+        <ul>
+          <li>Max value (for worst-case hazard)</li>
+          <li>Mean value (for average condition)</li>
+        </ul>
+        
+        <h4><strong> What’s the Impact?</strong></h4>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="border: 1px solid #000; padding: 8px;">Situation</th>
+              <th style="border: 1px solid #000; padding: 8px;">What Could Happen</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="border: 1px solid #000; padding: 8px;">Hexagon includes just a few flooded pixels</td><td style="border: 1px solid #000; padding: 8px;">You might overestimate risk</td></tr>
+            <tr><td style="border: 1px solid #000; padding: 8px;">Flood depth varies a lot inside hexagon</td><td style="border: 1px solid #000; padding: 8px;">Mean might hide extremes, underestimating risk</td></tr>
+            <tr><td style="border: 1px solid #000; padding: 8px;">Hexagons don't align with raster grid</td><td style="border: 1px solid #000; padding: 8px;">Boundary errors may appear due to pixel cutoffs</td></tr>
+            <tr><td style="border: 1px solid #000; padding: 8px;">Data is high-resolution (2.05 m)</td><td style="border: 1px solid #000; padding: 8px;">You need to summarize carefully to avoid bias</td></tr>
+          </tbody>
+        </table>
+        
+        <h4><strong>What Does This Mean for Infrastructure & Ecosystems?</strong></h4>
+        <p>For key infrastructure like hospitals or wetlands:</p>
+        <ul>
+          <li><strong>Overestimating risk</strong>: One small flooded pixel may classify the whole hex as exposed.</li>
+          <li><strong>Underestimating risk</strong>: Averaging may downplay serious flood depth at sensitive spots.</li>
+        </ul>
+        
+        <h4><strong>What Should We Do?</strong></h4>
+        <ul>
+          <li><strong>Use max()</strong> if targeting worst-case impacts (e.g. emergency planning).</li>
+          <li><strong>Use mean()</strong> for general conditions (e.g. ecological studies).</li>
+          <li><strong>Run both</strong> and compare results as a sensitivity check.</li>
+          <li><strong>Visual inspection</strong>: Always verify visually that patterns make sense.</li>
+        </ul>
+        
+        <h4><strong>Should You Resample to 100 m?</strong></h4>
+        <p>Resampling to 100 m can be useful but introduces trade-offs:</p>
+        
+        <h5><strong>Pros:</strong></h5>
+        <ul>
+          <li>Speeds up processing</li>
+          <li>Makes hex grid alignment cleaner</li>
+          <li>Reduces mismatches and artifacts</li>
+        </ul>
+        
+        <h5><strong>Cons:</strong></h5>
+        <ul>
+          <li>Flood details get flattened</li>
+          <li>Small-scale flooding may disappear</li>
+          <li>Max resampling may exaggerate exposure</li>
+        </ul>
+        
+        <p><strong>Recommendation:</strong> Keep original resolution for analysis with <code>reduceRegions()</code>, resample to 100 m only if needed for exports or dashboards.</p>
+        </div>
+        
+
 
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sr_identify-1">
