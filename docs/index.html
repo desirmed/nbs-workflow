@@ -277,7 +277,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div id="header">
+< id="header">
 
 
 
@@ -323,28 +323,64 @@ $(document).ready(function () {
     <h1 class="title">Application of the Conceptual Model: A Step-by-Step Guide</h1>
 </div>
 
-<div class="author-container">
-  <span class="authors-label">Authors:</span>
 
-  <a href="https://www.linkedin.com/in/desmond-lartey/" target="_blank" class="author">
-    <img src="https://media.licdn.com/dms/image/v2/D4E03AQFcG-KcTiEWeA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1723584764222?e=1752710400&v=beta&t=AjmDsrYgofn7kQy3V8n9gY4q8y41ngc7-jAYMuy1kFo">
-    Desmond Lartey
-  </a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  
+  
+  <!-- Add the CSS here -->
+  <style>
+    .author-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-  <a href="https://www.linkedin.com/in/example2" target="_blank" class="author">
-    <img src="https://media.licdn.com/dms/image/C4D03AQExample2PhotoURL" alt="Author 2">
-    Author 2
-  </a>
+    .authors-label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
 
-  <a href="https://www.linkedin.com/in/example3" target="_blank" class="author">
-    <img src="https://media.licdn.com/dms/image/C4D03AQExample3PhotoURL" alt="Author 3">
-    Author 3
-  </a>
-</div>
+    .author img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .author img:hover {
+      transform: scale(1.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="author-container">
+    <span class="authors-label">Authors:</span>
+
+    <a href="https://www.linkedin.com/in/desmond-lartey/" target="_blank" class="author">
+      <img src="https://media.licdn.com/dms/image/v2/D4E03AQFcG-KcTiEWeA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1723584764222?e=1752710400&v=beta&t=AjmDsrYgofn7kQy3V8n9gY4q8y41ngc7-jAYMuy1kFo" alt="Desmond Lartey">
+      <!-- Desmond Lartey -->
+    </a>
+
+    <a href="https://www.linkedin.com/in/example2" target="_blank" class="author">
+      <img src="https://media.licdn.com/dms/image/C4D03AQExample2PhotoURL" alt="Author 2">
+      <!-- Author 2 -->
+    </a>
+
+    <a href="https://www.linkedin.com/in/example3" target="_blank" class="author">
+      <img src="https://media.licdn.com/dms/image/C4D03AQExample3PhotoURL" alt="Author 3">
+      <!-- Author 3 -->
+    </a>
+  </div>
+</body>
+</html>
 
 
-
-</div>
 
 
 <p>
