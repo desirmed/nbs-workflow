@@ -385,7 +385,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-30
+<strong>Last updated:</strong> 2024-12-31
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -606,7 +606,7 @@ Rmd
 Desmond Lartey
 </td>
 <td>
-2025-12-31
+2024-12-31
 </td>
 <td>
 wflow_publish("analysis/Functions.Rmd")
@@ -623,7 +623,7 @@ html
 Desmond Lartey
 </td>
 <td>
-2025-12-31
+2024-12-31
 </td>
 <td>
 Build site.
@@ -640,7 +640,7 @@ Rmd
 Desmond Lartey
 </td>
 <td>
-2025-12-31
+2024-12-31
 </td>
 <td>
 wflow_publish("analysis/Functions.Rmd")
@@ -657,7 +657,7 @@ html
 Desmond Lartey
 </td>
 <td>
-2025-12-30
+2024-12-30
 </td>
 <td>
 Build site.
@@ -674,7 +674,7 @@ Rmd
 Desmond Lartey
 </td>
 <td>
-2025-12-30
+2024-12-30
 </td>
 <td>
 wflow_publish("analysis/Functions.Rmd")
@@ -692,59 +692,67 @@ wflow_publish("analysis/Functions.Rmd")
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>R Functions Tutorial</title>
+  <title>Mapping Ecosystem Services Using CORINE and Earth Engine</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-    h1, h2, h3, h4 { color: #2c3e50; }
-    pre, code { background-color: #f4f4f4; padding: 10px; border-radius: 5px; display: block; overflow-x: auto; }
-    ul { margin-left: 20px; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+      line-height: 1.7;
+      color: #333;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 0.2em;
+    }
+    p {
+      margin-top: 0.5em;
+    }
+    ul {
+      margin-top: 0.5em;
+      margin-left: 20px;
+    }
+    section {
+      margin-bottom: 2em;
+    }
   </style>
 </head>
 <body>
 
-<h1>Functions in R</h1>
+  <section>
+    <h1>🌍 Mapping Ecosystem Services Using CORINE and Earth Engine: A Technical Guide</h1>
+    <p>Understanding the spatial distribution of ecosystem services (ESS) is essential for sustainable planning, environmental policy, and nature-based solutions (NbS). In this tutorial, we walk through a technical yet replicable methodology for mapping both provisioning and regulating ESS across Europe using CORINE land cover data and Google Earth Engine (GEE).</p>
+  </section>
 
-<p>Functions are blocks of code that perform a specific task in R. They allow us to encapsulate logic and reuse it across different parts of the code, making our scripts more modular, efficient, and easy to debug. Functions are one of the most powerful tools in R and are commonly used in data analysis, machine learning, and statistical programming.</p>
+  <section>
+    <h2>📚 Background and Literature-Informed Rationale</h2>
+    <p>Several scholarly works (Burkhard et al., 2009, Jacobs et al., 2015, Maes et al., 2012) have established land cover as a reasonable proxy for estimating ecosystem service supply, especially where direct measurements are unavailable. Inspired by frameworks such as CICES v5.1, and recent European mapping standards, we adapt a strategy that:</p>
+    <ul>
+      <li>Uses CORINE Land Cover (CLC) classes as the base landscape stratification.</li>
+      <li>Associates each CORINE code with multiple ESS using a weighted ESS score table.</li>
+      <li>Converts categorical land cover into continuous ESS intensity maps using a remapping and scaling strategy.</li>
+      <li>Separates ESS into regulating and provisioning services using a lookup structure, which also supports UI-based selection.</li>
+      <li>Supports vector and raster exports, including pixel-level aggregation and visualization.</li>
+      <li>Enables probabilistic scoring for ESS presence (optional), following recent advances in Nedkov &amp; Burkhard (2012).</li>
+    </ul>
+  </section>
 
-<p>By using functions, we can:</p>
-<ul>
-  <li>Avoid repetitive code</li>
-  <li>Break complex tasks into smaller, manageable pieces</li>
-  <li>Improve readability and maintainability of your code</li>
-</ul>
-
-<div id="creating-functions-in-r" class="section level2">
-<h2><strong>Creating Functions in R</strong></h2>
-
-<p>In R, a function is created using the <strong>function()</strong> keyword. The basic syntax for defining a function is:</p>
-
-<pre class="r"><code>my_function &lt;- function(arg1, arg2) {
-  # function body
-  result &lt;- arg1 + arg2
-  return(result)
-}</code></pre>
-
-<p>Here’s what each part means:</p>
-<ul>
-  <li><code>my_function</code>: The name of the function.</li>
-  <li><code>function(arg1, arg2)</code>: The definition of the function with its arguments.</li>
-  <li><code>{}</code>: The body of the function where the logic is written.</li>
-  <li><code>return(result)</code>: The value that is returned by the function.</li>
-</ul>
-
-<p>Example:</p>
-
-<pre class="r"><code># A simple function to add two numbers
-add_numbers &lt;- function(a, b) {
-  sum &lt;- a + b
-  return(sum)
-}
-
-# Call the function
-add_numbers(5, 3)</code></pre>
-
-<pre><code>[1] 8</code></pre>
-</div>
+  <section>
+    <h2>🧭 What This Tutorial Will Cover</h2>
+    <p>This guide is structured in a way that holds the hand of any reader—policy analyst, researcher, or student—through each step of replicating our ESS mapping method:</p>
+    <ul>
+      <li><strong>ESS ScoreTable Definition</strong>: Associate CORINE codes with ecosystem services using value-based lookups.</li>
+      <li><strong>ESS Group Mapping</strong>: Distinguish provisioning and regulating services for filtering and analysis.</li>
+      <li><strong>Color Palettes and UI Controls</strong>: Apply consistent and readable thematic colors across maps.</li>
+      <li><strong>Mapping ESS in Earth Engine</strong>: Generate per-ESS raster layers using <code>.remap()</code> and <code>.multiply()</code>.</li>
+      <li><strong>Interactive Layer Selection and Export</strong>: Build a user interface for toggling ESS groups and exporting GeoTIFFs or shapefiles.</li>
+      <li><strong>Vectorization of ESS Layers</strong>: Use <code>reduceToVectors()</code> to create polygon representations of ESS presence.</li>
+      <li><strong>Advanced Probabilistic Mapping (Optional)</strong>: Integrate ESS probability layers to handle uncertainty or partial presence.</li>
+    </ul>
+  </section>
 
 </body>
 </html>
@@ -758,7 +766,7 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.4.0 (2025-04-24 ucrt)
+<pre><code>R version 4.4.0 (2024-04-24 ucrt)
 Platform: x86_64-w64-mingw32/x64
 Running under: Windows 11 x64 (build 22631)
 
