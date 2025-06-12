@@ -688,37 +688,52 @@ wflow_publish("analysis/Functions.Rmd")
 </div>
 </div>
 <style> p { text-align: justify; } </style>
-<p>Functions are blocks of code that perform a specific task in R. They
-allow us to encapsulate logic and reuse it across different parts of the
-code, making our scripts more modular, efficient, and easy to debug.
-Functions are one of the most powerful tools in R and are commonly used
-in data analysis, machine learning, and statistical programming.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>R Functions Tutorial</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+    h1, h2, h3, h4 { color: #2c3e50; }
+    pre, code { background-color: #f4f4f4; padding: 10px; border-radius: 5px; display: block; overflow-x: auto; }
+    ul { margin-left: 20px; }
+  </style>
+</head>
+<body>
+
+<h1>Functions in R</h1>
+
+<p>Functions are blocks of code that perform a specific task in R. They allow us to encapsulate logic and reuse it across different parts of the code, making our scripts more modular, efficient, and easy to debug. Functions are one of the most powerful tools in R and are commonly used in data analysis, machine learning, and statistical programming.</p>
+
 <p>By using functions, we can:</p>
 <ul>
-<li>Avoid repetitive code</li>
-<li>Break complex tasks into smaller, manageable pieces</li>
-<li>Improve readability and maintainability of your code</li>
+  <li>Avoid repetitive code</li>
+  <li>Break complex tasks into smaller, manageable pieces</li>
+  <li>Improve readability and maintainability of your code</li>
 </ul>
+
 <div id="creating-functions-in-r" class="section level2">
 <h2><strong>Creating Functions in R</strong></h2>
-<p>In R, a function is created using the <strong>function()</strong>
-keyword. The basic syntax for defining a function is:</p>
+
+<p>In R, a function is created using the <strong>function()</strong> keyword. The basic syntax for defining a function is:</p>
+
 <pre class="r"><code>my_function &lt;- function(arg1, arg2) {
   # function body
   result &lt;- arg1 + arg2
   return(result)
 }</code></pre>
+
 <p>Here’s what each part means:</p>
 <ul>
-<li><code>my_function</code>: The name of the function.</li>
-<li><code>function(arg1, arg2)</code>: The definition of the function
-with its arguments.</li>
-<li><code>{}</code>: The body of the function where the logic is
-written.</li>
-<li><code>return(result)</code>: The value that is returned by the
-function.</li>
+  <li><code>my_function</code>: The name of the function.</li>
+  <li><code>function(arg1, arg2)</code>: The definition of the function with its arguments.</li>
+  <li><code>{}</code>: The body of the function where the logic is written.</li>
+  <li><code>return(result)</code>: The value that is returned by the function.</li>
 </ul>
+
 <p>Example:</p>
+
 <pre class="r"><code># A simple function to add two numbers
 add_numbers &lt;- function(a, b) {
   sum &lt;- a + b
@@ -727,271 +742,13 @@ add_numbers &lt;- function(a, b) {
 
 # Call the function
 add_numbers(5, 3)</code></pre>
+
 <pre><code>[1] 8</code></pre>
 </div>
-<div id="function-with-multiple-arguments" class="section level2">
-<h2><strong>Function with Multiple Arguments</strong></h2>
-<p>Functions can have multiple arguments, and you can pass values in the
-form of position or by explicitly naming the arguments when calling the
-function.</p>
-<pre class="r"><code># A function to calculate the area of a rectangle
-rectangle_area &lt;- function(length, width = 2) {  # Default value for width
-  area &lt;- length * width
-  return(area)
-}
 
-# Call the function with default width
-rectangle_area(5)</code></pre>
-<pre><code>[1] 10</code></pre>
-<pre class="r"><code># Call the function with a specific width
-rectangle_area(5, 3)</code></pre>
-<pre><code>[1] 15</code></pre>
-<p>In the above example, the argument width has a default value of 2. If
-you don’t provide a value, R will use this default.</p>
-</div>
-<div id="downloads-and-geoprocessing" class="section level2">
-<h2><strong>Downloads and Geoprocessing</strong></h2>
-<p>In geospatial analysis, it is often necessary to obtain datasets from
-online sources for analysis. R provides a straightforward way to
-automate the process of downloading data from URLs and saving it to a
-specific path on your local machine. This can save time, ensure
-consistency, and allow seamless integration of data acquisition into
-oour analysis workflows.</p>
-<div id="using-the-download.file-function" class="section level3">
-<h3><strong>Using the <code>download.file()</code>
-Function</strong></h3>
-<pre class="r"><code># URL of the GADM data of San Marino
-url &lt;- &quot;https://geodata.ucdavis.edu/gadm/gadm4.1/gpkg/gadm41_SMR.gpkg&quot;
+</body>
+</html>
 
-# Destination path to save the file
-# provide the path where you want to save the geopackage and also change the name of the file
-destfile &lt;- &quot;data/downloads/gadm41_SMR.gpkg&quot;
-
-# Download the file
-download.file(url,
-              destfile)</code></pre>
-</div>
-<div id="automating-data-download" class="section level3">
-<h3><strong>Automating Data Download</strong></h3>
-<p>To simplify the process, we can wrap this functionality into a custom
-function that takes a URL and destination path as arguments. This can be
-particularly useful when managing multiple datasets.</p>
-<div id="download-one-file-at-a-time" class="section level4">
-<h4><strong>Download one file at a time</strong></h4>
-<p>In this subsection, we will create a function to download
-country-specific GeoPackage data from the GADM website.</p>
-<pre class="r"><code>get_gadm &lt;- function(iso3 = NULL,
-                     path = NULL) {
-      
-      # Construct the URL of the GADM data
-      url &lt;- 
-        paste0(&quot;https://geodata.ucdavis.edu/gadm/gadm4.1/gpkg/gadm41_&quot;, iso3, &quot;.gpkg&quot;)
-      # Destination path to save the file
-      destfile &lt;- 
-        paste0(path, &quot;/&quot;, iso3, &quot;.gpkg&quot;)
-      # Download the file
-      download.file(url,
-                    destfile)
-      # print message
-      message(&quot;Download process completed.&quot;)
-}</code></pre>
-<p>Now, we created a function named <strong>get_gadm()</strong> that
-takes the <code>ISO3</code> code of the country of interest and the
-destination file <code>path</code> as arguments. We will use this
-function to download the GeoPackage containing the country polygon.
-Please ensure that you provide a valid ISO3 code and a proper file path
-to download the polygons; otherwise, a download error will occur.</p>
-<pre class="r"><code># Example 1: Luxembourg
-iso3 = &quot;LUX&quot;
-path = &quot;data/downloads/&quot;
-get_gadm(iso3, path)</code></pre>
-<pre><code>Download process completed.</code></pre>
-<pre class="r"><code># Example 2: Cyprus
-get_gadm(iso3 = &quot;CYP&quot;,
-         path = &quot;data/downloads/&quot;)</code></pre>
-<pre><code>Download process completed.</code></pre>
-</div>
-<div id="multiple-files-downloading-simultaneously"
-class="section level4">
-<h4><strong>Multiple files downloading simultaneously</strong></h4>
-<p>In this subsection, we will create a function to download GADM data
-for multiple countries simultaneously.</p>
-<pre class="r"><code>gadm_downloader &lt;- function(iso3 = NULL,
-                            path = NULL) {
-  
-  # Loop through each ISO3 code
-  for (code in iso3) {
-    
-    # Construct the URL
-    url &lt;- paste0(&quot;https://geodata.ucdavis.edu/gadm/gadm4.1/gpkg/gadm41_&quot;, code, &quot;.gpkg&quot;)
-    # Destination path to save the file
-    destfile &lt;- 
-      file.path(path, paste0(code, &quot;.gpkg&quot;))
-    
-    # Download the file
-    message(&quot;Downloading GADM data for country: &quot;, code)
-    
-    tryCatch({
-      
-      download.file(url, destfile)
-      message(&quot;File for &quot;, code, &quot; downloaded successfully.&quot;)
-      
-    }, 
-    error = function(e) {
-      message(&quot;Failed to download file for &quot;, code, &quot;: &quot;, e$message)
-    })
-  }
-  
-  message(&quot;Download process completed.&quot;)
-}</code></pre>
-<p>Key Features of the Updated Function:</p>
-<ul>
-<li>Handles Multiple Countries: Accepts a vector of ISO3 codes and
-processes them iteratively.</li>
-<li>Error Handling: Uses tryCatch to gracefully handle download failures
-and continue with the next country.</li>
-<li>Informative Messages: Provides feedback during the download process
-for each country.</li>
-</ul>
-<pre class="r"><code># Example 3: Cyprus, San Marino, Luxembourg
-# Define ISO3 codes and path
-iso3_codes &lt;- 
-  c(&quot;CYP&quot;, &quot;LUX&quot;, &quot;SMR&quot;)
-# Define output file path
-output_path &lt;- 
-  &quot;data/downloads/&quot;
-
-# Call the function
-gadm_downloader(iso3 = iso3_codes,
-                path = output_path)</code></pre>
-<pre><code>Downloading GADM data for country: CYP</code></pre>
-<pre><code>File for CYP downloaded successfully.</code></pre>
-<pre><code>Downloading GADM data for country: LUX</code></pre>
-<pre><code>File for LUX downloaded successfully.</code></pre>
-<pre><code>Downloading GADM data for country: SMR</code></pre>
-<pre><code>File for SMR downloaded successfully.</code></pre>
-<pre><code>Download process completed.</code></pre>
-<p>Advantages of Automating Downloads:</p>
-<ul>
-<li>Efficiency: Automates the tedious process of manually downloading
-files.</li>
-<li>Reproducibility: Ensures that analyses can be reproduced with the
-same datasets.</li>
-<li>Scalability: Handles multiple datasets with ease, particularly
-useful in batch processing.</li>
-</ul>
-<p>By leveraging these techniques, we can integrate data acquisition
-seamlessly into our R scripts, ensuring an efficient and organized
-workflow for geospatial projects.</p>
-</div>
-</div>
-</div>
-<div id="computation-functions" class="section level2">
-<h2><strong>Computation Functions</strong></h2>
-<p>In this section, we will create a function that computes zonal
-statistics based on the provided Area of Interest (AOI) and raster data.
-The <code>zonal_operation</code> function calculates zonal statistics
-for a given raster (spatial dataset) within a defined Area of Interest
-(AOI). It uses the <code>idcol</code> field to rasterize a polygon and
-then computes statistical summaries (like mean, sum, etc.) within each
-zone of the AOI.</p>
-<pre class="r"><code>zonal_operation &lt;- function(aoi = NULL,
-                            idcol = NULL,
-                            rast = NULL,
-                            opn = &quot;mean&quot;) {
-  
-  # Convert AOI (sf) to SpatVector
-  aoi_v &lt;- vect(aoi)
-  
-  # Crop the raster to the AOI extent
-  cropped_raster &lt;- crop(rast, aoi_v)
-  
-  # Mask the raster using the AOI
-  masked_raster &lt;- mask(cropped_raster, aoi_v)
-  
-  # Rasterize the polygon using the ID column
-  rasterized_aoi &lt;- rasterize(aoi_v, masked_raster, field = idcol)
-  
-  # Compute zonal statistics
-  zonal_stats &lt;- zonal(masked_raster, rasterized_aoi, fun = opn, na.rm = TRUE)
-  
-  # Return zonal statistics as a data frame
-  return(zonal_stats)
-  
-}</code></pre>
-<p>The function above takes four parameters:</p>
-<ul>
-<li><code>aoi</code>: The Area of Interest, typically a spatial polygon
-(e.g., a shapefile or spatial feature object).</li>
-<li><code>idcol</code>: The name of the column in the AOI data that will
-be used to create zones (for rasterization).</li>
-<li><code>rast</code>: The raster dataset on which zonal statistics will
-be computed.</li>
-<li><code>opn</code>: The operation to compute (e.g., “mean”, “sum”,
-etc.) over each zone. Default is “mean”.</li>
-</ul>
-<p>As an example, let’s compute the total population in the year 2020
-for different regions of Kanchanpur district.</p>
-<pre class="r"><code># Load required libraries
-library(sf)
-library(terra)
-
-# Load AOI polygon 
-zones &lt;- read_sf(&quot;data/vector/kanchanpur.gpkg&quot;)
-
-# Load population count raster from year 2020
-raster_data &lt;- rast(&quot;data/raster/popCount_2020.tif&quot;)
-
-# Set unique ID for the zonal operation
-unique_ID &lt;- &quot;NAME&quot;
-
-# Operation to compute
-method &lt;- &quot;sum&quot;
-
-# Call the function
-zonal_operation(aoi = zones,
-                idcol = unique_ID,
-                rast = raster_data,
-                opn = method)</code></pre>
-<pre><code>                 NAME npl_ppp_2020_UNadj
-1        BaisiBichawa         37900.0425
-2            Beldandi         46565.3564
-3            Chandani         72813.0097
-4              Daijee         49223.9277
-5         Dekhatbhuli         52221.7364
-6             Dodhara         64436.5646
-7             Jhalari         40823.8799
-8              Kalika         97216.4754
-9          Krishnapur         36368.5505
-10           Laxmipur        277108.9353
-11  MahendranagarN.P.         51835.0291
-12            Parasan         38199.8677
-13           Pipaladi         46773.8070
-14    RaikawarBichawa         44571.7505
-15     RampurBilaspur         48838.7719
-16     RauteliBichawa         11581.3578
-17 Royal Shuklaphanta           131.6414
-18         Shankarpur         19211.7471
-19            Sreepur         56755.7132
-20               Suda         58257.6391
-21     Tribhuwanbasti         37573.9453</code></pre>
-<p>In conclusion, mastering functions in R is essential for writing
-efficient, reusable, and organized code. Functions allow you to
-streamline complex tasks, avoid redundancy, and improve the readability
-and maintainability of your scripts. By understanding how to define and
-use functions, you can perform a wide range of data manipulation,
-statistical analysis, and visualization tasks more effectively. With the
-ability to build custom functions and leverage the vast array of
-built-in functions in R, you can significantly enhance your data
-analysis workflow, making your code more modular and adaptable to
-different challenges. Functions are a powerful tool that, once mastered,
-will elevate your R programming skills to the next level.</p>
-<p><strong>For this tutorial, this concludes the coverage of functions
-in R. If you would like to explore additional functions, examples, or
-need clarification on any of the steps covered, please visit the GitHub
-repository: <a
-href="https://github.com/deltares-desirmed/nbs-workflow">nbs-workflow</a> and feel free
-to open an issue.</strong></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
