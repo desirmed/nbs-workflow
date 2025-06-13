@@ -731,12 +731,13 @@ wflow_publish("analysis/Functions.Rmd")
   <h1> Introduction</h1>
   <p>
     Quantifying the spatial distribution of <em>ecosystem services (ES)</em> is
-    pivotal for sustainable planning, climate-resilient policy, and
+    very essential for sustainable planning, climate-resilient policy. Normally, this is done by modelling and assessing the supply of ecosystem services (ESS) at a given location.
     <a href="https://doi.org/10.1038/s41467-018-03083-1" target="_blank">nature-based solutions (NbS)</a>.
-    Yet, direct monitoring of every service is rarely feasible at continental
-    scales. Here we present a replicable workflow that couples the
-    <strong>CORINE Land Cover (CLC)</strong> inventory with
-    <strong>Google Earth Engine (GEE)</strong> to generate both regulating and
+    Yet, direct monitoring of every service is rarely feasible at larger or even at local scales where local measurement or insotu data capacity is not present.
+    Most, Ecosystem service assessment often relies on land cover as a proxy due to the absence of primary field-based data.
+    Several scholarly works (Burkhard et al., 2009, Jacobs et al., 2015, Maes et al., 2012) have established land cover as a reasonable proxy for estimating ecosystem service supply, especially where direct measurements are unavailable
+    Here we present a replicable workflow that couples the
+    <strong>CORINE Land Cover (CLC)</strong> inventory with expert/sound judgement approximations to generate both regulating and
     provisioning ES layers for Europe (2012 & 2018).
   </p>
 </section>
@@ -815,18 +816,15 @@ wflow_publish("analysis/Functions.Rmd")
   <h2> Tutorial Road-Map</h2>
   <p>We lead you step-by-step through:</p>
   <ul>
-    <li><strong>1. Score-Table Design (30 ESS)</strong> — link CLC codes to weighted service scores.</li>
-    <li><strong>2. Service Grouping</strong> — flag each ESS as <em>Regulating</em> or <em>Provisioning</em> for UI filters.</li>
-    <li><strong>3. Raster Generation in GEE</strong> — create per-ESS intensity layers via <code>.remap()</code>.</li>
-    <li><strong>4. Interactive UI</strong> — multi-checkbox panel to toggle services &amp; years (2012 vs 2018).</li>
-    <li><strong>5. Export Workflows</strong> — GeoTIFF per ESS, plus vector polygons via <code>reduceToVectors()</code>.</li>
-    <li><strong>6. (Advanced) Probabilistic ESS</strong> — integrate confidence bands for uncertainty analysis.</li>
+    <li><strong>1. Score-Table Design (30 ESS)</strong> - link CLC codes to weighted service scores.</li>
+    <li><strong>2. Service Grouping</strong> - flag each ESS as <em>Regulating</em> or <em>Provisioning</em></li>
+    <li><strong>3. Reclassification</strong> - create per-ESS intensity layers via <code>.remap()</code>.</li>
+    <li><strong>4. (Advanced) Probabilistic ESS</strong> - integrate confidence bands for uncertainty analysis.</li>
   </ul>
 
   <p style="margin-top:0.6rem;">
-    <em>Outcome:</em> A reproducible pipeline that policy analysts and researchers
-    can deploy to <strong>screen NbS potential</strong>, evaluate land-use
-    trade-offs, or track ES changes over time.
+    A reproducible pipeline that can be deploy to <strong>screen NbS potential implemntation insitu</strong>, evaluate land-use
+    trade-offs, or track ES produced by these areas and what hazards they can support to mitigate it as well as what potential hzards can affect those ecosystems.
   </p>
 </section>
 
