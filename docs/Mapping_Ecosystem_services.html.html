@@ -692,7 +692,7 @@ wflow_publish("analysis/Functions.Rmd")
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Mapping Ecosystem Services Using CORINE and Earth Engine</title>
+  <title>Mapping Ecosystem Services Using CORINE</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -723,9 +723,66 @@ wflow_publish("analysis/Functions.Rmd")
 <body>
 
   <section>
-    <h1>Mapping Ecosystem Services Using CORINE and Earth Engine: A Technical Guide</h1>
     <p>Understanding the spatial distribution of ecosystem services (ESS) is essential for sustainable planning, environmental policy, and nature-based solutions (NbS). In this tutorial, we walk through a technical yet replicable methodology for mapping both provisioning and regulating ESS across Europe using CORINE land cover data and Google Earth Engine (GEE).</p>
   </section>
+
+  <section>
+  <h2>📚 Background and Literature-Informed Rationale</h2>
+  <p>
+    Ecosystem service assessment often relies on land cover as a proxy due to the absence of primary field-based data. Key literature supports this assumption:
+    <ul>
+      <li><a href="https://doi.org/10.1016/j.ecolind.2008.05.005" target="_blank">Burkhard et al. (2009)</a> introduced a matrix linking land cover to ecosystem functions.</li>
+      <li><a href="https://doi.org/10.1016/j.ecoser.2014.11.001" target="_blank">Jacobs et al. (2015)</a> critiqued the oversimplification in ESS maps and called for evidence-based proxies.</li>
+      <li><a href="https://doi.org/10.1016/j.ecoser.2011.12.002" target="_blank">Maes et al. (2012)</a> developed EU-wide assessments based on CORINE and policy-relevant ESS layers.</li>
+    </ul>
+  </p>
+
+  <p>
+    Our approach builds on these and follows the Common International Classification of Ecosystem Services (CICES v5.1). It introduces:
+    <ul>
+      <li>CLC codes as spatial proxies for ESS distributions.</li>
+      <li>Weighted ESS score tables to represent service intensity.</li>
+      <li>UI-linked service group filters to distinguish provisioning and regulating functions.</li>
+      <li>Optional probabilistic ESS scoring inspired by <a href="https://doi.org/10.1016/j.ecolind.2011.03.013" target="_blank">Nedkov & Burkhard (2012)</a>.</li>
+    </ul>
+  </p>
+
+  <table border="1" style="border-collapse:collapse; width:100%;">
+    <caption><strong>Table 1: Comparison of ESS Mapping Approaches</strong></caption>
+    <thead>
+      <tr>
+        <th>Approach</th>
+        <th>Data Source</th>
+        <th>Strengths</th>
+        <th>Limitations</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Burkhard Matrix</td>
+        <td>Land Cover (e.g., CORINE)</td>
+        <td>Simple, intuitive, semi-quantitative</td>
+        <td>Static, lacks spatial nuance</td>
+      </tr>
+      <tr>
+        <td>Statistical Models</td>
+        <td>Field & socioeconomic data</td>
+        <td>Empirically grounded, dynamic</td>
+        <td>High data needs, limited replicability</td>
+      </tr>
+      <tr>
+        <td><strong>Our Method</strong></td>
+        <td>CORINE + GEE ScoreTables</td>
+        <td>Scalable, replicable, spatially continuous</td>
+        <td>Proxy-based assumptions, subject to thematic bias</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    While our method does not replace field validation, it offers a transparent and updateable foundation for regional ESS assessment using publicly available geospatial resources.
+  </p>
+</section>
 
   <section>
     <h2>Background and Literature-Informed Rationale</h2>
