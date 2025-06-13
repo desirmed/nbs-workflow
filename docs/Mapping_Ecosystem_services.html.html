@@ -727,9 +727,11 @@ wflow_publish("analysis/Functions.Rmd")
   </section>
 
   <section>
-  <h2>📚 Background and Literature-Informed Rationale</h2>
+  <h2> Background and Literature-Informed Rationale</h2>
   <p>
-    Ecosystem service assessment often relies on land cover as a proxy due to the absence of primary field-based data. Key literature supports this assumption:
+    Ecosystem service assessment often relies on land cover as a proxy due to the absence of primary field-based data.
+    Several scholarly works (Burkhard et al., 2009, Jacobs et al., 2015, Maes et al., 2012) have established land cover as a reasonable proxy for estimating ecosystem service supply, especially where direct measurements are unavailable
+    Key literature supports this assumption:
     <ul>
       <li><a href="https://doi.org/10.1016/j.ecolind.2008.05.005" target="_blank">Burkhard et al. (2009)</a> introduced a matrix linking land cover to ecosystem functions.</li>
       <li><a href="https://doi.org/10.1016/j.ecoser.2014.11.001" target="_blank">Jacobs et al. (2015)</a> critiqued the oversimplification in ESS maps and called for evidence-based proxies.</li>
@@ -738,11 +740,13 @@ wflow_publish("analysis/Functions.Rmd")
   </p>
 
   <p>
-    Our approach builds on these and follows the Common International Classification of Ecosystem Services (CICES v5.1). It introduces:
+    Due to also limitations of the proxy approach widely discussed in literature, We will adapt a strategy that combined the proxy-based and the probability bands. Our approach builds on these and follows the Common International Classification of Ecosystem Services (CICES v5.1). It introduces:
     <ul>
-      <li>CLC codes as spatial proxies for ESS distributions.</li>
-      <li>Weighted ESS score tables to represent service intensity.</li>
-      <li>UI-linked service group filters to distinguish provisioning and regulating functions.</li>
+      <li>Uses CORINE Land Cover (CLC) classes as the base landscape stratification.</li>
+      <li>Associates each CORINE code with multiple ESS using a weighted ESS score table.</li>
+      <li>Converts categorical land cover into continuous ESS intensity maps using a remapping and scaling strategy.</li>
+      <li>Separates ESS into regulating and provisioning services using a lookup structure, which also supports UI-based selection.</li>
+      <li>Supports vector and raster exports, including pixel-level aggregation and visualization.</li>
       <li>Optional probabilistic ESS scoring inspired by <a href="https://doi.org/10.1016/j.ecolind.2011.03.013" target="_blank">Nedkov & Burkhard (2012)</a>.</li>
     </ul>
   </p>
@@ -783,19 +787,6 @@ wflow_publish("analysis/Functions.Rmd")
     While our method does not replace field validation, it offers a transparent and updateable foundation for regional ESS assessment using publicly available geospatial resources.
   </p>
 </section>
-
-  <section>
-    <h2>Background and Literature-Informed Rationale</h2>
-    <p>Several scholarly works (Burkhard et al., 2009, Jacobs et al., 2015, Maes et al., 2012) have established land cover as a reasonable proxy for estimating ecosystem service supply, especially where direct measurements are unavailable. Inspired by frameworks such as CICES v5.1, and recent European mapping standards, we adapt a strategy that:</p>
-    <ul>
-      <li>Uses CORINE Land Cover (CLC) classes as the base landscape stratification.</li>
-      <li>Associates each CORINE code with multiple ESS using a weighted ESS score table.</li>
-      <li>Converts categorical land cover into continuous ESS intensity maps using a remapping and scaling strategy.</li>
-      <li>Separates ESS into regulating and provisioning services using a lookup structure, which also supports UI-based selection.</li>
-      <li>Supports vector and raster exports, including pixel-level aggregation and visualization.</li>
-      <li>Enables probabilistic scoring for ESS presence (optional), following recent advances in Nedkov &amp; Burkhard (2012).</li>
-    </ul>
-  </section>
 
   <section>
     <h2>What we Will Cover here</h2>
