@@ -462,44 +462,46 @@ div.tocify {
     and (iii) provide UI tools for rapid sensitivity checks.
   </p>
 
-  <table style="border-collapse:collapse;width:100%;font-size:0.9rem;">
-    <caption><strong>Common ES-Mapping Paradigms</strong></caption>
-    <thead style="background:#f0f0f0;">
-      <tr><th>Paradigm</th><th>Typical Data</th><th>Core Strength</th><th>Key Limitation</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Proxy / Matrix</td>
-        <td>Land-cover maps (CORINE, GlobCover)</td>
-        <td>Fast, transparent, scalable</td>
-        <td>Assumes equal service across class; static</td>
-      </tr>
-      <tr>
-        <td>Process-based</td>
-        <td>Climate, DEM, soils, hydrology</td>
-        <td>Mechanistic; scenario-ready</td>
-        <td>High data &amp; expertise demand</td>
-      </tr>
-      <tr>
-        <td>Empirical / ML</td>
-        <td>Field plots, crowdsourced, RS metrics</td>
-        <td>Data-driven accuracy</td>
-        <td>Often local; expensive to upscale</td>
-      </tr>
-      <tr>
-        <td>Participatory</td>
-        <td>Workshops, interviews</td>
-        <td>Cultural relevance; stakeholder buy-in</td>
-        <td>Subjective; coarse spatial detail</td>
-      </tr>
-      <tr style="background:#e8f5e9;">
-        <td><strong>Hybrid (this guide)</strong></td>
-        <td>CORINE + weighted scores + optional probabilities</td>
-        <td>Continental coverage; reproducible; GEE-native</td>
-        <td>Relies on proxy assumptions; field validation advised</td>
-      </tr>
-    </tbody>
-  </table>
+  <h4><strong>Common ES-Mapping Paradigms</strong></h4>
+<table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+    <tr style="background-color: #f2f2f2;">
+        <th style="border: 1px solid black; padding: 8px; text-align: left;">Paradigm</th>
+        <th style="border: 1px solid black; padding: 8px; text-align: left;">Typical Data</th>
+        <th style="border: 1px solid black; padding: 8px; text-align: left;">Core Strength</th>
+        <th style="border: 1px solid black; padding: 8px; text-align: left;">Key Limitation</th>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Proxy / Matrix</td>
+        <td style="border: 1px solid black; padding: 8px;">Land-cover maps (CORINE, GlobCover)</td>
+        <td style="border: 1px solid black; padding: 8px;">Fast, transparent, scalable</td>
+        <td style="border: 1px solid black; padding: 8px;">Assumes equal service across class; static</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Process-based</td>
+        <td style="border: 1px solid black; padding: 8px;">Climate, DEM, soils, hydrology</td>
+        <td style="border: 1px solid black; padding: 8px;">Mechanistic; scenario-ready</td>
+        <td style="border: 1px solid black; padding: 8px;">High data &amp; expertise demand</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Empirical / ML</td>
+        <td style="border: 1px solid black; padding: 8px;">Field plots, crowdsourced, RS metrics</td>
+        <td style="border: 1px solid black; padding: 8px;">Data-driven accuracy</td>
+        <td style="border: 1px solid black; padding: 8px;">Often local; expensive to upscale</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; padding: 8px;">Participatory</td>
+        <td style="border: 1px solid black; padding: 8px;">Workshops, interviews</td>
+        <td style="border: 1px solid black; padding: 8px;">Cultural relevance; stakeholder buy-in</td>
+        <td style="border: 1px solid black; padding: 8px;">Subjective; coarse spatial detail</td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td style="border: 1px solid black; padding: 8px;"><strong>Hybrid (this guide)</strong></td>
+        <td style="border: 1px solid black; padding: 8px;">CORINE + weighted scores + optional probabilities</td>
+        <td style="border: 1px solid black; padding: 8px;">Continental coverage; reproducible; GEE-native</td>
+        <td style="border: 1px solid black; padding: 8px;">Relies on proxy assumptions; field validation advised</td>
+    </tr>
+</table>
+
 </section>
 
 <!-- ===================== TUTORIAL ROADMAP ===================== -->
