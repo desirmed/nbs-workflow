@@ -387,6 +387,92 @@ $(document).ready(function () {
   </p>
 <p><img src="https://raw.githubusercontent.com/deltares-desirmed/nbs-workflow/main/img/Slide4.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 
+
+<!-- Region Cards Section -->
+<style>
+  .region-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+  }
+
+  .region-card {
+    width: 250px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    text-align: center;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .region-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .region-image {
+    height: 150px;
+    object-fit: cover;
+    width: 100%;
+    border-bottom: 5px solid #417a3f;
+  }
+
+  .region-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 16px;
+    text-decoration: underline;
+    color: #1a1a1a;
+  }
+</style>
+
+<div class="region-grid">
+  <!-- Replace image links as needed -->
+  <div class="region-card">
+    <img src="https://lh3.googleusercontent.com/gps-cs-s/AC9h4nps4nRkSA8b2-XEtmpXIWZZ1jRFpMW2al8bce3GQIKnRr7vDKcAEVs2wlBcoVX2ZSBVQI60Dalkfk_dq8WrZ6u9G2JJZ5LdxFQUfDbtg7nIxOYlfK6CFWMpTACtLqCHTt2UtkgnTA=w810-h468-n-k-no" class="region-image" alt="Split-Dalmatia">
+    <div class="region-title">Split-Dalmatia (Croatia)</div>
+  </div>
+
+  <div class="region-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/Valencia_city_spain.jpg" class="region-image" alt="Valencia">
+    <div class="region-title">Valencia (Spain)</div>
+  </div>
+
+  <div class="region-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/North_Aegean_Islands.jpg" class="region-image" alt="North Aegean">
+    <div class="region-title">North Aegean (Greece)</div>
+  </div>
+
+  <div class="region-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Sardinia_Italy.jpg" class="region-image" alt="Sardinia">
+    <div class="region-title">Sardinia (Italy)</div>
+  </div>
+
+  <div class="region-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Cyprus_coast.jpg" class="region-image" alt="Cyprus">
+    <div class="region-title">Cyprus</div>
+  </div>
+
+  <div class="region-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Beira_intermunicipal.jpg" class="region-image" alt="Beiras">
+    <div class="region-title">Beiras (Portugal)</div>
+  </div>
+
+  <div class="region-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Provence-Alpes-Côte_d%27Azur.jpg" class="region-image" alt="PACA">
+    <div class="region-title">PACA Region (France)</div>
+  </div>
+
+  <div class="region-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Friuli-Venezia_Giulia_region.jpg" class="region-image" alt="FVG">
+    <div class="region-title">Friuli Venezia Giulia (Italy)</div>
+  </div>
+</div>
+
+
   <div id="chapters" class="section level2">
 <h2><strong><em>Chapters</em></strong></h2>
 <!--<p><a href="Introduction.html"><strong><em>1</em>.
