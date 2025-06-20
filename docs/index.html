@@ -403,14 +403,18 @@ $(document).ready(function () {
     width: 250px;
     background: white;
     box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-    text-align: center;
     border-radius: 6px;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    color: #1a1a1a;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
   }
 
   .region-card:hover {
     transform: translateY(-6px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
   }
 
   .region-image {
@@ -425,53 +429,52 @@ $(document).ready(function () {
     font-weight: bold;
     margin: 16px;
     text-decoration: underline;
-    color: #1a1a1a;
   }
 </style>
 
 <div class="region-grid">
-  <!-- Replace image links as needed -->
-  <div class="region-card">
-    <img src="https://lh3.googleusercontent.com/gps-cs-s/AC9h4nps4nRkSA8b2-XEtmpXIWZZ1jRFpMW2al8bce3GQIKnRr7vDKcAEVs2wlBcoVX2ZSBVQI60Dalkfk_dq8WrZ6u9G2JJZ5LdxFQUfDbtg7nIxOYlfK6CFWMpTACtLqCHTt2UtkgnTA=w810-h468-n-k-no" class="region-image" alt="Split-Dalmatia">
+
+  <a href="https://www.dalmacija.hr/en/county/information" target="_blank" class="region-card">
+    <img src="https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcRE2tfOdbU3_IAo1L0hxe8cSID60i72ni_0ehfq9gaTB9yykPvCAKPvb4fWO0TWpcGJ4cRRAnd71C6nC_anB7dm8EAkZ348TpwFfUrx-A" class="region-image" alt="Split-Dalmatia">
     <div class="region-title">Split-Dalmatia (Croatia)</div>
-  </div>
+  </a>
 
-  <div class="region-card">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/Valencia_city_spain.jpg" class="region-image" alt="Valencia">
+  <a href="https://www.desirmed.eu/p/dr2" target="_blank" class="region-card">
+    <img src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcRyo_fBr6ZZP4BIvn-0eO2frnmmmPOnsu3V5VHsGsLMlB9VW9XK2nx7t0t3C3Q6Ds3X1w0AcIdrMSq5Zx4GO-uWsza6NL9QKHbPA8v5Ng" class="region-image" alt="Valencia">
     <div class="region-title">Valencia (Spain)</div>
-  </div>
+  </a>
 
-  <div class="region-card">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/North_Aegean_Islands.jpg" class="region-image" alt="North Aegean">
-    <div class="region-title">North Aegean (Greece)</div>
-  </div>
+  <a href="https://www.pamth.gov.gr/en/" target="_blank" class="region-card">
+    <img src="https://traveltogreece.com.ro/wp-content/uploads/2023/06/thasos-island-1.jpg.webp" class="region-image" alt="North Aegean">
+    <div class="region-title">Eastern Macedonia Thrace, (Greece)</div>
+  </a>
 
-  <div class="region-card">
+  <a href="https://www.regione.sardegna.it/" target="_blank" class="region-card">
     <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Sardinia_Italy.jpg" class="region-image" alt="Sardinia">
     <div class="region-title">Sardinia (Italy)</div>
-  </div>
+  </a>
 
-  <div class="region-card">
+  <a href="https://www.cyprus.gov.cy/" target="_blank" class="region-card">
     <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Cyprus_coast.jpg" class="region-image" alt="Cyprus">
     <div class="region-title">Cyprus</div>
-  </div>
+  </a>
 
-  <div class="region-card">
+  <a href="https://www.cimbse.pt/" target="_blank" class="region-card">
     <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Beira_intermunicipal.jpg" class="region-image" alt="Beiras">
     <div class="region-title">Beiras (Portugal)</div>
-  </div>
+  </a>
 
-  <div class="region-card">
+  <a href="https://www.maregionsud.fr/" target="_blank" class="region-card">
     <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Provence-Alpes-Côte_d%27Azur.jpg" class="region-image" alt="PACA">
     <div class="region-title">PACA Region (France)</div>
-  </div>
+  </a>
 
-  <div class="region-card">
+  <a href="https://www.regione.fvg.it/" target="_blank" class="region-card">
     <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Friuli-Venezia_Giulia_region.jpg" class="region-image" alt="FVG">
     <div class="region-title">Friuli Venezia Giulia (Italy)</div>
-  </div>
-</div>
+  </a>
 
+</div>
 
   <div id="chapters" class="section level2">
 <h2><strong><em>Chapters</em></strong></h2>
