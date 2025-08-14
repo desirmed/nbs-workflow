@@ -1384,6 +1384,318 @@ var burnBinary = burned.selfMask();
 </body>
 </html>
 
+<!-- ===================== STEP 5 · NBS HOTSPOT PRIORITIZATION (DISTINCT BY HAZARD) ===================== -->
+<section id="step-5-nbs-hotspots">
+  <h2>Step 5 — NbS Hotspot Prioritization (Distinct by Hazard)</h2>
+
+  <p>
+    In this step we combine <em>observed hazard intensity</em> (historical floods, fires) with our
+    <em>mitigation capacity</em> layers to find where <strong>Nature-based Solutions (NbS)</strong> can
+    have the biggest impact. The guiding idea is a simple, transparent <em>gap model</em>:
+  </p>
+
+  <div style="border-left:4px solid #2980b9; background:#eef6ff; padding:0.8em 1em; margin:0.8em 0;">
+    <strong>Priority (per hazard)</strong> = <code>Hazard_Intensity</code> × <code>(1 − Mitigation_Capacity)</code>
+    <br><small>
+      Intuition: a place is high priority if the hazard is strong <em>and</em> the current capacity to
+      mitigate it is weak (i.e., there’s a big “gap”).
+    </small>
+  </div>
+
+  <details>
+    <summary><strong>Key terms</strong> (click to expand)</summary>
+    <ul>
+      <li><strong>Hazard intensity</strong>: how often/strongly a location has experienced a hazard (e.g., flood counts, burned months).</li>
+      <li><strong>Mitigation capacity</strong>: our 0–1 scaled layer derived from LULC and spatial modifiers (forests, wetlands, etc.).</li>
+      <li><strong>Gap</strong>: <code>1 − mitigation</code>. A value near 1 means low capacity (large deficit); near 0 means high capacity.</li>
+      <li><strong>Hotspot</strong>: the top fraction (percentile) of priority scores for a hazard.</li>
+      <li><strong>Protect/Enhance</strong>: places with <em>both</em> high hazard and high capacity — keep and strengthen.</li>
+    </ul>
+  </details>
+
+  <h3>5.1 Base map &amp; boundary (for readable maps)</h3>
+  <p>
+    We render a hillshade (<a href="https://developers.google.com/earth-engine/apidocs/ee-terrain-hillshade" target="_blank"><code>ee.Terrain.hillshade</code></a>)
+    and an outline to make overlays readable. This is cosmetic, but helpful for interpretation.
+  </p>
+
+  <h3>5.2 Build hazard intensity layers</h3>
+  <p>
+    <em>What we do:</em> create two hazard layers, both as <strong>counts</strong>:
+    <em>Flood Hazard Intensity</em> (FHI) from summed flood detections in the
+    <a href="https://developers.google.com/earth-engine/datasets/catalog/GLOBAL_FLOOD_DB_MODIS_EVENTS_V1" target="_blank">Global Flood Database</a>,
+    and <em>Fire Hazard</em> from summed burned months in
+    <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD64A1" target="_blank">MODIS MCD64A1</a>.
+    We mask permanent water for floods so lakes/rivers don’t inflate the signal.
+  </p>
+  <div style="border-left:4px solid #95a5a6; background:#f4f6f7; padding:0.8em 1em;">
+    <strong>Why counts?</strong> They’re simple, comparable across space, and robust to single extreme events.
+    Counts approximate “exposure frequency,” which is useful for screening NbS opportunities.
+  </div>
+
+  <h3>5.3 Adaptive percentiles (robust scaling)</h3>
+  <p>
+    Raw counts can have long tails (a few places with very high values). We scale hazards to 0–1 using
+    <em>positive-only percentiles</em>: compute the p<sub>90</sub>/p<sub>95</sub> among pixels with value &gt; 0,
+    then divide by that number. This (a) ignores zeros, (b) reduces outlier sensitivity, and (c) keeps the
+    top ~5–10% near 1. If nothing is positive, we safely fall back to the max.
+  </p>
+
+  <h3>5.4 Normalize mitigation capacity & compute the gap</h3>
+  <p>
+    Our mitigation layers (<code>floodAdj</code>, <code>fireAdj</code>) were allowed to go up to ~1.5 after spatial
+    modifiers (slope, aspect, elevation). We normalize them to 0–1 by dividing by 1.5, then compute
+    <strong>Gap</strong> = <code>1 − mitigation</code>. Conceptually, the gap is a <em>mitigation deficit</em>:
+    high where ecosystems currently do <em>less</em> to reduce the hazard.
+  </p>
+
+  <div style="border-left:4px solid #f39c12; background:#fff6e6; padding:0.8em 1em;">
+    <strong>Interpretation tips:</strong>
+    <ul style="margin: 0.3em 0 0 1em;">
+      <li>A pixel with <code>gap ≈ 1</code> has little capacity — a prime candidate for NbS if hazard is high.</li>
+      <li>A pixel with <code>gap ≈ 0</code> already has high capacity — more a <em>protect/enhance</em> case.</li>
+    </ul>
+  </div>
+
+  <h3>5.5 Compute priority (hazard × gap)</h3>
+  <p>
+    This multiplies exposure by deficit. It’s deliberately simple and explainable: places score high only when
+    <em>both</em> hazard and gap are high. Values are 0–1 after normalization, which makes thresholds intuitive.
+  </p>
+
+  <h3>5.6 Extract hotspots (top tail)</h3>
+  <p>
+    We convert the continuous priority surface into a <em>binary hotspot mask</em> using positive-only percentiles:
+    p<sub>60</sub> for floods, p<sub>80</sub> for fires (tune to your planning brief). The idea is to flag the
+    top X% by data-driven thresholds, not arbitrary absolute cutoffs.
+  </p>
+
+  <h3>5.7 Identify protect/enhance zones</h3>
+  <p>
+    We also tag areas with <em>high hazard</em> and <em>high mitigation</em> (both above adaptive thresholds). These are places
+    where ecosystems are already doing useful work under stress — high-value targets for protection or gentle enhancement.
+  </p>
+
+  <details>
+    <summary><strong>Quality checks &amp; knobs</strong> (click to expand)</summary>
+    <ul>
+      <li><strong>Debug prints</strong> (min/max/mean) confirm inputs look sane before thresholding.</li>
+      <li><strong>Percentiles</strong> (p<sub>90/95</sub> for scaling; p<sub>60/80/70</sub> for thresholds) are policy dials. Document your choices.</li>
+      <li><strong>Scales</strong>: flood 250&nbsp;m, fire 500&nbsp;m, mitigation 100&nbsp;m. For multi-hazard indices, resample to a common scale/grid.</li>
+    </ul>
+  </details>
+
+  <h3>Code — run end-to-end (unchanged from your script)</h3>
+  <pre><code>// ======================================================
+// NBS HOTSPOT PRIORITIZATION — DISTINCT BY HAZARD
+// Hazards: Flood (GFD) and Fire (MODIS MCD64A1)
+// Capacity: your floodAdj & fireAdj mitigation layers (0..~1.5)
+// Logic per hazard: Priority = Hazard_Intensity × (1 − Mitigation_Capacity)
+// ======================================================
+
+// ======================================================
+// NBS HOTSPOT PRIORITIZATION — DISTINCT BY HAZARD (with prints)
+// ======================================================
+
+// Base map + boundary
+var hill = ee.Terrain.hillshade(srtm)
+  .visualize({min:150, max:255, forceRgbOutput:true})
+  .multiply(0.9);
+var outline = cantabria.style({color:'000000', width:2, fillColor:'00000000'});
+
+// ---------------- STEP 1. Build HAZARD intensity layers ----------------
+var gfd = ee.ImageCollection('GLOBAL_FLOOD_DB/MODIS_EVENTS/V1');
+
+// Flood hazard = count of satellite-observed floods (exclude permanent water)
+var FHI_raw = gfd.select('flooded').sum().rename('FHI').clip(cantabria);
+var JRC_perm = gfd.select('jrc_perm_water').sum().gte(1);
+var FHI = FHI_raw.updateMask(JRC_perm.not()); // mask-out permanent water
+
+// Fire hazard = months burned at least once (2000–2019)
+var burnedMonthly = ee.ImageCollection('MODIS/061/MCD64A1')
+  .select('BurnDate')
+  .filterDate('2000-01-01','2019-01-01')
+  .map(function(img){ return img.gt(0); });
+var FIRE = burnedMonthly.sum().rename('FIRE').clip(cantabria);
+
+// Debug prints
+print('STEP 1 · Flood hazard (count) sample stats:',
+  FHI.reduceRegion({
+    reducer: ee.Reducer.minMax().combine({reducer2: ee.Reducer.mean(), sharedInputs:true}),
+    geometry: cantabria.geometry(), scale: 250, maxPixels: 1e9, bestEffort: true, tileScale: 2
+  })
+);
+print('STEP 1 · Fire hazard (count) sample stats:',
+  FIRE.reduceRegion({
+    reducer: ee.Reducer.minMax().combine({reducer2: ee.Reducer.mean(), sharedInputs:true}),
+    geometry: cantabria.geometry(), scale: 500, maxPixels: 1e9, bestEffort: true, tileScale: 2
+  })
+);
+
+// Optional viz of raw counts
+Map.addLayer(hill.blend(FHI.visualize({min:0, max:10, palette:['c3effe','1341e8','051cb0','001133'], opacity:0.9})),
+             {}, 'STEP 1a · Flood Hazard (count)');
+Map.addLayer(hill.blend(FIRE.visualize({min:0, max:24, palette:['fff5eb','fd8d3c','e6550d','a63603'], opacity:0.9})),
+             {}, 'STEP 1b · Fire Hazard (count)');
+
+// ---------------- Helpers for adaptive percentiles (robust keys) ----------------
+function dictFirstNumber_(dict, fallback) {
+  dict = ee.Dictionary(dict);
+  var keys = dict.keys();
+  var hasAny = keys.size().gt(0);
+  var firstKey = ee.String(ee.Algorithms.If(hasAny, keys.get(0), ''));
+  return ee.Number(ee.Algorithms.If(hasAny, dict.get(firstKey), fallback));
+}
+function getP_(dict, band, pct, fallback) {
+  dict = ee.Dictionary(dict);
+  var key1 = ee.String('p').cat(ee.Number(pct).format());               // 'p95'
+  var key2 = ee.String(band).cat('_p').cat(ee.Number(pct).format());    // 'FHI_p95'
+  var has1 = dict.contains(key1);
+  var has2 = dict.contains(key2);
+  return ee.Number(ee.Algorithms.If(
+    has1, dict.get(key1),
+    ee.Algorithms.If(
+      has2, dict.get(key2),
+      dictFirstNumber_(dict, fallback)
+    )
+  ));
+}
+function posPercentile(img, pct, geom, scale, fallback) {
+  img = ee.Image(img);
+  var band = ee.String(img.bandNames().get(0));
+  var d = img.updateMask(img.gt(0)).reduceRegion({
+    reducer: ee.Reducer.percentile([pct]),
+    geometry: geom, scale: scale, maxPixels: 1e13, bestEffort: true, tileScale: 2
+  });
+  return getP_(d, band, pct, fallback);
+}
+function posPctlThreshold(img01, pct, geom, scale, fallback) {
+  img01 = ee.Image(img01);
+  var band = ee.String(img01.bandNames().get(0));
+  var d = img01.updateMask(img01.gt(0)).reduceRegion({
+    reducer: ee.Reducer.percentile([pct]),
+    geometry: geom, scale: scale, maxPixels: 1e13, bestEffort: true, tileScale: 2
+  });
+  return getP_(d, band, pct, fallback);
+}
+
+// --------------- STEP 2. Normalize hazards (0..1) with positive-only p95 ---------------
+var FHI_max = ee.Number(
+  FHI.reduceRegion({reducer: ee.Reducer.max(), geometry: cantabria.geometry(),
+                    scale: 250, maxPixels: 1e13, bestEffort: true, tileScale: 2}).get('FHI')
+).max(1);
+var FIRE_max = ee.Number(
+  FIRE.reduceRegion({reducer: ee.Reducer.max(), geometry: cantabria.geometry(),
+                     scale: 500, maxPixels: 1e13, bestEffort: true, tileScale: 2}).get('FIRE')
+).max(1);
+
+// p95 among positive pixels; fall back to max if empty
+var FHI_p95 = posPercentile(FHI, 90, cantabria.geometry(), 250, FHI_max);
+var FIRE_p95 = posPercentile(FIRE, 95, cantabria.geometry(), 500, FIRE_max);
+print('STEP 2 (fixed) · p95 (positive-only) → Flood:', FHI_p95, 'Fire:', FIRE_p95);
+
+// Normalize to 0..1
+var floodHaz = FHI.divide(FHI_p95).clamp(0, 1).rename('flood_haz');
+var fireHaz  = FIRE.divide(FIRE_p95).clamp(0, 1).rename('fire_haz');
+
+Map.addLayer(hill.blend(floodHaz.visualize({min:0, max:1, palette:['e0f3ff','74a9cf','0570b0'], opacity:0.9})),
+             {}, 'STEP 2a · Flood Hazard (0–1)');
+Map.addLayer(hill.blend(fireHaz.visualize({min:0, max:1, palette:['fee8c8','fdbb84','e34a33'], opacity:0.9})),
+             {}, 'STEP 2b · Fire Hazard (0–1)');
+
+// --------------- STEP 3. Normalize MITIGATION capacity (0..1) ---------------
+var floodMit = floodAdj.divide(1.5).clamp(0, 1).rename('flood_mit');
+var fireMit  = fireAdj.divide(1.5).clamp(0, 1).rename('fire_mit');
+
+print('STEP 3 · Mitigation stats (flood):',
+  floodMit.reduceRegion({
+    reducer: ee.Reducer.minMax().combine({reducer2: ee.Reducer.mean(), sharedInputs:true}),
+    geometry: cantabria.geometry(), scale: 100, maxPixels: 1e9, bestEffort: true, tileScale: 2
+  })
+);
+print('STEP 3 · Mitigation stats (fire):',
+  fireMit.reduceRegion({
+    reducer: ee.Reducer.minMax().combine({reducer2: ee.Reducer.mean(), sharedInputs:true}),
+    geometry: cantabria.geometry(), scale: 100, maxPixels: 1e9, bestEffort: true, tileScale: 2
+  })
+);
+
+Map.addLayer(hill.blend(floodMit.visualize({min:0, max:1, palette:['f7fcf5','a6dba0','1b7837'], opacity:0.9})),
+             {}, 'STEP 3a · Flood Mitigation (0–1)');
+Map.addLayer(hill.blend(fireMit.visualize({min:0, max:1, palette:['f7fcf5','a6dba0','1b7837'], opacity:0.9})),
+             {}, 'STEP 3b · Fire Mitigation (0–1)');
+
+// --------------- STEP 4. Mitigation GAP (1 − mitigation) ---------------
+var floodGap = ee.Image(1).subtract(floodMit).rename('flood_gap');
+var fireGap  = ee.Image(1).subtract(fireMit).rename('fire_gap');
+
+Map.addLayer(hill.blend(floodGap.visualize({min:0, max:1, palette:['ffffff','fde0ef','d6604d','b2182b'], opacity:0.9})),
+             {}, 'STEP 4a · Flood Gap (low capacity)');
+Map.addLayer(hill.blend(fireGap.visualize({min:0, max:1, palette:['ffffff','fde0ef','d6604d','b2182b'], opacity:0.9})),
+             {}, 'STEP 4b · Fire Gap (low capacity)');
+
+// --------------- STEP 5. PRIORITY per hazard ---------------
+var prioFlood = floodHaz.multiply(floodGap).rename('prio_flood');  // 0..1
+var prioFire  = fireHaz.multiply(fireGap).rename('prio_fire');     // 0..1
+
+var prioPal = ['ffffcc','ffeda0','feb24c','fd8d3c','f03b20','bd0026'];
+Map.addLayer(hill.blend(prioFlood.visualize({min:0, max:1, palette: prioPal, opacity:0.95})),
+             {}, 'STEP 5a · NbS Priority (FLOOD)');
+Map.addLayer(hill.blend(prioFire.visualize({min:0, max:1, palette: prioPal, opacity:0.95})),
+             {}, 'STEP 5b · NbS Priority (FIRE)');
+
+// --------------- STEP 6. HOTSPOTS per hazard (top 20%) — positive-only percentiles ---------------
+var thFlood = posPctlThreshold(prioFlood, 60, cantabria.geometry(), 100, 0.2);
+var thFire  = posPctlThreshold(prioFire,  80, cantabria.geometry(), 100, 0.2);
+print('STEP 6 (fixed) · Hotspot thresholds (p80 on pos-only) → Flood:', thFlood, 'Fire:', thFire);
+
+var hotspotFlood = prioFlood.gte(thFlood).selfMask().rename('hotspot_flood');
+var hotspotFire  = prioFire.gte(thFire).selfMask().rename('hotspot_fire');
+
+Map.addLayer(hotspotFlood.visualize({palette:['#ff0000'], opacity:0.65}).clip(cantabria),
+             {}, 'STEP 6a · HOTSPOT (FLOOD)');
+Map.addLayer(hotspotFire.visualize({palette:['#ff7f00'], opacity:0.65}).clip(cantabria),
+             {}, 'STEP 6b · HOTSPOT (FIRE)');
+
+// --------------- STEP 7. PROTECT / ENHANCE zones — adaptive (percentiles) ---------------
+var hzFloodP70  = posPercentile(floodHaz, 55, cantabria.geometry(), 250, 0.6);
+var mitFloodP70 = posPercentile(floodMit, 55, cantabria.geometry(), 100, 0.6);
+var hzFireP70   = posPercentile(fireHaz,  70, cantabria.geometry(), 500, 0.6);
+var mitFireP70  = posPercentile(fireMit,  70, cantabria.geometry(), 100, 0.6);
+print('STEP 7 (adaptive) · thresholds → Flood(hz,mit):', hzFloodP70, mitFloodP70,
+      ' Fire(hz,mit):', hzFireP70, mitFireP70);
+
+var protectFlood = floodHaz.gte(hzFloodP70).and(floodMit.gte(mitFloodP70)).selfMask();
+var protectFire  = fireHaz.gte(hzFireP70).and(fireMit.gte(mitFireP70)).selfMask();
+
+Map.addLayer(protectFlood.visualize({palette:['#2ca25f'], opacity:0.85}).clip(cantabria),
+             {}, 'STEP 7a · Protect/Enhance (FLOOD)');
+Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(cantabria),
+             {}, 'STEP 7b · Protect/Enhance (FIRE)');
+</code></pre>
+
+  <div style="border-left:4px solid #27ae60; background:#ecf9f1; padding:0.8em 1em; margin-top:0.8em;">
+    <strong>Normally vs. best practice</strong> —
+    normally people scale hazards by <code>max()</code> and pick a fixed threshold (e.g., &ge; 0.7) for hotspots.
+    That works but is sensitive to outliers and regional differences. We use <em>positive-only percentiles</em>
+    for scaling and thresholding so the method adapts to each study area’s distribution and remains reproducible.
+  </div>
+
+  <h3>Recommended readings</h3>
+  <ul>
+    <li><a href="https://doi.org/10.1111/j.1365-2664.2010.01777.x" target="_blank">Eigenbrod et&nbsp;al. (2010a)</a> &amp;
+        <a href="https://doi.org/10.1016/j.biocon.2010.06.015" target="_blank">2010b</a> — critiques of proxy-only ES mapping.</li>
+    <li><a href="https://developers.google.com/earth-engine/datasets/catalog/GLOBAL_FLOOD_DB_MODIS_EVENTS_V1" target="_blank">Global Flood Database</a> •
+        <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD64A1" target="_blank">MODIS Burned Area</a> (dataset docs).</li>
+    <li><a href="https://doi.org/10.1016/j.ecolind.2011.06.022" target="_blank">Nedkov &amp; Burkhard (2012)</a> — flood regulation &amp; ES mapping logic.</li>
+  </ul>
+
+  <div style="border-left:4px solid #3498db; background:#eaf4fb; padding:0.8em 1em; margin-top:0.8em;">
+    <strong>Up next:</strong> exporting <em>priority</em> and <em>hotspot</em> rasters, plus a combined multi-hazard NbS index
+    (with weights and optional confidence bands) for planning dashboards.
+  </div>
+</section>
+
 
 </body>
 </html>
