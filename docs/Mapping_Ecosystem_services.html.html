@@ -1062,6 +1062,216 @@ Map.addLayer(erosionAdj, {min:0, max:1.5, palette: twoTone}, 'Erosion Mitigation
   </details>
 </section>
 
+
+<!-- ===================== STEP 4 · EXPORTS & SUMMARY STATISTICS ===================== -->
+<section id="step-4-exports-stats">
+  <h2>Step 4 — Export Results & Compute Summary Statistics</h2>
+
+  <p>
+    Now that we have <em>adjusted mitigation layers</em> (0–1, optionally up to 1.5 after modifiers),
+    let’s extract region-level statistics and export both <strong>tables</strong> (CSV) and <strong>maps</strong> (GeoTIFF).
+    This makes it easy to report results, plot charts elsewhere, and archive the layers for your team.
+  </p>
+
+  <div style="border-left:4px solid #95a5a6; padding:0.8em 1em; background:#f4f6f7; margin:0.8em 0;">
+    <strong>Common practice vs. best practice:</strong><br>
+    Normally, people print a single number in the Console and move on. That’s fine for a quick look.
+    For reproducible analysis, we’ll export: (1) <em>mean mitigation scores</em> per hazard, (2) a simple
+    <em>“effective contributing area %”</em> (see note below), and (3) the multi-band mitigation raster
+    clipped to the study area.
+  </div>
+
+  <details>
+    <summary><strong>What does “effective contributing area %” mean?</strong></summary>
+    <p>
+      It’s the <em>mean of mitigation scores</em> across pixels that have any mitigation signal (&gt;0),
+      expressed as a percentage. Concretely, we sum pixel scores (0–1), divide by the count of pixels
+      with score &gt; 0, and multiply by 100. This is NOT a land area percentage of a strict class—
+      rather, it’s a normalized measure of how much of the “maximum possible” mitigation is realized
+      across the pixels that contribute at all. If you instead want <em>area above threshold</em>
+      (e.g., % of pixels with score ≥ 0.7), we show how to modify the reducer in a note below.
+    </p>
+  </details>
+
+  <h3 id="step-4-1-boundary">4.1 Select the boundary (single feature)</h3>
+  <pre><code>// =============================
+// 1) Cantabria boundary (single feature)
+// =============================
+var adm1 = ee.FeatureCollection("projects/sat-io/open-datasets/geoboundaries/CGAZ_ADM1");
+var cantabria = ee.Feature(
+  adm1.filter(ee.Filter.eq('shapeName', 'Cantabria')).first()
+);
+</code></pre>
+
+  <h3 id="step-4-2-mean-scores">4.2 Mean mitigation scores (per hazard)</h3>
+  <p>
+    We compute region-wide means for all mitigation bands using <code><a href="https://developers.google.com/earth-engine/apidocs/ee-image-reduceregion" target="_blank">reduceRegion</a></code>
+    with <code>Reducer.mean()</code>.
+  </p>
+  <pre><code>// =============================
+// 2) Compute mean mitigation scores for Cantabria
+// =============================
+var mitigationStats = cantabria.set(
+  allMitigation.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: cantabria.geometry(),
+    scale: 100,
+    maxPixels: 1e9
+  })
+);
+print('Mitigation scores – Cantabria (mean per band):', mitigationStats);
+</code></pre>
+
+  <h3 id="step-4-3-export-csv-means">4.3 Export the means to CSV</h3>
+  <pre><code>// =============================
+// 3) Export mean scores to CSV
+// =============================
+Export.table.toDrive({
+  collection: ee.FeatureCollection([mitigationStats]),
+  description: 'Mitigation_Scores_Cantabria',
+  folder: 'desirmed',              // change or remove as you prefer
+  fileFormat: 'CSV'
+});
+</code></pre>
+
+  <h3 id="step-4-4-effective-area">4.4 “Effective contributing area %” per hazard</h3>
+  <p>
+    The helper below computes the percentage defined as:
+    <code>100 × mean(score | score &gt; 0)</code>. It’s a compact indicator of how strong the mitigation
+    signal is across pixels that contribute at all.
+  </p>
+  <pre><code>// =============================
+// 4) Function: "Effective contributing area %" per hazard
+//     = 100 * mean(score | score > 0)
+// =============================
+function computeMitigationContribution(region, hazardImage, bandName) {
+  // Sum of scores over the region
+  var stats = hazardImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: region.geometry(),
+    scale: 100,
+    maxPixels: 1e9
+  });
+  var contributingSum = ee.Number(stats.get(bandName)); // sum of 0..1 values
+
+  // Count of pixels that actually contribute (>0)
+  var countContrib = ee.Number(
+    hazardImage.select(bandName).gt(0).reduceRegion({
+      reducer: ee.Reducer.count(),
+      geometry: region.geometry(),
+      scale: 100,
+      maxPixels: 1e9
+    }).get(bandName)
+  );
+
+  // 100 * mean(score | score > 0). Guard against division by zero.
+  var percent = ee.Algorithms.If(
+    countContrib.gt(0),
+    contributingSum.divide(countContrib).multiply(100),
+    0
+  );
+
+  return region.set(bandName + '_Percent', percent);
+}
+</code></pre>
+
+  <h3 id="step-4-5-apply-all">4.5 Apply to all mitigation bands & export CSV</h3>
+  <pre><code>// =============================
+// 5) Apply to all hazard bands
+// =============================
+var allBands = [
+  'Flood_Mitigation',
+  'Fire_Mitigation',
+  'Drought_Mitigation',
+  'HeatWave_Mitigation',
+  'Erosion_Mitigation'
+];
+
+var cantabriaPercent = cantabria;
+allBands.forEach(function(band) {
+  cantabriaPercent = computeMitigationContribution(
+    cantabriaPercent,
+    allMitigation.select(band),
+    band
+  );
+});
+
+print('Hazard mitigation contribution percentages – Cantabria:', cantabriaPercent);
+
+// =============================
+// 6) Export percentages to CSV
+// =============================
+Export.table.toDrive({
+  collection: ee.FeatureCollection([cantabriaPercent]),
+  description: 'Hazard_Mitigation_Contribution_Percentages_Cantabria',
+  folder: 'desirmed',
+  fileFormat: 'CSV'
+});
+</code></pre>
+
+  <details>
+    <summary><strong>Alternative:</strong> export % of area above a threshold (e.g., score ≥ 0.7)</summary>
+    <pre><code>// Example: percent of area with score >= 0.7
+function percentAreaAboveThreshold(region, hazardImage, bandName, thr) {
+  var pxArea = ee.Image.pixelArea(); // m²/pixel
+  var band = hazardImage.select(bandName);
+
+  var areaAbove = pxArea.updateMask(band.gte(thr)).reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: region.geometry(),
+    scale: 100, maxPixels: 1e13
+  }).get('area');
+
+  var areaAll = pxArea.updateMask(band.gte(0)).reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: region.geometry(),
+    scale: 100, maxPixels: 1e13
+  }).get('area');
+
+  return ee.Number(areaAbove).divide(ee.Number(areaAll)).multiply(100);
+}
+</code></pre>
+  </details>
+
+  <h3 id="step-4-6-export-rasters">4.6 Export the multiband mitigation map (GeoTIFF)</h3>
+  <p>
+    Export the adjusted, multi-band mitigation image for use in GIS or modelling pipelines. You can
+    include a CRS if you need a specific projection.
+  </p>
+  <pre><code>// =============================
+// 7) Export multiband mitigation GeoTIFF for Cantabria
+// =============================
+Export.image.toDrive({
+  image: allMitigation.clip(cantabria.geometry()),
+  description: 'Mitigation_Map_Cantabria',
+  folder: 'desirmed',
+  fileNamePrefix: 'Mitigation_Map_Cantabria',
+  region: cantabria.geometry().bounds(),
+  scale: 100,
+  maxPixels: 1e13,
+  fileFormat: 'GeoTIFF'
+  // , crs: 'EPSG:3035' // (optional) set a CRS if your workflow requires it
+});
+</code></pre>
+
+  <div style="border-left:4px solid #2ecc71; padding:0.8em 1em; background:#ecf9f1; margin-top:0.8em;">
+    <strong>Best practice tips:</strong>
+    <ul>
+      <li><strong>Use <code>pixelArea()</code> when you truly want area in m²/ha</strong> (as in the threshold example).</li>
+      <li><strong>Document thresholds</strong> (e.g., “≥ 0.7 = high potential”) and keep them consistent across regions.</li>
+      <li><strong>Keep raw &amp; adjusted exports</strong> so others can trace how modifiers affected the signal.</li>
+    </ul>
+  </div>
+
+  <div style="border-left:4px solid #3498db; padding:0.8em 1em; background:#eaf4fb; margin-top:0.8em;">
+    <strong>Up next:</strong> <em>NbS hotspot identification.</em> We’ll intersect mitigation potential with
+    <a href="https://doi.org/10.1016/j.ecolind.2011.06.022" target="_blank">hazard layers</a> (e.g., flood extent/depth, heat anomalies,
+    erosion susceptibility), introduce <strong>confidence bands</strong>, and build a clear, explainable
+    <strong>hotspot index</strong> for prioritizing nature-based solutions.
+  </div>
+</section>
+
+
 </body>
 </html>
 
