@@ -1755,6 +1755,222 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
 </section>
 
 
+<!-- ===================== STEP 6 · EXPORTS, MULTI-HAZARD INDEX & LOCAL DATA INTEGRATION ===================== -->
+<section id="step-6-exports-multihazard-local">
+  <h2>Step 6 — Exports, Multi-Hazard NbS Index & Integrating Local Data</h2>
+
+  <p>
+    You now have per-hazard <em>priority</em> rasters (<code>prio_flood</code>, <code>prio_fire</code>) and
+    <em>hotspot</em> masks (<code>hotspot_flood</code>, <code>hotspot_fire</code>), plus <em>protect/enhance</em> masks.
+    This section covers (A) exporting those layers, (B) creating a <strong>combined multi-hazard NbS index</strong> with
+    adjustable weights and optional confidence bands, (C) sensible <em>tweaks</em> for different contexts, and (D) how to
+    <strong>swap in local hazard/ESS/LULC data</strong> to rerun the same roadmap.
+  </p>
+
+  <details>
+    <summary><strong>Docs:</strong> exporting &amp; projections</summary>
+    <ul>
+      <li><a href="https://developers.google.com/earth-engine/guides/exporting" target="_blank">Exporting data</a> (image/table to Drive/Asset),</li>
+      <li><a href="https://developers.google.com/earth-engine/guides/projections" target="_blank">Projections &amp; resampling</a>,</li>
+      <li><a href="https://developers.google.com/earth-engine/guides/reducers_intro" target="_blank">Reducers</a> (for stats).</li>
+    </ul>
+  </details>
+
+  <h3>6A. Export per-hazard priority, hotspots, and protect/enhance</h3>
+  <p>
+    Exports are useful for dashboards, GIS sharing, or further modelling. Use <code>Export.image.toDrive</code>
+    for rasters; <code>Export.table.toDrive</code> for zonal summaries. Set a consistent CRS, scale, and region.
+  </p>
+
+  <pre><code>// ---------- STACK & EXPORT RASTERS (GeoTIFF) ----------
+var prioStack = ee.Image()
+  .addBands(prioFlood)       // 0–1
+  .addBands(prioFire)        // 0–1
+  .addBands(hotspotFlood)    // 0/1 (masked)
+  .addBands(hotspotFire)     // 0/1 (masked)
+  .addBands(protectFlood)    // 0/1 (masked)
+  .addBands(protectFire)     // 0/1 (masked)
+  .rename([
+    'prio_flood','prio_fire',
+    'hotspot_flood','hotspot_fire',
+    'protect_flood','protect_fire'
+  ])
+  .clip(cantabria);
+
+// Optional: set a common projection (e.g., 100 m in EPSG:3035 for Europe)
+var targetCRS = 'EPSG:3035';
+var targetScale = 100;
+prioStack = prioStack
+  .resample('bilinear')
+  .reproject({crs: targetCRS, scale: targetScale});
+
+Export.image.toDrive({
+  image: prioStack,
+  description: 'NbS_Priority_Hotspots_Cantabria',
+  folder: 'desirmed',
+  fileNamePrefix: 'NbS_Priority_Hotspots_Cantabria',
+  region: cantabria.geometry().bounds(1),
+  scale: targetScale,
+  crs: targetCRS,
+  maxPixels: 1e13
+});
+
+// ---------- OPTIONAL: ZONAL STATS AS TABLE ----------
+var meanStats = prioStack.reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: cantabria.geometry(),
+  scale: targetScale,
+  maxPixels: 1e13,
+  bestEffort: true
+});
+
+var outFeat = ee.Feature(null, meanStats).set('region', 'Cantabria');
+Export.table.toDrive({
+  collection: ee.FeatureCollection([outFeat]),
+  description: 'NbS_Priority_Means_Cantabria',
+  folder: 'desirmed',
+  fileFormat: 'CSV'
+});
+</code></pre>
+
+  <h3>6B. Build a Multi-Hazard NbS Index (weights & optional confidence)</h3>
+  <p>
+    Many planners prefer a single combined surface for screening. We build an index as a weighted sum of
+    per-hazard priorities. Weights (<code>wFlood</code>, <code>wFire</code>) should sum to 1 (or we normalize them).
+    If you’ve created <em>confidence bands</em> per hazard (e.g., from expert certainty or validation), you can also
+    propagate them to the final index.
+  </p>
+
+  <pre><code>// ---------- WEIGHTED COMBINATION ----------
+var wFlood = 0.6;   // emphasize floods (example)
+var wFire  = 0.4;   // fire gets 40%
+var wSum   = wFlood + wFire;
+var wF     = wFlood / wSum;
+var wFi    = wFire  / wSum;
+
+var nbsIndex = prioFlood.multiply(wF)
+  .add(prioFire.multiply(wFi))
+  .rename('nbs_index')               // 0–1 (approx)
+  .clip(cantabria);
+
+// ---------- OPTIONAL: CONFIDENCE (if available) ----------
+// Example: confidence bands per hazard on a 1–3 scale (low/med/high)
+// Suppose you have floodConf, fireConf (ee.Image, same footprint).
+// Convert to 0–1 (1=low, 3=high -> map to 0.33..1), then weighted combine.
+var hasConfidence = false; // flip to true if you have these layers
+var nbsConfidence = ee.Image(1); // placeholder default
+
+if (hasConfidence) {
+  var floodConf01 = floodConf.unitScale(1,3);  // -> 0..1
+  var fireConf01  = fireConf.unitScale(1,3);   // -> 0..1
+  nbsConfidence = floodConf01.multiply(wF).add(fireConf01.multiply(wFi))
+                  .rename('nbs_confidence');
+}
+
+// ---------- EXPORT COMBINED INDEX ----------
+var toExport = hasConfidence ? nbsIndex.addBands(nbsConfidence) : nbsIndex;
+Export.image.toDrive({
+  image: toExport.reproject({crs: targetCRS, scale: targetScale}),
+  description: 'NbS_Index_Combined',
+  folder: 'desirmed',
+  fileNamePrefix: 'NbS_Index_Combined',
+  region: cantabria.geometry().bounds(1),
+  scale: targetScale,
+  crs: targetCRS,
+  maxPixels: 1e13
+});
+</code></pre>
+
+  <div style="border-left:4px solid #2c3e50; background:#f3f6fa; padding:0.8em 1em; margin-top:0.8em;">
+    <strong>Interpretation:</strong> the combined <code>nbs_index</code> highlights places with consistently high
+    gap-weighted hazard priority. Use the (optional) confidence band to communicate evidence strength, following
+    good practice in <a href="https://www.ipbes.net/" target="_blank">IPBES</a> or
+    <a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">IPCC</a>-style confidence framing.
+  </div>
+
+  <h3>6C. Knobs & Tweaks (what you can tune safely)</h3>
+  <ul>
+    <li><strong>Percentiles:</strong> p<sub>95</sub> (scaling), p<sub>60</sub>/p<sub>80</sub> (hotspots), p<sub>70</sub> (protect). 
+      Use <a href="#step-5-nbs-hotspots">positive-only percentiles</a> to keep thresholds adaptive and reproducible.</li>
+    <li><strong>Normalization caps:</strong> If your mitigation adj layers top at ~1.3 (not 1.5), divide by 1.3 instead.</li>
+    <li><strong>Common scale & CRS:</strong> For multi-hazard overlays, resample to a shared grid (e.g., 100 m EPSG:3035 in the EU)—see 
+      <a href="https://developers.google.com/earth-engine/guides/projections" target="_blank">projections &amp; resampling</a>.</li>
+    <li><strong>Hotspot area targeting:</strong> Instead of fixed percentiles, threshold by area (e.g., top 10,000 ha) via iterative search or histograms.</li>
+    <li><strong>Masks:</strong> Excluding permanent water from floods (JRC) avoids misclassifying rivers/lakes as “flood hazard.” Adjust masks to your context.</li>
+  </ul>
+
+  <h3>6D. Integrating Local Data (LULC, hazards, ESS)</h3>
+  <p>
+    You can plug in local datasets seamlessly. Two common cases:
+  </p>
+
+  <h4>Case 1 — Local hazard rasters (e.g., flood depth, fire susceptibility)</h4>
+  <p>
+    Replace the hazard intensity with your local raster(s). Normalize to 0–1 (e.g., divide by positive-only p<sub>95</sub>),
+    then proceed with the same <em>gap</em> logic. Ensure alignment (CRS/grid) with mitigation layers.
+  </p>
+  <pre><code>// Load your local hazard (e.g., flood depth raster in meters)
+var floodDepthLocal = ee.Image('projects/your-project/assets/flood_depth_100y')
+  .reproject({crs: targetCRS, scale: targetScale});
+
+// Positive-only p95 scaling to 0–1
+var fd_p95 = floodDepthLocal.updateMask(floodDepthLocal.gt(0))
+  .reduceRegion({
+    reducer: ee.Reducer.percentile([95]),
+    geometry: cantabria.geometry(),
+    scale: targetScale, maxPixels: 1e13, bestEffort: true
+  }).values().get(0);
+
+var floodHazLocal = floodDepthLocal.divide(ee.Number(fd_p95)).clamp(0,1).rename('flood_haz_local');
+
+// Priority with existing flood mitigation gap:
+var floodGapLocal = ee.Image(1).subtract(floodMit);           // reuse normalized mitigation (0–1)
+var prioFloodLocal = floodHazLocal.multiply(floodGapLocal);   // same formula
+</code></pre>
+
+  <h4>Case 2 — Local LULC/ESS layers (your own classification)</h4>
+  <p>
+    If you have a local land-use/land-cover (LULC) map or direct ESS layers, build mitigation exactly as before:
+    remap → normalize → adjust with terrain (optional). Keep values in 0–1 for easy integration.
+  </p>
+  <pre><code>// Example: local LULC (categorical) and your own mitigation scores (0..1)
+var lulcLocal = ee.Image('projects/your-project/assets/lulc_local_2023').rename('lulc');
+
+// Dictionary: class → mitigation score (0..1)
+var mitDict = { 10:0.75, 11:0.60, 20:0.50, 30:0.20 }; // example codes
+var from = Object.keys(mitDict).map(function(k){return parseInt(k);});
+var to   = from.map(function(k){return mitDict[k];});
+
+var mitLocal = lulcLocal.remap(from, to).rename('mit_local'); // 0..1
+
+// Optionally, apply spatial modifiers (slope/aspect/elevation) as in Step 4
+var mitLocalAdj = mitLocal
+  .multiply(ee.Image(1).subtract(slope.divide(60).multiply(0.2))) // gentle slope penalty
+  .clamp(0,1)
+  .rename('mit_local_adj');
+</code></pre>
+
+  <div style="border-left:4px solid #27ae60; background:#ecf9f1; padding:0.8em 1em; margin-top:0.8em;">
+    <strong>Tip:</strong> When swapping in local data, always <em>harmonize scale &amp; CRS</em> and re-run the percentile
+    thresholds on the local distributions (don’t reuse thresholds calibrated for other regions).
+  </div>
+
+  <h3>6E. Summary</h3>
+  <p>
+    We’ve taken you from <em>proxy-and-spatially-enriched mitigation layers</em> to <em>hazard-aware NbS prioritization</em>,
+    then exported per-hazard priorities, hotspots, and a <strong>combined multi-hazard index</strong> suitable for decision
+    dashboards. The method remains explainable:
+    <code>Priority = Hazard × (1 − Mitigation)</code>, with adaptive thresholds (positive-only percentiles) and
+    optional confidence bands for transparent uncertainty communication.
+  </p>
+
+  <div style="border-left:4px solid #3498db; background:#eaf4fb; padding:0.8em 1em;">
+    <strong>Where to go next:</strong> plug the GeoTIFFs into your GIS/web map, or publish to an Earth Engine App.
+    Consider scenario analysis (land-use change, restoration plans), and sensitivity tests on weights and thresholds.
+  </div>
+</section>
+
+
 </body>
 </html>
 
