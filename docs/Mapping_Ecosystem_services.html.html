@@ -1292,85 +1292,116 @@ Export.image.toDrive({
 
 <div class="theory">
   <p>
-    <strong>Purpose:</strong> In spatial ecosystem service (ESS) assessments, hazard layers
-    provide critical context for identifying both the <em>exposure</em> and <em>vulnerability</em> of
-    service-providing areas. By overlaying hazard footprints—derived from satellite observations—
-    with ESS maps, we can evaluate the co-location of valuable ecosystem functions and historical
-    hazard events.
+    <strong>Purpose:</strong> Hazard layers are a crucial component in spatial ecosystem service (ESS) assessments because they reveal where valuable ecosystem functions are at risk from natural disturbances. 
+    By combining satellite-derived hazard footprints with ESS maps, we can identify locations where ecosystem benefits (e.g., flood regulation, habitat provision) are both <em>present</em> and <em>historically exposed</em> to hazards such as floods or wildfires. 
+    This enables more targeted Nature-based Solutions (NbS) planning that prioritises areas where interventions can simultaneously protect ecosystem function and reduce hazard impacts.
   </p>
   <p>
-    This integration supports <strong>Nature-based Solutions (NbS) prioritisation</strong> by highlighting
-    areas where ESS are both high and hazard-exposed, guiding adaptive management and resilience planning.
+    In this section, we integrate two global hazard datasets:
+    <ul>
+      <li><strong>MODIS Global Flood Database (GFD)</strong> – A record of 913 flood events (2000–2018) mapped from MODIS satellite imagery, with per-event duration and extent (<a href="https://doi.org/10.1038/s41597-021-00955-9" target="_blank">Tellman et al., 2021</a>).</li>
+      <li><strong>MODIS Burned Area (MCD64A1)</strong> – Global monthly fire/burn scars from MODIS (2000–present), mapped using changes in surface reflectance (<a href="https://doi.org/10.1016/j.rse.2018.08.005" target="_blank">Giglio et al., 2018</a>).</li>
+    </ul>
+    These datasets are processed into <em>binary hazard masks</em> for integration with ESS maps.
   </p>
 </div>
 
-<h2>Code Implementation</h2>
+<h2>Code Implementation with Step-by-Step Explanations</h2>
 
 <pre>
-// Load MODIS Global Flood Database (Tellman et al., 2021)
+// 1. Load MODIS Global Flood Database (Tellman et al., 2021)
 var gfd = ee.ImageCollection('GLOBAL_FLOOD_DB/MODIS_EVENTS/V1');
 
-// Example: Hurricane Isaac Flooding (2012) in USA
+// 2. Select a single flood event (Hurricane Isaac, USA, 2012)
+//    The 'id' property is a unique Dartmouth Flood Observatory identifier
 var hurricaneIsaacDartmouthId = 3977;
 var hurricaneIsaacUsa = ee.Image(
-    gfd.filterMetadata('id', 'equals', hurricaneIsaacDartmouthId).first());
+    gfd.filterMetadata('id', 'equals', hurricaneIsaacDartmouthId).first()
+);
 
+// Set map view and basemap
 Map.setOptions('SATELLITE');
 Map.setCenter(-90.2922, 29.4064, 9);
 
-// Flood extent layer
+// 3. Flood extent (binary water mask for event duration)
 Map.addLayer(
   hurricaneIsaacUsa.select('flooded').selfMask(),
   {min: 0, max: 1, palette: '001133'},
-  'Hurricane Isaac - Inundation Extent');
+  'Hurricane Isaac - Inundation Extent'
+);
 
-// Flood duration layer
+// 4. Flood duration (number of days flooded during the event)
 var durationPalette = ['c3effe', '1341e8', '051cb0', '001133'];
 Map.addLayer(
   hurricaneIsaacUsa.select('duration').selfMask(),
   {min: 0, max: 4, palette: durationPalette},
-  'Hurricane Isaac - Duration');
+  'Hurricane Isaac - Duration'
+);
 
-// Historical flood plain from all events
+// 5. Aggregated historical flood footprint (sum of all events, 2000–2018)
 var gfdFloodedSum = gfd.select('flooded').sum();
 Map.addLayer(
   gfdFloodedSum.selfMask(),
   {min: 0, max: 10, palette: durationPalette},
-  'GFD Satellite Observed Flood Plain');
+  'GFD Satellite Observed Flood Plain'
+);
 
-// Permanent water bodies (JRC GSW)
+// 6. Permanent water from JRC Global Surface Water dataset (to mask out rivers/lakes)
 var jrc = gfd.select('jrc_perm_water').sum().gte(1);
 Map.addLayer(
   jrc.selfMask(),
   {min: 0, max: 1, palette: 'C3EFFE'},
-  'JRC Permanent Water');
+  'JRC Permanent Water'
+);
 
-// Load MODIS Burned Area (2000–2019) – Giglio et al. (2018)
+// 7. Load MODIS Burned Area Product (MCD64A1) for 2000–2019
+//    The BurnDate band gives day-of-year of burn; we reclassify to binary
 var burned = ee.ImageCollection("MODIS/061/MCD64A1")
   .select('BurnDate')
   .filterDate('2000-01-01', '2019-01-01')
   .map(function(img) {
-    return img.gt(0).selfMask();
+    return img.gt(0).selfMask();  // Keep burned pixels only
   })
   .sum()
-  .gte(1);
+  .gte(1);  // Burned at least once in the period
 
-// Burned area visualisation
+// 8. Burned area visualisation
 Map.addLayer(burned.selfMask(), {palette: ['orange']}, 'Burned Area');
 
-// Binary burn mask (for overlay operations)
+// 9. Create binary mask for overlay with ESS maps
 var burnBinary = burned.selfMask();
 </pre>
+
+<h2>What is Happening in Each Step?</h2>
+<div class="theory">
+  <ul>
+    <li><strong>Data Filtering:</strong> We subset the GFD by event ID to focus on a single flood, then extract relevant hazard bands ('flooded', 'duration').</li>
+    <li><strong>Masking:</strong> <code>selfMask()</code> removes non-hazard pixels, leaving a clean binary raster for spatial intersection with ESS layers.</li>
+    <li><strong>Temporal Aggregation:</strong> Summing 'flooded' or 'BurnDate' across years reveals multi-year hazard footprints, useful for identifying recurrently affected zones.</li>
+    <li><strong>Permanent Water Removal:</strong> Permanent water bodies are excluded so that hazard overlays capture only temporary inundation or burn areas.</li>
+    <li><strong>Binary Hazard Masks:</strong> These enable precise <em>spatial intersection analysis</em> with ESS maps—counting pixels of each ESS class that fall within hazard zones.</li>
+  </ul>
+</div>
+
+<h2>Technical Dataset Notes</h2>
+<div class="theory">
+  <ul>
+    <li><strong>MODIS GFD:</strong> 250 m resolution, derived from NASA MOD09 surface reflectance. Contains per-event flood extent, duration, and associated metadata. Temporal coverage: 2000–2018.</li>
+    <li><strong>MODIS MCD64A1 Burned Area:</strong> 500 m resolution, global coverage, monthly temporal granularity. Derived using the MODIS surface reflectance change detection algorithm.</li>
+    <li><strong>JRC GSW Permanent Water:</strong> 30 m resolution, derived from Landsat archive, used here to mask permanent water from flood hazard maps.</li>
+  </ul>
+</div>
 
 <h2>Spatial Operations Emphasis</h2>
 <div class="theory">
   <ul>
-    <li><strong>Hazard Masking:</strong> Both flood and fire datasets are converted to binary masks, enabling precise overlay with ESS layers.</li>
-    <li><strong>Temporal Aggregation:</strong> Multi-year composites reveal persistent or recurrent hazard exposure zones.</li>
-    <li><strong>Intersection Analysis:</strong> Using these masks, we can compute the proportion of each ESS class exposed to floods or fires.</li>
-    <li><strong>Decision Support:</strong> This approach supports NbS site selection in hazard-prone but high-value ESS areas.</li>
+    <li><strong>Hazard Footprint Extraction:</strong> Isolate hazard-affected areas for specific events or long-term summaries.</li>
+    <li><strong>Masking & Intersection:</strong> Enable pixel-wise comparisons between hazard exposure and ESS distribution.</li>
+    <li><strong>Gap Identification:</strong> By comparing hazard layers with ESS maps, we identify <em>high-ESS but high-hazard</em> areas where NbS could reduce risk and maintain service delivery.</li>
+    <li><strong>Decision Support:</strong> This integrated approach provides spatial evidence for prioritising climate adaptation and ecosystem protection measures.</li>
   </ul>
 </div>
+
 
 <h2>References</h2>
 <div class="citation">
