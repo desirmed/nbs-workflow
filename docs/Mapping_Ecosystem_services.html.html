@@ -873,6 +873,195 @@ Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation �
   </details>
 </section>
 
+<!-- ===================== STEP 3 · SPATIAL MODIFIERS (TOPOGRAPHY-AWARE SCORING) ===================== -->
+<section id="step-3-spatial-modifiers">
+  <h2>Step 3 — Enrich the Matrix with Spatial Modifiers (Elevation · Slope · Aspect)</h2>
+
+  <p>
+    Assigning 0–1 scores with expert judgement already yields a useful <em>relative</em> map of ESS potential or habitat ranking.
+    <strong>However</strong>, <em>where</em> a service sits in the landscape also matters: the same class performs differently on a floodplain
+    than on a ridge. This is the key critique of pure proxy mapping highlighted by
+    <a href="https://doi.org/10.1111/j.1365-2664.2010.01777.x" target="_blank">Eigenbrod et&nbsp;al., 2010a</a> and
+    <a href="https://doi.org/10.1016/j.biocon.2010.06.015" target="_blank">2010b</a>.
+  </p>
+
+  <div style="border-left:4px solid #95a5a6; padding:0.8em 1em; background:#f4f6f7; margin:0.8em 0;">
+    <strong>Common practice vs. best practice:</strong><br>
+    Normally, people apply a single score per LULC class everywhere (simple and fast). That’s fine for <em>screening</em>.
+    For better realism without full biophysical models, we’ll <em>modulate</em> scores using easy, defensible spatial covariates:
+    <strong>elevation</strong>, <strong>slope</strong>, and <strong>aspect</strong>.
+  </div>
+
+  <h3 id="step-3a-topo-data">3a. Topographic data (SRTM) and basic derivatives</h3>
+  <p>
+    We use 30 m SRTM for elevation, then derive slope and aspect using Earth Engine’s
+    <code><a href="https://developers.google.com/earth-engine/apidocs/ee-terrain-slope" target="_blank">ee.Terrain.slope</a></code> and
+    <code><a href="https://developers.google.com/earth-engine/apidocs/ee-terrain-aspect" target="_blank">ee.Terrain.aspect</a></code>.
+    We also build simple elevation <em>zones</em> to reflect lowland vs. upland dynamics.
+  </p>
+
+  <pre><code>// =============================
+// 4) Topographic data
+// =============================
+var srtm  = ee.Image('USGS/SRTMGL1_003').clip(cantabria); // elevation (m)
+var slope = ee.Terrain.slope(srtm);                        // degrees
+var aspect = ee.Terrain.aspect(srtm);                      // degrees from north
+
+// (Optional preview)
+Map.addLayer(srtm,  {min:0, max:2500, palette:['blue','green','brown','white']}, 'Elevation (m)', false);
+Map.addLayer(slope, {min:0, max:60,   palette:['white','yellow','red']},         'Slope (°)', false);
+Map.addLayer(aspect,{min:0, max:360,  palette:['blue','green','yellow','red','blue']}, 'Aspect (°)', false);
+
+// Normalize slope to 0–1 (assume 60° ~ "very steep" cap)
+var slopeNorm = slope.divide(60).clamp(0, 1);
+
+// Aspect to radians and derive northness/eastness in [0,1]
+// (northness=1 at north-facing, 0 at south-facing)
+var aspectRad = aspect.multiply(Math.PI/180);
+var northness = aspectRad.cos().unitScale(-1, 1); // [-1..1] → [0..1]
+var eastness  = aspectRad.sin().unitScale(-1, 1); // [-1..1] → [0..1]
+
+// Elevation zones (tune thresholds for your region)
+var elev = srtm;
+var lowland = elev.lt(300);
+var midland = elev.gte(300).and(elev.lte(800));
+var upland  = elev.gt(800);
+
+// Hazard-specific elevation weights (multiplicative factors)
+// Note: returns ee.Image with zone-wise multipliers that sum "piecewise"
+function elevWeight(hazard) {
+  if (hazard === 'Flood') {
+    // Higher flood-mitigation relevance in lowlands (floodplains)
+    return lowland.multiply(1.10).add(midland.multiply(1.00)).add(upland.multiply(0.80));
+  }
+  if (hazard === 'Erosion') {
+    // Erosion control more critical in uplands/steep terrains
+    return lowland.multiply(0.90).add(midland.multiply(1.00)).add(upland.multiply(1.20));
+  }
+  if (hazard === 'Fire') {
+    // Slightly higher importance away from valley bottoms
+    return lowland.multiply(0.95).add(midland.multiply(1.05)).add(upland.multiply(1.10));
+  }
+  if (hazard === 'Drought') {
+    // Some uplift in mid/uplands (cooler/more storage), penalize low hot flats
+    return lowland.multiply(0.90).add(midland.multiply(1.05)).add(upland.multiply(1.10));
+  }
+  if (hazard === 'Heat') {
+    // Slight boost in low/mid (where people heat-stressed), neutral in high uplands
+    return lowland.multiply(1.05).add(midland.multiply(1.05)).add(upland.multiply(1.00));
+  }
+}
+</code></pre>
+
+  <h3 id="step-3b-adjustments">3b. Apply combined adjustments (multiplicative, intuitive)</h3>
+  <p>
+    We start from your 0–1 <em>base</em> layers and apply: (i) a slope factor, (ii) an aspect factor (where relevant),
+    and (iii) the elevation-zone weight. Factors are gentle (±5–50%) to avoid overpowering the base LULC signal.
+    Finally, we <code>clamp</code> to a reasonable upper bound (e.g., 1.5).
+  </p>
+
+  <pre><code>// =============================
+// 5) Apply combined adjustments
+// =============================
+
+// Flood: flatter terrain ↑ (reduce with slope), lowlands ↑ (elevation weight)
+var floodAdj = floodBase
+  .multiply(ee.Image(1).subtract(slopeNorm.multiply(0.50)))  // steeper → lower potential
+  .multiply(elevWeight('Flood'))
+  .clamp(0, 1.5);
+
+// Erosion: steeper terrain ↑ (increase with slope), uplands ↑
+var erosionAdj = erosionBase
+  .multiply(ee.Image(1).add(slopeNorm.multiply(0.50)))       // steeper → higher mitigation need/value
+  .multiply(elevWeight('Erosion'))
+  .clamp(0, 1.5);
+
+// Fire: steep slopes ↓; south-facing (warmer/drier) ↓; slight elev boost mid/uplands
+// northness ∈ [0..1]: 1=north-facing (cooler), 0=south-facing (warmer)
+// Factor varies ~ [0.9 .. 1.1] by aspect; adjust weights if your region differs.
+var fireAdj = fireBase
+  .multiply(ee.Image(1).subtract(slopeNorm.multiply(0.20)))                  // steep → lower effectiveness
+  .multiply(ee.Image(0.90).add(northness.multiply(0.20)))                    // boost north-facing, reduce south
+  .multiply(elevWeight('Fire'))
+  .clamp(0, 1.5);
+
+// Drought: north-facing (cooler/moister) ↑; mid/uplands ↑
+var droughtAdj = droughtBase
+  .multiply(ee.Image(1).add(northness.multiply(0.10)))
+  .multiply(elevWeight('Drought'))
+  .clamp(0, 1.5);
+
+// Heat wave: north & east aspects ↑ (shading/wind), low/mid slight ↑
+var heatAdj = heatBase
+  .multiply(ee.Image(1).add(northness.multiply(0.05)))
+  .multiply(ee.Image(1).add(eastness.multiply(0.05)))
+  .multiply(elevWeight('Heat'))
+  .clamp(0, 1.5);
+
+// =============================
+// 6) Stack adjusted layers (bands keep the same names)
+// =============================
+var allMitigation = floodAdj
+  .addBands([fireAdj, droughtAdj, heatAdj, erosionAdj])
+  .rename([
+    'Flood_Mitigation',
+    'Fire_Mitigation',
+    'Drought_Mitigation',
+    'HeatWave_Mitigation',
+    'Erosion_Mitigation'
+  ]);
+</code></pre>
+
+  <h3 id="step-3c-visualize">3c. Visualize adjusted mitigation (0–1.5)</h3>
+  <p>
+    We keep a simple 2-color ramp here for contrast. You can reuse the sequential palette from Step&nbsp;2 as well.
+  </p>
+  <pre><code>// =============================
+// 7) Display
+// =============================
+var twoTone = ['white', 'red'];
+Map.addLayer(floodAdj,   {min:0, max:1.5, palette: twoTone}, 'Flood Mitigation (Adj)',   true);
+Map.addLayer(fireAdj,    {min:0, max:1.5, palette: twoTone}, 'Fire Mitigation (Adj)',    false);
+Map.addLayer(droughtAdj, {min:0, max:1.5, palette: twoTone}, 'Drought Mitigation (Adj)', false);
+Map.addLayer(heatAdj,    {min:0, max:1.5, palette: twoTone}, 'HeatWave Mitigation (Adj)',false);
+Map.addLayer(erosionAdj, {min:0, max:1.5, palette: twoTone}, 'Erosion Mitigation (Adj)', false);
+</code></pre>
+
+  <h4 id="step-3d-method-notes">Method notes &amp; guardrails</h4>
+  <ul>
+    <li><strong>Multiplicative logic:</strong> We scale the base 0–1 score by gentle factors (e.g., <code>1±0.05..0.50</code>) so
+      land-cover still drives the signal, while terrain nuances nudge it toward realism.</li>
+    <li><strong>Ranges &amp; clamping:</strong> Because factors can lift values above 1, we cap at <code>1.5</code> for display.
+      For indices, you can <em>renormalize</em> later to 0–1 if needed.</li>
+    <li><strong>Aspect convention:</strong> <code>northness</code> here is rescaled to [0,1] where 1 = north-facing, 0 = south-facing.
+      Tweak aspect weights for your climate (e.g., in Southern Hemisphere, invert the sign).</li>
+    <li><strong>Zones are simple by design:</strong> Thresholds (e.g., 300/800 m) are placeholders; replace with local hypsometry or
+      floodplain delineations for better realism.</li>
+  </ul>
+
+  <div style="border-left:4px solid #2ecc71; padding:0.8em 1em; background:#ecf9f1; margin-top:0.8em;">
+    <strong>Best practice:</strong> Keep a small table next to your code documenting each factor and its rationale
+    (with citations, e.g., <a href="https://doi.org/10.1111/j.1365-2664.2010.01777.x" target="_blank">Eigenbrod&nbsp;2010a</a>).
+    This makes adjustments auditable and easier to tune with stakeholders.
+  </div>
+
+  <div style="border-left:4px solid #3498db; padding:0.8em 1em; background:#eaf4fb; margin-top:0.8em;">
+    <strong>Next:</strong> We’ll (a) add an optional <em>confidence band</em> per hazard (e.g., 0.33/0.67/1.0),
+    (b) show a CSV/asset-driven way to manage the score tables, and (c) intersect adjusted mitigation with
+    actual hazard layers (e.g., flood extent/depth, heat anomalies, erosion susceptibility)
+    to reveal <em>NbS opportunity hotspots</em>.
+  </div>
+
+  <details>
+    <summary><strong>Glossary</strong> (click to expand)</summary>
+    <ul>
+      <li><strong>Northness/Eastness:</strong> Cosine/sine transforms of aspect that capture orientation relative to cardinal directions.</li>
+      <li><strong>Clamping:</strong> For visualization, capping a value range to avoid extreme colors and ease comparison across maps.</li>
+      <li><strong>Proxy vs. process:</strong> Proxy maps infer capacity from land cover; process models (e.g., hydrological) simulate mechanisms.</li>
+    </ul>
+  </details>
+</section>
+
 </body>
 </html>
 
