@@ -1271,6 +1271,119 @@ Export.image.toDrive({
   </div>
 </section>
 
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hazard Layers – Flood and Fire Footprints</title>
+  <script src="https://www.gstatic.com/earthengine/client_api.js"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 10px; }
+    h1, h2 { color: #003366; }
+    pre { background: #f5f5f5; padding: 10px; border-radius: 5px; }
+    .theory { background: #eef6f9; padding: 10px; border-left: 4px solid #0077aa; margin-bottom: 20px; }
+    .citation { font-size: 0.9em; color: #444; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<h1>Hazard Layers: Integrating Historical Floods and Fires for ESS Mapping</h1>
+
+<div class="theory">
+  <p>
+    <strong>Purpose:</strong> In spatial ecosystem service (ESS) assessments, hazard layers
+    provide critical context for identifying both the <em>exposure</em> and <em>vulnerability</em> of
+    service-providing areas. By overlaying hazard footprints—derived from satellite observations—
+    with ESS maps, we can evaluate the co-location of valuable ecosystem functions and historical
+    hazard events.
+  </p>
+  <p>
+    This integration supports <strong>Nature-based Solutions (NbS) prioritisation</strong> by highlighting
+    areas where ESS are both high and hazard-exposed, guiding adaptive management and resilience planning.
+  </p>
+</div>
+
+<h2>Code Implementation</h2>
+
+<pre>
+// Load MODIS Global Flood Database (Tellman et al., 2021)
+var gfd = ee.ImageCollection('GLOBAL_FLOOD_DB/MODIS_EVENTS/V1');
+
+// Example: Hurricane Isaac Flooding (2012) in USA
+var hurricaneIsaacDartmouthId = 3977;
+var hurricaneIsaacUsa = ee.Image(
+    gfd.filterMetadata('id', 'equals', hurricaneIsaacDartmouthId).first());
+
+Map.setOptions('SATELLITE');
+Map.setCenter(-90.2922, 29.4064, 9);
+
+// Flood extent layer
+Map.addLayer(
+  hurricaneIsaacUsa.select('flooded').selfMask(),
+  {min: 0, max: 1, palette: '001133'},
+  'Hurricane Isaac - Inundation Extent');
+
+// Flood duration layer
+var durationPalette = ['c3effe', '1341e8', '051cb0', '001133'];
+Map.addLayer(
+  hurricaneIsaacUsa.select('duration').selfMask(),
+  {min: 0, max: 4, palette: durationPalette},
+  'Hurricane Isaac - Duration');
+
+// Historical flood plain from all events
+var gfdFloodedSum = gfd.select('flooded').sum();
+Map.addLayer(
+  gfdFloodedSum.selfMask(),
+  {min: 0, max: 10, palette: durationPalette},
+  'GFD Satellite Observed Flood Plain');
+
+// Permanent water bodies (JRC GSW)
+var jrc = gfd.select('jrc_perm_water').sum().gte(1);
+Map.addLayer(
+  jrc.selfMask(),
+  {min: 0, max: 1, palette: 'C3EFFE'},
+  'JRC Permanent Water');
+
+// Load MODIS Burned Area (2000–2019) – Giglio et al. (2018)
+var burned = ee.ImageCollection("MODIS/061/MCD64A1")
+  .select('BurnDate')
+  .filterDate('2000-01-01', '2019-01-01')
+  .map(function(img) {
+    return img.gt(0).selfMask();
+  })
+  .sum()
+  .gte(1);
+
+// Burned area visualisation
+Map.addLayer(burned.selfMask(), {palette: ['orange']}, 'Burned Area');
+
+// Binary burn mask (for overlay operations)
+var burnBinary = burned.selfMask();
+</pre>
+
+<h2>Spatial Operations Emphasis</h2>
+<div class="theory">
+  <ul>
+    <li><strong>Hazard Masking:</strong> Both flood and fire datasets are converted to binary masks, enabling precise overlay with ESS layers.</li>
+    <li><strong>Temporal Aggregation:</strong> Multi-year composites reveal persistent or recurrent hazard exposure zones.</li>
+    <li><strong>Intersection Analysis:</strong> Using these masks, we can compute the proportion of each ESS class exposed to floods or fires.</li>
+    <li><strong>Decision Support:</strong> This approach supports NbS site selection in hazard-prone but high-value ESS areas.</li>
+  </ul>
+</div>
+
+<h2>References</h2>
+<div class="citation">
+  <p>Eigenbrod, F., et al. (2011). The impact of proxy‐based methods on mapping the distribution of ecosystem services. <em>J. Applied Ecology</em>, 47(2), 377–385.</p>
+  <p>Keeler, B.L., et al. (2012). Linking water quality and well-being for improved assessment and valuation of ecosystem services. <em>PNAS</em>, 109(45), 18619–18624.</p>
+  <p>Tellman, B., et al. (2021). Satellite imaging reveals increased proportion of population exposed to floods. <em>Nature</em>, 596, 80–86.</p>
+  <p>Giglio, L., et al. (2018). The Collection 6 MODIS burned area mapping algorithm. <em>Remote Sensing of Environment</em>, 217, 72–85.</p>
+  <p>Raymond, C.M., et al. (2017). Integrating ecosystem services into local planning. <em>Environmental Science & Policy</em>, 77, 85–94.</p>
+</div>
+
+</body>
+</html>
+
 
 </body>
 </html>
