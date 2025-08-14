@@ -662,6 +662,216 @@ Map.centerObject(cantabria, 10);</code></pre>
   </div>
 </section>
 
+<!-- ===================== STEP 2 · LULC ↔ ESS RELATIONAL TABLE (0–1 SCALE) ===================== -->
+<section id="step-2-relational-table-impl">
+  <h2>Step 2 — Build the LULC ↔ ESS Relational Table (From Concept to Code, 0–1 Scale)</h2>
+
+  <p>
+    The heart of the matrix approach is a <em>relational table</em> that links
+    <a href="https://land.copernicus.eu/en/products/corine-land-cover" target="_blank">land-cover (CORINE) codes</a>
+    to <a href="https://www.cices.eu/" target="_blank">ecosystem services (ESS)</a> or hazard-mitigation potentials using a numeric score.
+    We use a <strong>0–1</strong> scale (0 = no potential, 1 = very high potential) to keep values interpretable and ready for
+    normalization/weighting later.
+  </p>
+
+  <div style="border-left:4px solid #95a5a6; padding:0.8em 1em; background:#f4f6f7; margin:0.8em 0;">
+    <strong>Common practice vs. best practice:</strong><br>
+    Normally, people (i) assign scores ad-hoc in code, (ii) skip documenting the rationale, and (iii) leave missing classes undefined.
+    That works, but it’s hard to audit and reproduce. For best practice, we will:
+    <ol style="margin:0.3em 0 0 1.2em;">
+      <li>Use a <em>consistent 0–1 scale</em> across hazards/ESS,</li>
+      <li><em>Comment</em> each important code with the ecological reason, and</li>
+      <li>Set a <em>safe default of 0</em> for any unmapped class (explicit in <code>remap(..., 0)</code>).</li>
+    </ol>
+  </div>
+
+  <h3 id="step-2a-scope">2a. Pick the scope (hazards/ESS)</h3>
+  <p>
+    We start with five mitigation themes commonly linked to regulating services:
+    <strong>Flood</strong>, <strong>Fire</strong>, <strong>Drought</strong>, <strong>Heat wave</strong>, and <strong>Erosion</strong>.
+    You can add more later (e.g., water quality regulation, coastal protection).
+    See matrix-style mapping ideas in <a href="https://doi.org/10.1016/j.ecolind.2011.06.022" target="_blank">Nedkov &amp; Burkhard (2012)</a>.
+  </p>
+
+  <h3 id="step-2b-load-corine">2b. Load CORINE and clip to the study area</h3>
+  <pre><code>// =========================================
+// CORINE Land Cover 2018 (100 m) — clip to your boundary
+// Docs: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_CORINE_V20_100m_2018
+// =========================================
+var corine = ee.Image('COPERNICUS/CORINE/V20/100m/2018').select('landcover').clip(cantabria);
+
+// (Optional) quick look
+Map.addLayer(corine, {}, 'CORINE 2018 (raw)', false);
+</code></pre>
+
+  <h3 id="step-2c-scores">2c. Define 0–1 mitigation scores (your style)</h3>
+  <p>
+    We encode scores as JavaScript objects. Values reflect <em>potential</em> (not measured flow).
+    Unlisted classes will be mapped to <code>0</code> by default to avoid accidental inflation.
+    Use the official CLC code list to extend/refine (<a href="https://land.copernicus.eu/en/products/corine-land-cover/clc2018" target="_blank">reference</a>).
+  </p>
+
+  <pre><code>// =========================================
+// FLOOD mitigation (0–1)
+// =========================================
+var floodMitigationScore = {
+  411: 0.95, // Inland marshes — storage, roughness, attenuation
+  412: 0.95, // Peatbogs — high retention
+  421: 0.75, // Salt marshes
+  311: 0.75, // Broad-leaved forest — canopy, infiltration
+  312: 0.60, // Coniferous forest
+  213: 0.40, // Rice fields — temporary water retention
+  244: 0.60, // Agroforestry — perennial cover increases infiltration
+  321: 0.60, // Natural grasslands — surface roughness
+  323: 0.75, // Sclerophyllous vegetation — structure, soils
+  324: 0.40, // Transitional woodland/shrub — mixed, variable
+  523: 0.90, // Estuaries — storage/expansion areas
+  521: 0.75, // Coastal lagoons
+  511: 0.40, // Water courses — conveyance; limited attenuation on-channel
+  141: 0.20, // Green urban areas — local infiltration/cooling
+  112: 0.10  // Discontinuous urban fabric — some permeable fraction
+};
+
+// =========================================
+// FIRE mitigation (0–1)
+// =========================================
+var fireMitigationScore = {
+  231: 0.40, // Pastures — lower fuel continuity vs dense forest
+  241: 0.30, // Annual crops — seasonal moisture
+  243: 0.40, // Mosaic vegetation — breaks continuity
+  311: 0.20, // Broad-leaved forest — can carry fire under drought
+  322: 0.50, // Heathland — mixed; can reduce spread with mosaics
+  324: 0.30, // Transitional woodland/shrub
+  411: 0.80, // Inland marshes — high moisture
+  512: 0.90, // Lakes — strong barrier
+  141: 0.30, // Green urban areas — breaks, irrigated
+  112: 0.20  // Discontinuous urban — mixed materials
+};
+
+// =========================================
+// DROUGHT mitigation (0–1)
+// =========================================
+var droughtMitigationScore = {
+  411: 0.95, // Marshes — buffering water availability
+  412: 0.95, // Peat bogs — storage
+  311: 0.80, // Broad-leaved forest — rooting depth/ET shading
+  312: 0.70, // Coniferous forest
+  321: 0.60, // Natural grasslands
+  241: 0.75, // Agroforestry / perennial systems
+  211: 0.20, // Arable land — exposure/high demand
+  142: 0.05, // Sports/leisure — manicured turf, water demand
+  521: 0.70  // Coastal lagoons — local buffering
+};
+
+// =========================================
+// HEAT WAVE mitigation (0–1)
+// =========================================
+var heatWaveMitigationScore = {
+  311: 0.90, // Broad-leaved forest — canopy cooling
+  312: 0.80, // Coniferous forest
+  313: 0.85, // Mixed forest
+  141: 0.60, // Green urban areas — shading/ET
+  142: 0.50, // Sports/leisure
+  112: 0.30, // Discontinuous urban fabric — partial greening
+  243: 0.40, // Mosaic vegetation
+  321: 0.65, // Natural grasslands
+  324: 0.50, // Transitional woodland/shrub
+  322: 0.40, // Heathland
+  512: 0.80, // Lakes — evap cooling
+  411: 0.70  // Inland marshes — ET cooling
+};
+
+// =========================================
+// EROSION mitigation (0–1)
+// =========================================
+var erosionMitigationScore = {
+  244: 0.60, // Agroforestry — root systems, cover
+  321: 0.60, // Natural grasslands — continuous cover
+  323: 0.75, // Sclerophyllous — deep roots, structure
+  324: 0.40, // Transitional woodland/shrub
+  211: 0.20, // Arable land — exposed soil
+  243: 0.50, // Mosaic crops/natural — patchiness reduces runoff
+  222: 0.25, // Permanently irrigated — management-dependent
+  231: 0.30, // Pastures
+  312: 0.50, // Coniferous forest
+  311: 0.60, // Broad-leaved forest
+  313: 0.55  // Mixed forest
+};
+</code></pre>
+
+  <h3 id="step-2d-remap">2d. Remap helper & build multi-band mitigation image</h3>
+  <p>
+    We convert the dictionaries to parallel lists and use <code><a href="https://developers.google.com/earth-engine/apidocs/ee-image-remap" target="_blank">image.remap()</a></code>.
+    Note the explicit default <code>0</code> for any classes not in the table (transparent and conservative).
+  </p>
+
+  <pre><code>// =========================================
+// Helper: remap CORINE codes → scores (default 0 if missing)
+// =========================================
+function remapMitigation(image, scoreDict, newName) {
+  var fromCodes = Object.keys(scoreDict).map(function(k){ return parseInt(k, 10); });
+  var toScores  = fromCodes.map(function(k){ return scoreDict[k]; });
+  return image.remap(fromCodes, toScores, 0).rename(newName);
+}
+
+// =========================================
+// Base (per-hazard) layers
+// =========================================
+var floodBase    = remapMitigation(corine, floodMitigationScore,    'Flood_Mitigation');
+var fireBase     = remapMitigation(corine, fireMitigationScore,     'Fire_Mitigation');
+var droughtBase  = remapMitigation(corine, droughtMitigationScore,  'Drought_Mitigation');
+var heatBase     = remapMitigation(corine, heatWaveMitigationScore, 'HeatWave_Mitigation');
+var erosionBase  = remapMitigation(corine, erosionMitigationScore,  'Erosion_Mitigation');
+
+// Stack into a single multi-band image
+var mitigationImage = floodBase.addBands([fireBase, droughtBase, heatBase, erosionBase]);
+// Bands: Flood_Mitigation, Fire_Mitigation, Drought_Mitigation, HeatWave_Mitigation, Erosion_Mitigation
+</code></pre>
+
+  <h3 id="step-2e-visualize">2e. Quick visualization (0–1)</h3>
+  <p>
+    Keep a consistent palette and <code>{min:0, max:1}</code> for comparability across hazards.
+  </p>
+  <pre><code>// =========================================
+// Visualization (0–1). Toggle in Layers panel.
+// =========================================
+var vis01 = {min: 0, max: 1, palette: ['#f7fbff','#deebf7','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#084594']};
+
+Map.addLayer(mitigationImage.select('Flood_Mitigation'),    vis01, 'Mitigation · Flood', true);
+Map.addLayer(mitigationImage.select('Fire_Mitigation'),     vis01, 'Mitigation · Fire', false);
+Map.addLayer(mitigationImage.select('Drought_Mitigation'),  vis01, 'Mitigation · Drought', false);
+Map.addLayer(mitigationImage.select('HeatWave_Mitigation'), vis01, 'Mitigation · Heat Wave', false);
+Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation · Erosion', false);
+</code></pre>
+
+  <h4 id="step-2f-interpret">2f. Interpreting 0–1 scores</h4>
+  <p>
+    Values are <em>relative potentials</em> inferred from land cover — not measured service flows. Use them for screening
+    (e.g., locating <a href="https://doi.org/10.1038/s41467-018-03083-1" target="_blank">NbS</a> opportunities) and comparative analysis.
+    Where decisions carry high stakes, combine with process-based or empirical checks (e.g., hydrologic models, local monitoring).
+  </p>
+
+  <div style="border-left:4px solid #2ecc71; padding:0.8em 1em; background:#ecf9f1; margin-top:0.8em;">
+    <strong>Tip — Sensitivity testing:</strong> try ±0.1 on key classes (e.g., 411/412/311) and inspect how hotspot patterns shift.
+    This informs how robust your prioritization is to expert judgement.
+  </div>
+
+  <div style="border-left:4px solid #3498db; padding:0.8em 1em; background:#eaf4fb; margin-top:0.8em;">
+    <strong>Next:</strong> Add <em>confidence bands</em> per hazard (e.g., 0.33/0.67/1.0) and intersect with actual hazard layers
+    (flood extent/depth, heat anomaly, erosion susceptibility) to reveal <em>NbS hotspot potential</em>.
+    We’ll also show a CSV/asset-driven variant so teams can edit scores without changing code.
+  </div>
+
+  <details>
+    <summary><strong>Glossary</strong> (click to expand)</summary>
+    <ul>
+      <li><strong>Matrix approach:</strong> A lookup between LULC classes and ecosystem service supply; see <a href="https://landscape-online.org/index.php/lo/article/view/LO.200915" target="_blank">Burkhard et&nbsp;al., 2009</a>.</li>
+      <li><strong>Potential vs. flow:</strong> Potential is capacity inferred from landscape traits; flow is realized service under demand/conditions.</li>
+      <li><code><a href="https://developers.google.com/earth-engine/apidocs/ee-image-remap" target="_blank">Image.remap</a></code>: Reclassifies pixel values using lists of <em>from</em> and <em>to</em> values.</li>
+      <li><code><a href="https://developers.google.com/earth-engine/guides/reducers_reduce_regions" target="_blank">Zonal statistics</a></code>: Aggregates pixel values over vector polygons (we’ll use this later).</li>
+    </ul>
+  </details>
+</section>
 
 </body>
 </html>
