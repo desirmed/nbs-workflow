@@ -524,6 +524,148 @@ div.tocify {
   </p>
 </section>
 
+<!-- ===================== STEP 1 · DEFINE THE STUDY AREA ===================== -->
+<section id="step-1-study-area">
+  <h2>Step 1 — Define the Study Area (Administrative Boundaries)</h2>
+  <p>
+    Before mapping ecosystem services (ESS), we need a <em>study area</em>—the geographic extent where
+    our calculations run and our maps render. In GIS terms, this is just a polygon (or set of polygons).
+    We’ll show two common routes:
+  </p>
+  <ol>
+    <li><strong>Use ready-made administrative boundaries</strong> (fast and reproducible).</li>
+    <li><strong>Use your own boundary</strong> (a shapefile/GeoJSON you uploaded as an asset).</li>
+  </ol>
+
+  <h3>Why this matters</h3>
+  <p>
+    ESS scoring and any later hazard–mitigation overlays must be computed over a consistent footprint.
+    Keeping a well-defined boundary helps with reproducibility, performance, and interpretation
+    (e.g., comparing results across regions). If you’re new to Earth Engine, a <a href="https://developers.google.com/earth-engine/guides/feature_collections" target="_blank">FeatureCollection</a>
+    is simply a set of vector features (points/lines/polygons) with attributes—perfect for holding
+    country/region boundaries.
+  </p>
+
+  <h3>Data we’ll use</h3>
+  <ul>
+    <li><a href="https://www.geoboundaries.org/" target="_blank">geoBoundaries</a> (via a public Earth Engine mirror) for ADM0/ADM1/ADM2 levels.</li>
+    <li>Your own uploaded boundary (optional)—useful if you have official planning units or study zones.</li>
+  </ul>
+
+  <details>
+    <summary><strong>Glossary</strong> (click to expand)</summary>
+    <ul>
+      <li><strong>ADM0/ADM1/ADM2</strong>: Administrative levels (country / first-level regions / second-level districts).</li>
+      <li><strong>FeatureCollection</strong>: A table of vector features with geometry and properties in Earth Engine.</li>
+      <li><code><a href="https://developers.google.com/earth-engine/apidocs/ee-filter-eq" target="_blank">ee.Filter.eq</a></code>: Builds an equality filter for attribute queries.</li>
+      <li><code><a href="https://developers.google.com/earth-engine/apidocs/ee-featurecollection-filterbounds" target="_blank">filterBounds()</a></code>: Spatial filter—keeps features that intersect a geometry.</li>
+      <li><code><a href="https://developers.google.com/earth-engine/apidocs/ui-map-centerobject" target="_blank">Map.centerObject()</a></code>: Recenters the map on a given geometry.</li>
+    </ul>
+  </details>
+
+  <h3>Code: Load admin boundaries and pick Spain → Cantabria</h3>
+  <p>
+    The snippet below loads country and regional boundaries, filters to Spain (ADM0),
+    then narrows to Cantabria (ADM1). This route is great when you don’t yet have a local shapefile.
+  </p>
+
+  <pre><code>// =========================================
+// 1) Load all boundary levels (geoBoundaries mirror)
+// =========================================
+var adm0 = ee.FeatureCollection("projects/sat-io/open-datasets/geoboundaries/CGAZ_ADM0");
+var adm1 = ee.FeatureCollection("projects/sat-io/open-datasets/geoboundaries/CGAZ_ADM1");
+var adm2 = ee.FeatureCollection("projects/sat-io/open-datasets/geoboundaries/CGAZ_ADM2");
+
+// =========================================
+// 2) Spain – Cantabria (ADM1 via ADM0)
+// =========================================
+var spain = adm0.filter(ee.Filter.eq('shapeName', 'Spain'));        // attribute filter
+var adm1_spain = adm1.filterBounds(spain);                          // spatial filter (intersects Spain)
+var cantabria = adm1_spain.filter(ee.Filter.eq('shapeName', 'Cantabria')); // attribute filter
+
+// =========================================
+// 3) Display Cantabria boundary
+// =========================================
+Map.addLayer(cantabria, {color: 'blue'}, 'Spain – Cantabria (ADM1)', false);
+Map.centerObject(cantabria, 10);</code></pre>
+
+  <h4>What did we just do?</h4>
+  <ul>
+    <li><strong>Filtered by attributes</strong> using <code>ee.Filter.eq('shapeName','Spain')</code> to isolate Spain.</li>
+    <li><strong>Filtered by spatial intersection</strong> using <code>filterBounds(spain)</code> so we only keep ADM1 regions that touch Spain’s geometry.</li>
+    <li><strong>Filtered again by name</strong> to grab Cantabria specifically.</li>
+  </ul>
+
+  <h3>Alternative: Use your own boundary asset</h3>
+  <p>
+    If you already uploaded a shapefile/GeoJSON (see Earth Engine guide: <a href="https://developers.google.com/earth-engine/guides/table_upload" target="_blank">Upload tables as assets</a>), load it directly.
+    <strong>Important:</strong> Asset paths must be strings.<br>
+    <em>Wrong:</em> <code>ee.FeatureCollection(projects/ee-desmond/assets/cantabria)</code><br>
+    <em>Right:</em> <code>ee.FeatureCollection("projects/ee-desmond/assets/cantabria")</code>
+  </p>
+
+  <pre><code>// If you have an uploaded boundary asset, load it like this:
+var cantabria = ee.FeatureCollection("projects/ee-desmond/assets/cantabria");
+
+// (Optional) Visualize
+Map.addLayer(cantabria, {color: 'blue'}, 'Cantabria (asset)', false);
+Map.centerObject(cantabria, 10);</code></pre>
+
+  <div style="border-left:4px solid #2ecc71; padding:0.8em 1em; background:#ecf9f1; margin-top:1em;">
+    <strong>Tip — Names vs. Codes:</strong> Attribute names (e.g., <code>shapeName</code>) can vary by dataset.
+    Use the Code Editor’s <em>Inspector</em> to click a feature and confirm property keys before filtering.
+  </div>
+
+  <div style="border-left:4px solid #f39c12; padding:0.8em 1em; background:#fff6e6; margin-top:0.8em;">
+    <strong>Performance note:</strong> Keep boundaries as simple as needed. Overly detailed geometries slow down
+    reclassification and zonal stats later. Consider <a href="https://developers.google.com/earth-engine/guides/reducers_reduce_regions#geometry-simplification" target="_blank">simplifying geometries</a>
+    (carefully!) when working at continental scales.
+  </div>
+
+  <h3>How this connects to ESS mapping</h3>
+  <p>
+    With the study area fixed, every subsequent step—linking land cover to ESS scores, raster
+    reclassification, uncertainty bands, and hazard overlays—will be <em>clipped and summarized</em> against
+    this boundary. That ensures your ESS intensity maps and your future NbS hotspot analysis remain
+    spatially consistent and comparable across regions.
+  </p>
+</section>
+
+<!-- ===================== NEXT: LULC → ESS RELATIONAL TABLE ===================== -->
+<section id="step-2-relational-table">
+  <h2>Step 2 — Build the LULC ↔ ESS Relational Table (Concept → Implementation)</h2>
+  <p>
+    Now that we have the boundary, we’ll assemble a relational table that links each land-cover
+    class (e.g., CORINE codes) to one or more ecosystem services (ESS), plus a <em>score</em> that reflects
+    its potential to <strong>mitigate specific hazards</strong> (e.g., flood attenuation, erosion control, urban heat).
+    This is the core of the widely used “matrix” approach
+    (<a href="https://landscape-online.org/index.php/lo/article/view/LO.200915" target="_blank">Burkhard et&nbsp;al., 2009</a>).
+  </p>
+
+  <h3>Design principles (keep it defensible)</h3>
+  <ul>
+    <li><strong>Transparency:</strong> Store the mapping as a table (JSON/CSV/FeatureCollection) with comments and sources.</li>
+    <li><strong>Consistency:</strong> Use the official CLC codes and names (see <a href="https://land.copernicus.eu/en/products/corine-land-cover" target="_blank">CORINE docs</a>).</li>
+    <li><strong>Expert-informed:</strong> Begin with literature-based default scores; annotate where expert judgement adjusts them
+      (e.g., local wetlands performing better than average for <a href="https://www.cices.eu/" target="_blank">CICES</a> regulating services).</li>
+    <li><strong>Hazard-aware:</strong> For each ESS, specify which hazard(s) it relates to (e.g., “Hydrological flow regulation → flood”).</li>
+  </ul>
+
+  <p>
+    In the next block (when you share your code), we’ll implement this table in Earth Engine,
+    show how to <code>.remap()</code> CORINE rasters to per-ESS “potential” layers,
+    and prepare for hazard overlays. We’ll also provide an <em>optional</em> probability band per ESS to
+    reflect uncertainty (following the idea of confidence/likelihood classes in
+    <a href="https://doi.org/10.1016/j.ecolind.2011.06.022" target="_blank">Nedkov &amp; Burkhard, 2012</a>).
+  </p>
+
+  <div style="border-left:4px solid #3498db; padding:0.8em 1em; background:#eaf4fb; margin-top:0.8em;">
+    <strong>Preview:</strong> We will (a) load CORINE, (b) map codes → ESS scores (0–5 or 0–100),
+    (c) create one band per ESS (intensity or potential), and (d) export or visualize layers with legends.
+    Later, we’ll intersect these with hazard layers to identify <em>NbS opportunity hotspots</em>.
+  </div>
+</section>
+
 
 </body>
 </html>
