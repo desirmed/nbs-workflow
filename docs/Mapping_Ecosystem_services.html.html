@@ -1160,7 +1160,7 @@ Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation �
 
 <!-- ===================== STEP 3 · SPATIAL MODIFIERS (TOPOGRAPHY-AWARE SCORING) ===================== -->
 <section id="step-3-spatial-modifiers">
-  <h2>Step 3 — Enrich the Matrix with Spatial Modifiers (Elevation · Slope · Aspect)</h2>
+  <h1>Step 3 — Enrich the Matrix with Spatial Modifiers (Elevation · Slope · Aspect)</h1>
 
   <p>
     Assigning 0–1 scores with expert judgement already yields a useful <em>relative</em> map of ESS potential or habitat ranking.
@@ -1343,7 +1343,7 @@ Map.addLayer(erosionAdj, {min:0, max:1.5, palette: twoTone}, 'Erosion Mitigation
 
 <!-- ===================== STEP 4 · EXPORTS & SUMMARY STATISTICS ===================== -->
 <section id="step-4-exports-stats">
-  <h2>Step 4 — Export Results & Compute Summary Statistics</h2>
+  <h1>Step 4 — Export Results & Compute Summary Statistics</h1>
 
   <p>
     Now that we have <em>adjusted mitigation layers</em> (0–1, optionally up to 1.5 after modifiers),
@@ -1683,7 +1683,7 @@ var burnBinary = burned.selfMask();
 
 <!-- ===================== STEP 5 · NBS HOTSPOT PRIORITIZATION (DISTINCT BY HAZARD) ===================== -->
 <section id="step-5-nbs-hotspots">
-  <h2>Step 5 — NbS Hotspot Prioritization (Distinct by Hazard)</h2>
+  <h1>Step 5 — NbS Hotspot Prioritization (Distinct by Hazard)</h1>
 
   <p>
     In this step we combine <em>observed hazard intensity</em> (historical floods, fires) with our
@@ -2037,7 +2037,7 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
 
 <!-- ===================== STEP 6 · EXPORTS, MULTI-HAZARD INDEX & LOCAL DATA INTEGRATION ===================== -->
 <section id="step-6-exports-multihazard-local">
-  <h2>Step 6 — Exports, Multi-Hazard NbS Index & Integrating Local Data</h2>
+  <h1>Step 6 — Exports, Multi-Hazard NbS Index & Integrating Local Data</h1>
 
   <p>
     You now have per-hazard <em>priority</em> rasters (<code>prio_flood</code>, <code>prio_fire</code>) and
