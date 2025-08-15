@@ -796,8 +796,26 @@ wflow_publish("analysis/Mapping_Ecosystem_services.html.Rmd")
 </section>
 
 <!-- ===================== STEP 1 · DEFINE THE STUDY AREA ===================== -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Step 1 — Define the Study Area (Administrative Boundaries)</title>
+  <script src="https://www.gstatic.com/earthengine/client_api.js"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 10px; }
+    h1, h2 { color: #003366; }
+    pre { background: #f5f5f5; padding: 10px; border-radius: 5px; }
+    .theory { background: #eef6f9; padding: 10px; border-left: 4px solid #0077aa; margin-bottom: 20px; }
+    .citation { font-size: 0.9em; color: #444; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
 <section id="step-1-study-area">
-  <h2>Step 1 — Define the Study Area (Administrative Boundaries)</h2>
+  <h1>Step 1 — Define the Study Area (Administrative Boundaries)</h1>
   <p>
     Before mapping ecosystem services (ESS), we need a <em>study area</em>—the geographic extent where
     our calculations run and our maps render. In GIS terms, this is just a polygon (or set of polygons).
@@ -901,6 +919,9 @@ Map.centerObject(cantabria, 10);</code></pre>
     spatially consistent and comparable across regions.
   </p>
 </section>
+
+</body>
+</html>
 
 <!-- ===================== NEXT: LULC → ESS RELATIONAL TABLE ===================== -->
 <section id="step-2-relational-table">
