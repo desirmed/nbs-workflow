@@ -924,7 +924,7 @@ Map.centerObject(cantabria, 10);</code></pre>
 <!-- ===================== NEXT: LULC → ESS RELATIONAL TABLE ===================== -->
 <!-- ===================== STEP 2 — LULC ↔ ESS RELATIONAL TABLE + OUTPUT INTERPRETATION ===================== -->
 <section id="step-2-relational-table">
-  <h1>Step 2 — Build the LULC ↔ ESS Relational Table & Understand Key Outputs</h1>
+  <h1>Step 2 — Build the Relational Table - from concept to implementation</h1>
 
   <p>
     At the heart of NbS spatial planning is a <em>relational table</em> linking 
@@ -953,26 +953,6 @@ Map.centerObject(cantabria, 10);</code></pre>
     <strong>Workflow preview:</strong> (a) Load CORINE; (b) Map codes → ESS scores (0–1 scale); 
     (c) Create one band per ESS; (d) Export/visualize layers; (e) Overlay with hazard layers 
     to identify <em>NbS opportunity hotspots</em>.
-  </div>
-
-  <h3>Interpreting the outputs</h3>
-  <div style="border-left:4px solid #2980b9; background:#eef6ff; padding:0.8em 1em; margin:0.8em 0;">
-    <p><strong>Hotspot</strong> → Spatial overlap of <em>high ESS</em> and <em>high hazard risk</em>. 
-      In our workflow: <code>ESS_mask AND Hazard_mask</code>. 
-      This is a diagnostic layer showing where the opportunity/problem exists — it’s always computed first.
-    </p>
-
-    <p><strong>Priority</strong> → Hotspots ranked using the formula 
-      <code>Hazard_Intensity × (1 − Mitigation_Capacity)</code>. 
-      A pixel may be a hotspot but <em>not</em> a priority if hazard intensity is below the threshold, 
-      mitigation capacity is already high, or the weighted score falls below the cut-off.  
-      Every priority area is a hotspot, but not every hotspot will be a priority.
-    </p>
-
-    <p><strong>Protect / Enhance</strong> → High ESS areas with <em>low hazard risk</em> 
-      (<code>ESS_mask AND NOT(Hazard_mask)</code>). These areas are important for maintaining 
-      ecosystem services even if immediate hazard mitigation is not required.
-    </p>
   </div>
 
   <div style="border-left:4px solid #e67e22; background:#fff5eb; padding:0.8em 1em; margin:0.8em 0;">
@@ -2035,6 +2015,26 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
     (with weights and optional confidence bands) for planning dashboards.
   </div>
 </section>
+
+<h3>Interpreting the outputs</h3>
+<div style="border-left:4px solid #2980b9; background:#eef6ff; padding:0.8em 1em; margin:0.8em 0;">
+  <p><strong>Hotspot</strong> → Spatial overlap of <em>high ESS</em> and <em>high hazard risk</em>. 
+    In our workflow: <code>ESS_mask AND Hazard_mask</code>. 
+    This is a diagnostic layer showing where the opportunity/problem exists — it’s always computed first.
+  </p>
+
+  <p><strong>Priority</strong> → Hotspots ranked using the formula 
+    <code>Hazard_Intensity × (1 − Mitigation_Capacity)</code>. 
+    A pixel may be a hotspot but <em>not</em> a priority if hazard intensity is below the threshold, 
+    mitigation capacity is already high, or the weighted score falls below the cut-off.  
+    Every priority area is a hotspot, but not every hotspot will be a priority.
+  </p>
+
+  <p><strong>Protect / Enhance</strong> → High ESS areas with <em>low hazard risk</em> 
+    (<code>ESS_mask AND NOT(Hazard_mask)</code>). These areas are important for maintaining 
+    ecosystem services even if immediate hazard mitigation is not required.
+  </p>
+</div>
 
 
 <!-- ===================== STEP 6 · EXPORTS, MULTI-HAZARD INDEX & LOCAL DATA INTEGRATION ===================== -->
