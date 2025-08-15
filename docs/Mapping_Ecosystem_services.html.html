@@ -38,7 +38,7 @@
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
-<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<link rel="icon" href="https://github.com/changelogs/changelogs-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
 <style type="text/css">
 div.section {
@@ -411,39 +411,256 @@ div.tocify {
 </head>
 <body>
 
+<p>
+<button type="button" class="btn btn-default btn-changelogs btn-changelogs-report" data-toggle="collapse" data-target="#changelogs-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+changelogs <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="changelogs-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-02-28
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>nbs-workflow/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/changelogs/changelogs">changelogs</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="changelogs-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#changelogs-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#changelogs-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomOhmNpRtutorialtree7226f266f0d70e428d0ba2ae91c9efa75f9290abtargetblank7226f26a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/deltares-desirmed/nbs-workflow/tree/7226f266f0d70e428d0ba2ae91c9efa75f9290ab" target="_blank">7226f26</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomOhmNpRtutorialtree7226f266f0d70e428d0ba2ae91c9efa75f9290abtargetblank7226f26a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/deltares-desirmed/nbs-workflow/tree/7226f266f0d70e428d0ba2ae91c9efa75f9290ab" target="_blank">7226f26</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). changelogs only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Mapping_Ecosystem_services.Rmd</code>) and HTML
+(<code>docs/Mapping_Ecosystem_services</code>) files. If you’ve configured a remote Git
+repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
+in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/7226f266f0d70e428d0ba2ae91c9efa75f9290ab/analysis/How_To.Rmd" target="_blank">7226f26</a>
+</td>
+<td>
+Desmond Lartey
+</td>
+<td>
+2025-08-20
+</td>
+<td>
+wflow_publish("analysis/How_To.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/deltares-desirmed/nbs-workflow/76f52cea6899e3efcdc8fb5fb1389210be8d8324/docs/How_To.html" target="_blank">76f52ce</a>
+</td>
+<td>
+Desmond Lartey
+</td>
+<td>
+2025-08-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/deltares-desirmed/nbs-workflow/blob/0ce17c3b0a0f4d8d8ba3ef3ab45111635d366004/analysis/How_To.Rmd" target="_blank">0ce17c3</a>
+</td>
+<td>
+Desmond Lartey
+</td>
+<td>
+2025-02-28
+</td>
+<td>
+wflow_publish("analysis/How_To.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
 <!-- ===================== CONTRIBUTORS ===================== -->
 <body>
   <div class="author-container">
     <span class="authors-label">Contributors:</span>
 
     <a href="https://www.linkedin.com/in/desmond-larte/" target="_blank" class="author">
-      <img src="https://media.licdn.com/dms/image/v2/D4E03AQFcG-KcTiEWeA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1723584764222?e=1752710400&v=beta&t=AjmDsrYgofn7kQy3V8n9gY4q8y41ngc7-jAYMuy1kF" alt="Desmond Lartey">
+      <img src="https://media.licdn.com/dms/image/v2/D4E03AQFcG-KcTiEWeA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1723584764222?e=1752710400&v=beta&t=AjmDsrYgofn7kQy3V8n9gY4q8y41ngc7-jAYMuy1kF" alt="Author 1">
+      <!-- Author 1 -->
     </a>
 
     <a href="https://www.linkedin.com/in/mindertdevrie/" target="_blank" class="author">
-      <img src="https://media.licdn.com/dms/image/v2/C4D03AQEWVxbBHEawSw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1516586820172?e=1752710400&v=beta&t=nRCveqlSL3V5NEcSMfa68ggc5dyM_oOgCo7GMDdskR" alt="Mindert de Vrie">
+      <img src="https://media.licdn.com/dms/image/v2/C4D03AQEWVxbBHEawSw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1516586820172?e=1752710400&v=beta&t=nRCveqlSL3V5NEcSMfa68ggc5dyM_oOgCo7GMDdskR" alt="Author 2">
+      <!-- Author 2 -->
     </a>
 
     <a href="https://www.deltares.nl/en/expertise/our-people/tom-buc" target="_blank" class="author">
-      <img src="https://cms.deltares.nl/assets/common/person/_265x235" alt="Tom Buc">
+      <img src="https://cms.deltares.nl/assets/common/person/_265x235" alt="Author 3">
+      <!-- Author 3 -->
     </a>
 
     <a href="https://www.linkedin.com/in/katerinatzavell/" target="_blank" class="author">
-      <img src="https://media.licdn.com/dms/image/v2/D4D03AQEIGJkRAgBT9Q/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1707599895366?e=1752710400&v=beta&t=5oSS0EgeiOopZz5D6ykDpFfHtI1ShwH-CaQ5-5Uedd" alt="Katerina Tzavella">
+      <img src="https://media.licdn.com/dms/image/v2/D4D03AQEIGJkRAgBT9Q/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1707599895366?e=1752710400&v=beta&t=5oSS0EgeiOopZz5D6ykDpFfHtI1ShwH-CaQ5-5Uedd" alt="Author 4">
+      <!-- Author 4 -->
     </a>
 
     <a href="https://www.linkedin.com/in/oriana-jovanovic-hu/" target="_blank" class="author">
-      <img src="https://www.bing.com/th/id/" alt="Oriana Jovanovic Hu">
-    </a>
-
+      <img src="https://www.bing.com/th/id/" alt="Author 5">
+      <!-- Author 5 -->
+    
     <a href="https://www.linkedin.com/in/silkenaut/" target="_blank" class="author">
-      <img src="https://media.licdn.com/dms/image/v2/C5103AQESQuBsr5NmTw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1545733827123?e=1752710400&v=beta&t=TYNvSVak1hivp5syil6vSEcn1QRxKeOe-7Xu43qLhf" alt="Silke Naut">
+      <img src="https://media.licdn.com/dms/image/v2/C5103AQESQuBsr5NmTw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1545733827123?e=1752710400&v=beta&t=TYNvSVak1hivp5syil6vSEcn1QRxKeOe-7Xu43qLhf" alt="Author 6">
+      <!-- Author 6 -->
     </a>
 
     <a href="https://www.linkedin.com/in/sara-pino-cobacho-3a687915/" target="_blank" class="author">
-      <img src="https://media.licdn.com/dms/image/v2/D4E03AQEZ0H8fvUrsfA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1666616064219?e=1753920000&v=beta&t=dFIOzqlFqKPY1m7z-rBFQaZICn2YewBPOmHYYZ93_8" alt="Sara Pino Cobacho">
+      <img src="https://media.licdn.com/dms/image/v2/D4E03AQEZ0H8fvUrsfA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1666616064219?e=1753920000&v=beta&t=dFIOzqlFqKPY1m7z-rBFQaZICn2YewBPOmHYYZ93_8" alt="Author 7">
+      <!-- Author 7 -->
     </a>
   </div>
+</body>
 
   <p>
     This guideline is based on the <a href="https://www.nbracer.eu/" target="_blank">NBRACER</a> project 
@@ -2043,12 +2260,12 @@ var mitLocalAdj = mitLocal
 
 <br>
 <p>
-<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<button type="button" class="btn btn-default btn-changelogs btn-changelogs-sessioninfo" data-toggle="collapse" data-target="#changelogs-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
 Session information
 </button>
 </p>
-<div id="workflowr-sessioninfo" class="collapse">
+<div id="changelogs-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.4.0 (2024-04-24 ucrt)
 Platform: x86_64-w64-mingw32/x64
@@ -2069,7 +2286,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] terra_1.8-5     sf_1.0-19       workflowr_1.7.1
+[1] terra_1.8-5     sf_1.0-19       changelogs_1.7.1
 
 loaded via a namespace (and not attached):
  [1] jsonlite_1.8.8     compiler_4.4.0     promises_1.3.0     Rcpp_1.0.13       
