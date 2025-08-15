@@ -1716,7 +1716,30 @@ var burnBinary = burned.selfMask();
       Intuition: a place is high priority if the hazard is strong <em>and</em> the current capacity to
       mitigate it is weak (i.e., there’s a big “gap”).
     </small>
-  </div>
+    <hr>
+    <p><strong>Hotspot</strong> → Spatial overlap of <em>high ecosystem service supply</em> and <em>high hazard risk</em>. 
+    In this workflow: <code>ESS_mask AND Hazard_mask</code>. It’s a diagnostic layer showing where opportunities exist, without yet ranking or filtering for feasibility.</p>
+
+    <p><strong>Priority</strong> → A subset of hotspots where the calculated score meets the decision cut-off. 
+    Spatially, this is: <code>Hotspot_mask AND (Priority_score ≥ threshold)</code>. 
+    A pixel might be a hotspot but not a priority if:
+      <ul>
+        <li>Hazard intensity is below the threshold.</li>
+        <li>Mitigation capacity is already high (so the “gap” is small).</li>
+        <li>Weighted score is below the applied cut-off.</li>
+      </ul>
+    </p>
+
+    <p><strong>Protect / Enhance</strong> → High ESS areas with low hazard risk. Spatially: <code>ESS_mask AND NOT(Hazard_mask)</code>. 
+    These are not urgent NbS intervention sites for hazard reduction but should be maintained or enhanced to sustain ecosystem function.</p>
+
+    <div style="border-left:4px solid #e67e22; background:#fff5eb; padding:0.8em 1em; margin:0.8em 0;">
+      <em>Note:</em> This method is purely spatial. In reality, deciding where to implement NbS also depends on non-spatial factors 
+      such as community acceptance, land tenure, policy context, governance capacity, technical feasibility, and budget constraints. 
+      These must be considered before moving from maps to action.
+    </div>
+</div>
+
 
   <details>
     <summary><strong>Key terms</strong> (click to expand)</summary>
@@ -1801,7 +1824,7 @@ var burnBinary = burned.selfMask();
     </ul>
   </details>
 
-  <h3>Code — run end-to-end (unchanged from your script)</h3>
+  
   <pre><code>// ======================================================
 // NBS HOTSPOT PRIORITIZATION — DISTINCT BY HAZARD
 // Hazards: Flood (GFD) and Fire (MODIS MCD64A1)
