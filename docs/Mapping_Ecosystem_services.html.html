@@ -2050,7 +2050,7 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
     </ul>
   </details>
 
-  <h3>6A. Export per-hazard priority, hotspots, and protect/enhance</h3>
+  <h3>6a. Export per-hazard priority, hotspots, and protect/enhance</h3>
   <p>
     Exports are useful for dashboards, GIS sharing, or further modelling. Use <code>Export.image.toDrive</code>
     for rasters; <code>Export.table.toDrive</code> for zonal summaries. Set a consistent CRS, scale, and region.
@@ -2107,7 +2107,7 @@ Export.table.toDrive({
 });
 </code></pre>
 
-  <h3>6B. Build a Multi-Hazard NbS Index (weights & optional confidence)</h3>
+  <h3>6b. Build a Multi-Hazard NbS Index (weights & optional confidence)</h3>
   <p>
     Many planners prefer a single combined surface for screening. We build an index as a weighted sum of
     per-hazard priorities. Weights (<code>wFlood</code>, <code>wFire</code>) should sum to 1 (or we normalize them).
@@ -2162,7 +2162,7 @@ Export.image.toDrive({
     <a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">IPCC</a>-style confidence framing.
   </div>
 
-  <h3>6C. Knobs & Tweaks (what you can tune safely)</h3>
+  <h3>6c. Knobs & Tweaks (what you can tune safely)</h3>
   <ul>
     <li><strong>Percentiles:</strong> p<sub>95</sub> (scaling), p<sub>60</sub>/p<sub>80</sub> (hotspots), p<sub>70</sub> (protect). 
       Use <a href="#step-5-nbs-hotspots">positive-only percentiles</a> to keep thresholds adaptive and reproducible.</li>
@@ -2173,7 +2173,7 @@ Export.image.toDrive({
     <li><strong>Masks:</strong> Excluding permanent water from floods (JRC) avoids misclassifying rivers/lakes as “flood hazard.” Adjust masks to your context.</li>
   </ul>
 
-  <h3>6D. Integrating Local Data (LULC, hazards, ESS)</h3>
+  <h3>6d. Integrating Local Data (LULC, hazards, ESS)</h3>
   <p>
     You can plug in local datasets seamlessly. Two common cases:
   </p>
@@ -2229,7 +2229,7 @@ var mitLocalAdj = mitLocal
     thresholds on the local distributions (don’t reuse thresholds calibrated for other regions).
   </div>
 
-  <h3>6E. Summary</h3>
+  <h3>6e. Summary</h3>
   <p>
     We’ve taken you from <em>proxy-and-spatially-enriched mitigation layers</em> to <em>hazard-aware NbS prioritization</em>,
     then exported per-hazard priorities, hotspots, and a <strong>combined multi-hazard index</strong> suitable for decision
