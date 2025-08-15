@@ -920,55 +920,68 @@ Map.centerObject(cantabria, 10);</code></pre>
   </p>
 </section>
 
-</body>
-</html>
 
 <!-- ===================== NEXT: LULC → ESS RELATIONAL TABLE ===================== -->
+<!-- ===================== STEP 2 — LULC ↔ ESS RELATIONAL TABLE + OUTPUT INTERPRETATION ===================== -->
 <section id="step-2-relational-table">
-  <h2>Step 2 — Build the LULC ↔ ESS Relational Table (Concept → Implementation)</h2>
+  <h1>Step 2 — Build the LULC ↔ ESS Relational Table & Understand Key Outputs</h1>
+
   <p>
-    Now that we have the boundary, we’ll assemble a relational table that links each land-cover
-    class (e.g., CORINE codes) to one or more ecosystem services (ESS), plus a <em>score</em> that reflects
-    its potential to <strong>mitigate specific hazards</strong> (e.g., flood attenuation, erosion control, urban heat).
-    This is the core of the widely used “matrix” approach
-    (<a href="https://landscape-online.org/index.php/lo/article/view/LO.200915" target="_blank">Burkhard et&nbsp;al., 2009</a>).
+    At the heart of NbS spatial planning is a <em>relational table</em> linking 
+    <a href="https://land.copernicus.eu/en/products/corine-land-cover" target="_blank">land-cover (CORINE) codes</a> 
+    to <a href="https://www.cices.eu/" target="_blank">ecosystem services (ESS)</a>, each scored for its potential to 
+    <strong>mitigate specific hazards</strong> such as floods, erosion, or heat. 
+    This is the widely used <a href="https://landscape-online.org/index.php/lo/article/view/LO.200915" target="_blank">matrix approach</a>
+    (Burkhard et&nbsp;al., 2009), where land-use classes are mapped to ESS with a score representing their functional capacity.
   </p>
 
   <h3>Design principles (keep it defensible)</h3>
   <ul>
-    <li><strong>Transparency:</strong> Store the mapping as a table (JSON/CSV/FeatureCollection) with comments and sources.</li>
-    <li><strong>Consistency:</strong> Use the official CLC codes and names (see <a href="https://land.copernicus.eu/en/products/corine-land-cover" target="_blank">CORINE docs</a>).</li>
-    <li><strong>Expert-informed:</strong> Begin with literature-based default scores; annotate where expert judgement adjusts them
-      (e.g., local wetlands performing better than average for <a href="https://www.cices.eu/" target="_blank">CICES</a> regulating services).</li>
-    <li><strong>Hazard-aware:</strong> For each ESS, specify which hazard(s) it relates to (e.g., “Hydrological flow regulation → flood”).</li>
+    <li><strong>Transparency:</strong> Store the mapping as a table (JSON/CSV/FeatureCollection) with comments and literature sources.</li>
+    <li><strong>Consistency:</strong> Use official CLC codes and names (<a href="https://land.copernicus.eu/en/products/corine-land-cover" target="_blank">CORINE docs</a>).</li>
+    <li><strong>Expert-informed:</strong> Base scores on literature; note where expert knowledge adjusts them (e.g., local wetlands outperforming the average).</li>
+    <li><strong>Hazard-aware:</strong> Explicitly link each ESS to relevant hazards (e.g., “Hydrological flow regulation → flood”).</li>
   </ul>
 
   <p>
-    In the next block (when you share your code), we’ll implement this table in Earth Engine,
-    show how to <code>.remap()</code> CORINE rasters to per-ESS “potential” layers,
-    and prepare for hazard overlays. We’ll also provide an <em>optional</em> probability band per ESS to
-    reflect uncertainty (following the idea of confidence/likelihood classes in
-    <a href="https://doi.org/10.1016/j.ecolind.2011.06.022" target="_blank">Nedkov &amp; Burkhard, 2012</a>).
+    We use a <strong>0–1</strong> scale (0 = no potential, 1 = very high potential) for scoring to ensure clarity and 
+    compatibility with later weighting and combination steps. Each ESS will form a separate raster band representing 
+    its spatial distribution of potential.
   </p>
 
   <div style="border-left:4px solid #3498db; padding:0.8em 1em; background:#eaf4fb; margin-top:0.8em;">
-    <strong>Preview:</strong> We will (a) load CORINE, (b) map codes → ESS scores (0–5 or 0–100),
-    (c) create one band per ESS (intensity or potential), and (d) export or visualize layers with legends.
-    Later, we’ll intersect these with hazard layers to identify <em>NbS opportunity hotspots</em>.
+    <strong>Workflow preview:</strong> (a) Load CORINE; (b) Map codes → ESS scores (0–1 scale); 
+    (c) Create one band per ESS; (d) Export/visualize layers; (e) Overlay with hazard layers 
+    to identify <em>NbS opportunity hotspots</em>.
+  </div>
+
+  <h3>Interpreting the outputs</h3>
+  <div style="border-left:4px solid #2980b9; background:#eef6ff; padding:0.8em 1em; margin:0.8em 0;">
+    <p><strong>Hotspot</strong> → Spatial overlap of <em>high ESS</em> and <em>high hazard risk</em>. 
+      In our workflow: <code>ESS_mask AND Hazard_mask</code>. 
+      This is a diagnostic layer showing where the opportunity/problem exists — it’s always computed first.
+    </p>
+
+    <p><strong>Priority</strong> → Hotspots ranked using the formula 
+      <code>Hazard_Intensity × (1 − Mitigation_Capacity)</code>. 
+      A pixel may be a hotspot but <em>not</em> a priority if hazard intensity is below the threshold, 
+      mitigation capacity is already high, or the weighted score falls below the cut-off.  
+      Every priority area is a hotspot, but not every hotspot will be a priority.
+    </p>
+
+    <p><strong>Protect / Enhance</strong> → High ESS areas with <em>low hazard risk</em> 
+      (<code>ESS_mask AND NOT(Hazard_mask)</code>). These areas are important for maintaining 
+      ecosystem services even if immediate hazard mitigation is not required.
+    </p>
+  </div>
+
+  <div style="border-left:4px solid #e67e22; background:#fff5eb; padding:0.8em 1em; margin:0.8em 0;">
+    <em>Important:</em> This workflow is purely spatial. In reality, NbS siting also depends on non-spatial factors such as 
+    governance capacity, land tenure, legal constraints, financing, technical feasibility, and community acceptance. 
+    These must be considered before moving from maps to on-the-ground implementation.
   </div>
 </section>
 
-<!-- ===================== STEP 2 · LULC ↔ ESS RELATIONAL TABLE (0–1 SCALE) ===================== -->
-<section id="step-2-relational-table-impl">
-  <h2>Step 2 — Build the LULC ↔ ESS Relational Table (From Concept to Code, 0–1 Scale)</h2>
-
-  <p>
-    The heart of the matrix approach is a <em>relational table</em> that links
-    <a href="https://land.copernicus.eu/en/products/corine-land-cover" target="_blank">land-cover (CORINE) codes</a>
-    to <a href="https://www.cices.eu/" target="_blank">ecosystem services (ESS)</a> or hazard-mitigation potentials using a numeric score.
-    We use a <strong>0–1</strong> scale (0 = no potential, 1 = very high potential) to keep values interpretable and ready for
-    normalization/weighting later.
-  </p>
 
   <div style="border-left:4px solid #95a5a6; padding:0.8em 1em; background:#f4f6f7; margin:0.8em 0;">
     <strong>Common practice vs. best practice:</strong><br>
