@@ -1256,7 +1256,7 @@ function elevWeight(hazard) {
 
   <h3 id="step-3b-adjustments">3b. Apply combined adjustments (multiplicative, intuitive)</h3>
   <p>
-    We start from your 0–1 <em>base</em> layers and apply: (i) a slope factor, (ii) an aspect factor (where relevant),
+    We start from the 0–1 <em>base</em> layers and apply: (i) a slope factor, (ii) an aspect factor (where relevant),
     and (iii) the elevation-zone weight. Factors are gentle (±5–50%) to avoid overpowering the base LULC signal.
     Finally, we <code>clamp</code> to a reasonable upper bound (e.g., 1.5).
   </p>
@@ -1344,13 +1344,6 @@ Map.addLayer(erosionAdj, {min:0, max:1.5, palette: twoTone}, 'Erosion Mitigation
     <strong>Best practice:</strong> Keep a small table next to your code documenting each factor and its rationale
     (with citations, e.g., <a href="https://doi.org/10.1111/j.1365-2664.2010.01777.x" target="_blank">Eigenbrod&nbsp;2010a</a>).
     This makes adjustments auditable and easier to tune with stakeholders.
-  </div>
-
-  <div style="border-left:4px solid #3498db; padding:0.8em 1em; background:#eaf4fb; margin-top:0.8em;">
-    <strong>Next:</strong> We’ll (a) add an optional <em>confidence band</em> per hazard (e.g., 0.33/0.67/1.0),
-    (b) show a CSV/asset-driven way to manage the score tables, and (c) intersect adjusted mitigation with
-    actual hazard layers (e.g., flood extent/depth, heat anomalies, erosion susceptibility)
-    to reveal <em>NbS opportunity hotspots</em>.
   </div>
 
   <details>
