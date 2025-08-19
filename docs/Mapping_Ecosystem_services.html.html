@@ -464,9 +464,6 @@ div.tocify {
 
     <!-- Past versions -->
     <div id="versions" class="tab-pane fade">
-      <p>Previous versions of the analysis
-        (<code>analysis/Mapping_Ecosystem_services.Rmd</code>) and HTML
-        (<code>docs/Mapping_Ecosystem_services.html</code>).</p>
 
       <div class="table-responsive">
         <table class="table table-condensed table-hover">
@@ -583,11 +580,11 @@ div.tocify {
 
   <p>
     This guideline is based on the <a href="https://www.nbracer.eu/" target="_blank">NBRACER</a> project 
-    <strong>Deliverable 5.3</strong> — <em>Quantification of Ecosystems and NbS Hotspot Identification</em>.  
+    <strong>Deliverable 5.3</strong> - <em>Quantification of Ecosystems and NbS Hotspot Identification</em>.  
     The deliverable adopted two complementary approaches:  
     <ul>
-      <li><strong>Coarser roadmap</strong> — qualitative, using open-source spatial datasets and replicable mapping techniques.</li>
-      <li><strong>Finer roadmap</strong> — quantitative, using context-specific datasets and models.</li>
+      <li><strong>Coarser roadmap</strong> - qualitative, using open-source spatial datasets and replicable mapping techniques.</li>
+      <li><strong>Finer roadmap</strong> - quantitative, using context-specific datasets and models.</li>
     </ul>
     This tutorial focuses on the <strong>coarser roadmap</strong> approach, designed for practitioners and researchers who wish to identify Boidiversity and Ecosystem services to identify potential hotspot for NbS.  
     For a full understanding of the conceptual development behind both approaches, see the 
@@ -711,7 +708,7 @@ div.tocify {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Step 1 — Define the Study Area (Administrative Boundaries)</title>
+  <title>Step 1 - Define the Study Area (Administrative Boundaries)</title>
   <script src="https://www.gstatic.com/earthengine/client_api.js"></script>
   <script src="https://apis.google.com/js/api.js"></script>
   <style>
@@ -725,9 +722,9 @@ div.tocify {
 <body>
 
 <section id="step-1-study-area">
-  <h1>Step 1 — Define the Study Area (Administrative Boundaries)</h1>
+  <h1>Step 1 - Define the Study Area (Administrative Boundaries)</h1>
   <p>
-    Before mapping ecosystem services (ESS), we need a <em>study area</em>—the geographic extent where
+    Before mapping ecosystem services (ESS), we need a <em>study area</em>-the geographic extent where
     our calculations run and our maps render. In GIS terms, this is just a polygon (or set of polygons).
     We’ll show two common routes:
   </p>
@@ -741,14 +738,14 @@ div.tocify {
     ESS scoring and any later hazard–mitigation overlays must be computed over a consistent footprint.
     Keeping a well-defined boundary helps with reproducibility, performance, and interpretation
     (e.g., comparing results across regions). If you’re new to Earth Engine, a <a href="https://developers.google.com/earth-engine/guides/feature_collections" target="_blank">FeatureCollection</a>
-    is simply a set of vector features (points/lines/polygons) with attributes—perfect for holding
+    is simply a set of vector features (points/lines/polygons) with attributes-perfect for holding
     country/region boundaries.
   </p>
 
   <h3>Data we’ll use</h3>
   <ul>
     <li><a href="https://www.geoboundaries.org/" target="_blank">geoBoundaries</a> (via a public Earth Engine mirror) for ADM0/ADM1/ADM2 levels.</li>
-    <li>Your own uploaded boundary (optional)—useful if you have official planning units or study zones.</li>
+    <li>Your own uploaded boundary (optional)-useful if you have official planning units or study zones.</li>
   </ul>
 
   <details>
@@ -757,7 +754,7 @@ div.tocify {
       <li><strong>ADM0/ADM1/ADM2</strong>: Administrative levels (country / first-level regions / second-level districts).</li>
       <li><strong>FeatureCollection</strong>: A table of vector features with geometry and properties in Earth Engine.</li>
       <li><code><a href="https://developers.google.com/earth-engine/apidocs/ee-filter-eq" target="_blank">ee.Filter.eq</a></code>: Builds an equality filter for attribute queries.</li>
-      <li><code><a href="https://developers.google.com/earth-engine/apidocs/ee-featurecollection-filterbounds" target="_blank">filterBounds()</a></code>: Spatial filter—keeps features that intersect a geometry.</li>
+      <li><code><a href="https://developers.google.com/earth-engine/apidocs/ee-featurecollection-filterbounds" target="_blank">filterBounds()</a></code>: Spatial filter-keeps features that intersect a geometry.</li>
       <li><code><a href="https://developers.google.com/earth-engine/apidocs/ui-map-centerobject" target="_blank">Map.centerObject()</a></code>: Recenters the map on a given geometry.</li>
     </ul>
   </details>
@@ -811,7 +808,7 @@ Map.addLayer(cantabria, {color: 'blue'}, 'Cantabria (asset)', false);
 Map.centerObject(cantabria, 10);</code></pre>
 
   <div style="border-left:4px solid #2ecc71; padding:0.8em 1em; background:#ecf9f1; margin-top:1em;">
-    <strong>Tip — Names vs. Codes:</strong> Attribute names (e.g., <code>shapeName</code>) can vary by dataset.
+    <strong>Tip - Names vs. Codes:</strong> Attribute names (e.g., <code>shapeName</code>) can vary by dataset.
     Use the Code Editor’s <em>Inspector</em> to click a feature and confirm property keys before filtering.
   </div>
 
@@ -823,8 +820,8 @@ Map.centerObject(cantabria, 10);</code></pre>
 
   <h3>How this connects to ESS mapping</h3>
   <p>
-    With the study area fixed, every subsequent step—linking land cover to ESS scores, raster
-    reclassification, uncertainty bands, and hazard overlays—will be <em>clipped and summarized</em> against
+    With the study area fixed, every subsequent step-linking land cover to ESS scores, raster
+    reclassification, uncertainty bands, and hazard overlays-will be <em>clipped and summarized</em> against
     this boundary. That ensures your ESS intensity maps and your future NbS hotspot analysis remain
     spatially consistent and comparable across regions.
   </p>
@@ -832,9 +829,9 @@ Map.centerObject(cantabria, 10);</code></pre>
 
 
 <!-- ===================== NEXT: LULC → ESS RELATIONAL TABLE ===================== -->
-<!-- ===================== STEP 2 — LULC ↔ ESS RELATIONAL TABLE + OUTPUT INTERPRETATION ===================== -->
+<!-- ===================== STEP 2 - LULC ↔ ESS RELATIONAL TABLE + OUTPUT INTERPRETATION ===================== -->
 <section id="step-2-relational-table">
-  <h1>Step 2 — Build the Relational Table - from concept to implementation</h1>
+  <h1>Step 2 - Build the Relational Table - from concept to implementation</h1>
 
   <p>
     At the heart of NbS spatial planning is a <em>relational table</em> linking 
@@ -887,7 +884,7 @@ Map.centerObject(cantabria, 10);</code></pre>
 
   <h3 id="step-2b-load-corine">2b. Load CORINE and clip to the study area</h3>
   <pre><code>// =========================================
-// CORINE Land Cover 2018 (100 m) — clip to your boundary
+// CORINE Land Cover 2018 (100 m) - clip to your boundary
 // Docs: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_CORINE_V20_100m_2018
 // =========================================
 var corine = ee.Image('COPERNICUS/CORINE/V20/100m/2018').select('landcover').clip(cantabria);
@@ -907,83 +904,83 @@ Map.addLayer(corine, {}, 'CORINE 2018 (raw)', false);
 // FLOOD mitigation (0–1)
 // =========================================
 var floodMitigationScore = {
-  411: 0.95, // Inland marshes — storage, roughness, attenuation
-  412: 0.95, // Peatbogs — high retention
+  411: 0.95, // Inland marshes - storage, roughness, attenuation
+  412: 0.95, // Peatbogs - high retention
   421: 0.75, // Salt marshes
-  311: 0.75, // Broad-leaved forest — canopy, infiltration
+  311: 0.75, // Broad-leaved forest - canopy, infiltration
   312: 0.60, // Coniferous forest
-  213: 0.40, // Rice fields — temporary water retention
-  244: 0.60, // Agroforestry — perennial cover increases infiltration
-  321: 0.60, // Natural grasslands — surface roughness
-  323: 0.75, // Sclerophyllous vegetation — structure, soils
-  324: 0.40, // Transitional woodland/shrub — mixed, variable
-  523: 0.90, // Estuaries — storage/expansion areas
+  213: 0.40, // Rice fields - temporary water retention
+  244: 0.60, // Agroforestry - perennial cover increases infiltration
+  321: 0.60, // Natural grasslands - surface roughness
+  323: 0.75, // Sclerophyllous vegetation - structure, soils
+  324: 0.40, // Transitional woodland/shrub - mixed, variable
+  523: 0.90, // Estuaries - storage/expansion areas
   521: 0.75, // Coastal lagoons
-  511: 0.40, // Water courses — conveyance; limited attenuation on-channel
-  141: 0.20, // Green urban areas — local infiltration/cooling
-  112: 0.10  // Discontinuous urban fabric — some permeable fraction
+  511: 0.40, // Water courses - conveyance; limited attenuation on-channel
+  141: 0.20, // Green urban areas - local infiltration/cooling
+  112: 0.10  // Discontinuous urban fabric - some permeable fraction
 };
 
 // =========================================
 // FIRE mitigation (0–1)
 // =========================================
 var fireMitigationScore = {
-  231: 0.40, // Pastures — lower fuel continuity vs dense forest
-  241: 0.30, // Annual crops — seasonal moisture
-  243: 0.40, // Mosaic vegetation — breaks continuity
-  311: 0.20, // Broad-leaved forest — can carry fire under drought
-  322: 0.50, // Heathland — mixed; can reduce spread with mosaics
+  231: 0.40, // Pastures - lower fuel continuity vs dense forest
+  241: 0.30, // Annual crops - seasonal moisture
+  243: 0.40, // Mosaic vegetation - breaks continuity
+  311: 0.20, // Broad-leaved forest - can carry fire under drought
+  322: 0.50, // Heathland - mixed; can reduce spread with mosaics
   324: 0.30, // Transitional woodland/shrub
-  411: 0.80, // Inland marshes — high moisture
-  512: 0.90, // Lakes — strong barrier
-  141: 0.30, // Green urban areas — breaks, irrigated
-  112: 0.20  // Discontinuous urban — mixed materials
+  411: 0.80, // Inland marshes - high moisture
+  512: 0.90, // Lakes - strong barrier
+  141: 0.30, // Green urban areas - breaks, irrigated
+  112: 0.20  // Discontinuous urban - mixed materials
 };
 
 // =========================================
 // DROUGHT mitigation (0–1)
 // =========================================
 var droughtMitigationScore = {
-  411: 0.95, // Marshes — buffering water availability
-  412: 0.95, // Peat bogs — storage
-  311: 0.80, // Broad-leaved forest — rooting depth/ET shading
+  411: 0.95, // Marshes - buffering water availability
+  412: 0.95, // Peat bogs - storage
+  311: 0.80, // Broad-leaved forest - rooting depth/ET shading
   312: 0.70, // Coniferous forest
   321: 0.60, // Natural grasslands
   241: 0.75, // Agroforestry / perennial systems
-  211: 0.20, // Arable land — exposure/high demand
-  142: 0.05, // Sports/leisure — manicured turf, water demand
-  521: 0.70  // Coastal lagoons — local buffering
+  211: 0.20, // Arable land - exposure/high demand
+  142: 0.05, // Sports/leisure - manicured turf, water demand
+  521: 0.70  // Coastal lagoons - local buffering
 };
 
 // =========================================
 // HEAT WAVE mitigation (0–1)
 // =========================================
 var heatWaveMitigationScore = {
-  311: 0.90, // Broad-leaved forest — canopy cooling
+  311: 0.90, // Broad-leaved forest - canopy cooling
   312: 0.80, // Coniferous forest
   313: 0.85, // Mixed forest
-  141: 0.60, // Green urban areas — shading/ET
+  141: 0.60, // Green urban areas - shading/ET
   142: 0.50, // Sports/leisure
-  112: 0.30, // Discontinuous urban fabric — partial greening
+  112: 0.30, // Discontinuous urban fabric - partial greening
   243: 0.40, // Mosaic vegetation
   321: 0.65, // Natural grasslands
   324: 0.50, // Transitional woodland/shrub
   322: 0.40, // Heathland
-  512: 0.80, // Lakes — evap cooling
-  411: 0.70  // Inland marshes — ET cooling
+  512: 0.80, // Lakes - evap cooling
+  411: 0.70  // Inland marshes - ET cooling
 };
 
 // =========================================
 // EROSION mitigation (0–1)
 // =========================================
 var erosionMitigationScore = {
-  244: 0.60, // Agroforestry — root systems, cover
-  321: 0.60, // Natural grasslands — continuous cover
-  323: 0.75, // Sclerophyllous — deep roots, structure
+  244: 0.60, // Agroforestry - root systems, cover
+  321: 0.60, // Natural grasslands - continuous cover
+  323: 0.75, // Sclerophyllous - deep roots, structure
   324: 0.40, // Transitional woodland/shrub
-  211: 0.20, // Arable land — exposed soil
-  243: 0.50, // Mosaic crops/natural — patchiness reduces runoff
-  222: 0.25, // Permanently irrigated — management-dependent
+  211: 0.20, // Arable land - exposed soil
+  243: 0.50, // Mosaic crops/natural - patchiness reduces runoff
+  222: 0.25, // Permanently irrigated - management-dependent
   231: 0.30, // Pastures
   312: 0.50, // Coniferous forest
   311: 0.60, // Broad-leaved forest
@@ -1038,13 +1035,13 @@ Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation �
 
   <h4 id="step-2f-interpret">2f. Interpreting 0–1 scores</h4>
   <p>
-    Values are <em>relative potentials</em> inferred from land cover — not measured service flows. Use them for screening
+    Values are <em>relative potentials</em> inferred from land cover - not measured service flows. Use them for screening
     (e.g., locating <a href="https://doi.org/10.1038/s41467-018-03083-1" target="_blank">NbS</a> opportunities) and comparative analysis.
     Where decisions carry high stakes, combine with process-based or empirical checks (e.g., hydrologic models, local monitoring).
   </p>
 
   <div style="border-left:4px solid #2ecc71; padding:0.8em 1em; background:#ecf9f1; margin-top:0.8em;">
-    <strong>Tip — Sensitivity testing:</strong> try ±0.1 on key classes (e.g., 411/412/311) and inspect how hotspot patterns shift.
+    <strong>Tip - Sensitivity testing:</strong> try ±0.1 on key classes (e.g., 411/412/311) and inspect how hotspot patterns shift.
     This informs how robust your prioritization is to expert judgement.
   </div>
 
@@ -1067,7 +1064,7 @@ Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation �
 
 <!-- ===================== STEP 3 · SPATIAL MODIFIERS (TOPOGRAPHY-AWARE SCORING) ===================== -->
 <section id="step-3-spatial-modifiers">
-  <h1>Step 3 — Enrich the Matrix with Spatial Modifiers (Elevation · Slope · Aspect)</h1>
+  <h1>Step 3 - Enrich the Matrix with Spatial Modifiers (Elevation · Slope · Aspect)</h1>
 
   <p>
     Assigning 0–1 scores with expert judgement already yields a useful <em>relative</em> map of ESS potential or habitat ranking.
@@ -1250,7 +1247,7 @@ Map.addLayer(erosionAdj, {min:0, max:1.5, palette: twoTone}, 'Erosion Mitigation
 
 <!-- ===================== STEP 4 · EXPORTS & SUMMARY STATISTICS ===================== -->
 <section id="step-4-exports-stats">
-  <h1>Step 4 — Export Results & Compute Summary Statistics</h1>
+  <h1>Step 4 - Export Results & Compute Summary Statistics</h1>
 
   <p>
     Now that we have <em>adjusted mitigation layers</em> (0–1, optionally up to 1.5 after modifiers),
@@ -1271,7 +1268,7 @@ Map.addLayer(erosionAdj, {min:0, max:1.5, palette: twoTone}, 'Erosion Mitigation
     <p>
       It’s the <em>mean of mitigation scores</em> across pixels that have any mitigation signal (&gt;0),
       expressed as a percentage. Concretely, we sum pixel scores (0–1), divide by the count of pixels
-      with score &gt; 0, and multiply by 100. This is NOT a land area percentage of a strict class—
+      with score &gt; 0, and multiply by 100. This is NOT a land area percentage of a strict class-
       rather, it’s a normalized measure of how much of the “maximum possible” mitigation is realized
       across the pixels that contribute at all. If you instead want <em>area above threshold</em>
       (e.g., % of pixels with score ≥ 0.7), we show how to modify the reducer in a note below.
@@ -1473,7 +1470,7 @@ Export.image.toDrive({
 </head>
 <body> -->
 
-<h1> Step 5 — NbS Hotspot Identification</h1>
+<h1> Step 5 - NbS Hotspot Identification</h1>
 
 <div class="theory">
   <p>
@@ -1564,7 +1561,7 @@ var burnBinary = burned.selfMask();
     <li><strong>Masking:</strong> <code>selfMask()</code> removes non-hazard pixels, leaving a clean binary raster for spatial intersection with ESS layers.</li>
     <li><strong>Temporal Aggregation:</strong> Summing 'flooded' or 'BurnDate' across years reveals multi-year hazard footprints, useful for identifying recurrently affected zones.</li>
     <li><strong>Permanent Water Removal:</strong> Permanent water bodies are excluded so that hazard overlays capture only temporary inundation or burn areas.</li>
-    <li><strong>Binary Hazard Masks:</strong> These enable precise <em>spatial intersection analysis</em> with ESS maps—counting pixels of each ESS class that fall within hazard zones.</li>
+    <li><strong>Binary Hazard Masks:</strong> These enable precise <em>spatial intersection analysis</em> with ESS maps-counting pixels of each ESS class that fall within hazard zones.</li>
   </ul>
 </div>
 
@@ -1636,7 +1633,7 @@ var burnBinary = burned.selfMask();
       <li><strong>Mitigation capacity</strong>: our 0–1 scaled layer derived from LULC and spatial modifiers (forests, wetlands, etc.).</li>
       <li><strong>Gap</strong>: <code>1 − mitigation</code>. A value near 1 means low capacity (large deficit); near 0 means high capacity.</li>
       <li><strong>Hotspot</strong>: the top fraction (percentile) of priority scores for a hazard.</li>
-      <li><strong>Protect/Enhance</strong>: places with <em>both</em> high hazard and high capacity — keep and strengthen.</li>
+      <li><strong>Protect/Enhance</strong>: places with <em>both</em> high hazard and high capacity - keep and strengthen.</li>
     </ul>
   </details>
 
@@ -1679,8 +1676,8 @@ var burnBinary = burned.selfMask();
   <div style="border-left:4px solid #f39c12; background:#fff6e6; padding:0.8em 1em;">
     <strong>Interpretation tips:</strong>
     <ul style="margin: 0.3em 0 0 1em;">
-      <li>A pixel with <code>gap ≈ 1</code> has little capacity — a prime candidate for NbS if hazard is high.</li>
-      <li>A pixel with <code>gap ≈ 0</code> already has high capacity — more a <em>protect/enhance</em> case.</li>
+      <li>A pixel with <code>gap ≈ 1</code> has little capacity - a prime candidate for NbS if hazard is high.</li>
+      <li>A pixel with <code>gap ≈ 0</code> already has high capacity - more a <em>protect/enhance</em> case.</li>
     </ul>
   </div>
 
@@ -1700,7 +1697,7 @@ var burnBinary = burned.selfMask();
   <h3>5.7 Identify protect/enhance zones</h3>
   <p>
     We also tag areas with <em>high hazard</em> and <em>high mitigation</em> (both above adaptive thresholds). These are places
-    where ecosystems are already doing useful work under stress — high-value targets for protection or gentle enhancement.
+    where ecosystems are already doing useful work under stress - high-value targets for protection or gentle enhancement.
   </p>
 
   <details>
@@ -1714,14 +1711,14 @@ var burnBinary = burned.selfMask();
 
   
   <pre><code>// ======================================================
-// NBS HOTSPOT PRIORITIZATION — DISTINCT BY HAZARD
+// NBS HOTSPOT PRIORITIZATION - DISTINCT BY HAZARD
 // Hazards: Flood (GFD) and Fire (MODIS MCD64A1)
 // Capacity: your floodAdj & fireAdj mitigation layers (0..~1.5)
 // Logic per hazard: Priority = Hazard_Intensity × (1 − Mitigation_Capacity)
 // ======================================================
 
 // ======================================================
-// NBS HOTSPOT PRIORITIZATION — DISTINCT BY HAZARD (with prints)
+// NBS HOTSPOT PRIORITIZATION - DISTINCT BY HAZARD (with prints)
 // ======================================================
 
 // Base map + boundary
@@ -1871,7 +1868,7 @@ Map.addLayer(hill.blend(prioFlood.visualize({min:0, max:1, palette: prioPal, opa
 Map.addLayer(hill.blend(prioFire.visualize({min:0, max:1, palette: prioPal, opacity:0.95})),
              {}, 'STEP 5b · NbS Priority (FIRE)');
 
-// --------------- STEP 6. HOTSPOTS per hazard (top 20%) — positive-only percentiles ---------------
+// --------------- STEP 6. HOTSPOTS per hazard (top 20%) - positive-only percentiles ---------------
 var thFlood = posPctlThreshold(prioFlood, 60, cantabria.geometry(), 100, 0.2);
 var thFire  = posPctlThreshold(prioFire,  80, cantabria.geometry(), 100, 0.2);
 print('STEP 6 (fixed) · Hotspot thresholds (p80 on pos-only) → Flood:', thFlood, 'Fire:', thFire);
@@ -1884,7 +1881,7 @@ Map.addLayer(hotspotFlood.visualize({palette:['#ff0000'], opacity:0.65}).clip(ca
 Map.addLayer(hotspotFire.visualize({palette:['#ff7f00'], opacity:0.65}).clip(cantabria),
              {}, 'STEP 6b · HOTSPOT (FIRE)');
 
-// --------------- STEP 7. PROTECT / ENHANCE zones — adaptive (percentiles) ---------------
+// --------------- STEP 7. PROTECT / ENHANCE zones - adaptive (percentiles) ---------------
 var hzFloodP70  = posPercentile(floodHaz, 55, cantabria.geometry(), 250, 0.6);
 var mitFloodP70 = posPercentile(floodMit, 55, cantabria.geometry(), 100, 0.6);
 var hzFireP70   = posPercentile(fireHaz,  70, cantabria.geometry(), 500, 0.6);
@@ -1902,7 +1899,7 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
 </code></pre>
 
   <div style="border-left:4px solid #27ae60; background:#ecf9f1; padding:0.8em 1em; margin-top:0.8em;">
-    <strong>Normally vs. best practice</strong> —
+    <strong>Normally vs. best practice</strong> -
     normally people scale hazards by <code>max()</code> and pick a fixed threshold (e.g., &ge; 0.7) for hotspots.
     That works but is sensitive to outliers and regional differences. We use <em>positive-only percentiles</em>
     for scaling and thresholding so the method adapts to each study area’s distribution and remains reproducible.
@@ -1920,7 +1917,7 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
 <div style="border-left:4px solid #2980b9; background:#eef6ff; padding:0.8em 1em; margin:0.8em 0;">
   <p><strong>Hotspot</strong> → Spatial overlap of <em>high ESS</em> and <em>high hazard risk</em>. 
     In our workflow: <code>ESS_mask AND Hazard_mask</code>. 
-    This is a diagnostic layer showing where the opportunity/problem exists — it’s always computed first.
+    This is a diagnostic layer showing where the opportunity/problem exists - it’s always computed first.
   </p>
 
   <p><strong>Priority</strong> → Hotspots ranked using the formula 
@@ -1944,7 +1941,7 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
 
 <!-- ===================== STEP 6 · EXPORTS, MULTI-HAZARD INDEX & LOCAL DATA INTEGRATION ===================== -->
 <section id="step-6-exports-multihazard-local">
-  <h1>Step 6 — Exports, Multi-Hazard NbS Index & Integrating Local Data</h1>
+  <h1>Step 6 - Exports, Multi-Hazard NbS Index & Integrating Local Data</h1>
 
   <p>
     You now have per-hazard <em>priority</em> rasters (<code>prio_flood</code>, <code>prio_fire</code>) and
@@ -2080,7 +2077,7 @@ Export.image.toDrive({
     <li><strong>Percentiles:</strong> p<sub>95</sub> (scaling), p<sub>60</sub>/p<sub>80</sub> (hotspots), p<sub>70</sub> (protect). 
       Use <a href="#step-5-nbs-hotspots">positive-only percentiles</a> to keep thresholds adaptive and reproducible.</li>
     <li><strong>Normalization caps:</strong> If your mitigation adj layers top at ~1.3 (not 1.5), divide by 1.3 instead.</li>
-    <li><strong>Common scale & CRS:</strong> For multi-hazard overlays, resample to a shared grid (e.g., 100 m EPSG:3035 in the EU)—see 
+    <li><strong>Common scale & CRS:</strong> For multi-hazard overlays, resample to a shared grid (e.g., 100 m EPSG:3035 in the EU)-see 
       <a href="https://developers.google.com/earth-engine/guides/projections" target="_blank">projections &amp; resampling</a>.</li>
     <li><strong>Hotspot area targeting:</strong> Instead of fixed percentiles, threshold by area (e.g., top 10,000 ha) via iterative search or histograms.</li>
     <li><strong>Masks:</strong> Excluding permanent water from floods (JRC) avoids misclassifying rivers/lakes as “flood hazard.” Adjust masks to your context.</li>
@@ -2091,7 +2088,7 @@ Export.image.toDrive({
     You can plug in local datasets seamlessly. Two common cases:
   </p>
 
-  <h4>Case 1 — Local hazard rasters (e.g., flood depth, fire susceptibility)</h4>
+  <h4>Case 1 - Local hazard rasters (e.g., flood depth, fire susceptibility)</h4>
   <p>
     Replace the hazard intensity with your local raster(s). Normalize to 0–1 (e.g., divide by positive-only p<sub>95</sub>),
     then proceed with the same <em>gap</em> logic. Ensure alignment (CRS/grid) with mitigation layers.
@@ -2115,7 +2112,7 @@ var floodGapLocal = ee.Image(1).subtract(floodMit);           // reuse normalize
 var prioFloodLocal = floodHazLocal.multiply(floodGapLocal);   // same formula
 </code></pre>
 
-  <h4>Case 2 — Local LULC/ESS layers (your own classification)</h4>
+  <h4>Case 2 - Local LULC/ESS layers (your own classification)</h4>
   <p>
     If you have a local land-use/land-cover (LULC) map or direct ESS layers, build mitigation exactly as before:
     remap → normalize → adjust with terrain (optional). Keep values in 0–1 for easy integration.
@@ -2161,16 +2158,16 @@ var mitLocalAdj = mitLocal
 <ul>
   <li>
     <a href="https://doi.org/10.1111/j.1365-2664.2010.01777.x" target="_blank">Eigenbrod et&nbsp;al. (2010a)</a> &amp;
-    <a href="https://doi.org/10.1016/j.biocon.2010.06.015" target="_blank">2010b</a> — 
+    <a href="https://doi.org/10.1016/j.biocon.2010.06.015" target="_blank">2010b</a> - 
     Critical examinations of proxy-based ecosystem service (ES) mapping approaches, highlighting limitations in using land cover or other indirect indicators without ground validation.
   </li>
   <li>
     <a href="https://developers.google.com/earth-engine/datasets/catalog/GLOBAL_FLOOD_DB_MODIS_EVENTS_V1" target="_blank">Global Flood Database</a> •
-    <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD64A1" target="_blank">MODIS Burned Area</a> — 
+    <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD64A1" target="_blank">MODIS Burned Area</a> - 
     Official Google Earth Engine dataset documentation for historical satellite-observed flood events (<a href="https://doi.org/10.1038/s41586-021-03695-w" target="_blank">Tellman et al., 2021</a>) and global burned area mapping (<a href="https://doi.org/10.1016/j.rse.2018.02.034" target="_blank">Giglio et al., 2018</a>).
   </li>
   <li>
-    <a href="https://doi.org/10.1016/j.ecolind.2011.06.022" target="_blank">Nedkov &amp; Burkhard (2012)</a> — 
+    <a href="https://doi.org/10.1016/j.ecolind.2011.06.022" target="_blank">Nedkov &amp; Burkhard (2012)</a> - 
     Conceptual framework linking flood regulation services to hazard exposure mapping, useful for NbS prioritisation.
   </li>
 </ul>
@@ -2181,23 +2178,23 @@ var mitLocalAdj = mitLocal
 <ul>
   <li>
     <a href="https://doi.org/10.1111/j.1365-2664.2010.01777.x" target="_blank">Eigenbrod, F., et al. (2011)</a>. The impact of proxy‐based methods on mapping the distribution of ecosystem services. 
-    <em>Journal of Applied Ecology</em>, 47(2), 377–385 — Extends the 2010 critiques with empirical tests on spatial mismatches in proxy-based ES maps.
+    <em>Journal of Applied Ecology</em>, 47(2), 377–385 - Extends the 2010 critiques with empirical tests on spatial mismatches in proxy-based ES maps.
   </li>
   <li>
     <a href="https://doi.org/10.1073/pnas.1215991109" target="_blank">Keeler, B.L., et al. (2012)</a>. Linking water quality and well-being for improved assessment and valuation of ecosystem services. 
-    <em>PNAS</em>, 109(45), 18619–18624 — Demonstrates integration of ecological data with human well-being indicators, relevant for interpreting hazard–ESS overlaps.
+    <em>PNAS</em>, 109(45), 18619–18624 - Demonstrates integration of ecological data with human well-being indicators, relevant for interpreting hazard–ESS overlaps.
   </li>
   <li>
     <a href="https://doi.org/10.1038/s41586-021-03695-w" target="_blank">Tellman, B., et al. (2021)</a>. Satellite imaging reveals increased proportion of population exposed to floods. 
-    <em>Nature</em>, 596, 80–86 — Underpins the Global Flood Database; important for understanding dataset derivation and accuracy.
+    <em>Nature</em>, 596, 80–86 - Underpins the Global Flood Database; important for understanding dataset derivation and accuracy.
   </li>
   <li>
     <a href="https://doi.org/10.1016/j.rse.2018.02.034" target="_blank">Giglio, L., et al. (2018)</a>. The Collection 6 MODIS burned area mapping algorithm. 
-    <em>Remote Sensing of Environment</em>, 217, 72–85 — Technical background on the burned area product’s algorithm, temporal resolution, and limitations.
+    <em>Remote Sensing of Environment</em>, 217, 72–85 - Technical background on the burned area product’s algorithm, temporal resolution, and limitations.
   </li>
   <li>
     <a href="https://doi.org/10.1016/j.envsci.2017.07.013" target="_blank">Raymond, C.M., et al. (2017)</a>. Integrating ecosystem services into local planning. 
-    <em>Environmental Science & Policy</em>, 77, 85–94 — Explains how hazard-aware ESS maps can be embedded into decision-making processes at the local level.
+    <em>Environmental Science & Policy</em>, 77, 85–94 - Explains how hazard-aware ESS maps can be embedded into decision-making processes at the local level.
   </li>
 </ul>
 
