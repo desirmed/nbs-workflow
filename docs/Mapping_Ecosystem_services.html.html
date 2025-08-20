@@ -865,7 +865,7 @@ Map.centerObject(cantabria, 10);</code></pre>
 
   <div style="border-left:4px solid #95a5a6; padding:0.8em 1em; background:#f4f6f7; margin:0.8em 0;">
     <strong>Common practice vs. best practice:</strong><br>
-    Normally, people (i) assign scores ad-hoc in code, (ii) skip documenting the rationale, and (iii) leave missing classes undefined.
+    Normally, you can (i) assign scores ad-hoc in code, (ii) skip documenting the rationale, and (iii) leave missing classes undefined.
     That works, but it’s hard to audit and reproduce. For best practice, we will:
     <ol style="margin:0.3em 0 0 1.2em;">
       <li>Use a <em>consistent 0–1 scale</em> across hazards/ESS,</li>
@@ -1036,7 +1036,7 @@ Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation �
   <h4 id="step-2f-interpret">2f. Interpreting 0–1 scores</h4>
   <p>
     Values are <em>relative potentials</em> inferred from land cover - not measured service flows. Use them for screening
-    (e.g., locating <a href="https://doi.org/10.1038/s41467-018-03083-1" target="_blank">NbS</a> opportunities) and comparative analysis.
+    (e.g., locating <a href="https://www.naturebasedsolutions.org/opportunity-scan" target="_blank">NbS</a> opportunities) and comparative analysis.
     Where decisions carry high stakes, combine with process-based or empirical checks (e.g., hydrologic models, local monitoring).
   </p>
 
@@ -1046,7 +1046,7 @@ Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation �
   </div>
 
   <div style="border-left:4px solid #3498db; padding:0.8em 1em; background:#eaf4fb; margin-top:0.8em;">
-    <strong>Optional:</strong> In remote sensing, there is an approach called active learning. You can apply that logic here. But we will not treat this topic in this guidline. Do it only if you are not sure if a certain LULC to ESS can mitgate a certain hazard, so what you will do is to include a prpoerty score or band for each LULC or ESS you will map.
+    <strong>Optional:</strong> In remote sensing, there is an approach called <a href="https://ieeexplore.ieee.org/document/4444630" target="_blank">probability distributions</a>. You can apply that logic here. But we will not treat this topic in this workflow. Do it only if you are not sure if a certain LULC to ESS can mitgate a certain hazard, so what you will do is to include a prpoerty score or band for each LULC or ESS you will map.
     So that even though certain multiple ESS can mitigate a particular hazard, you can determine which one will do the most for the same hazard. You can then add <em>confidence bands</em> per hazard (e.g., 0.33/0.67/1.0)
   </div>
 
@@ -1075,7 +1075,7 @@ Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation �
 
   <div style="border-left:4px solid #95a5a6; padding:0.8em 1em; background:#f4f6f7; margin:0.8em 0;">
     <strong>Common practice vs. best practice:</strong><br>
-    Normally, people apply a single score per LULC class everywhere (simple and fast). That’s fine for <em>screening</em>.
+    Normally, you can apply a single score per LULC class everywhere (simple and fast). That’s fine for <em>screening</em>.
     For better realism without full biophysical models, we’ll <em>modulate</em> scores using easy, defensible spatial covariates:
     <strong>elevation</strong>, <strong>slope</strong>, and <strong>aspect</strong>.
   </div>
@@ -1256,7 +1256,7 @@ Map.addLayer(erosionAdj, {min:0, max:1.5, palette: twoTone}, 'Erosion Mitigation
 
   <div style="border-left:4px solid #95a5a6; padding:0.8em 1em; background:#f4f6f7; margin:0.8em 0;">
     <strong>Common practice vs. best practice:</strong><br>
-    Normally, people print a single number in the Console and move on. That’s fine for a quick look.
+    Normally, you can print a single number in the Console and move on. That’s fine for a quick look.
     For reproducible analysis, we’ll export: (1) <em>mean mitigation scores</em> per hazard, (2) a simple
     <em>“effective contributing area %”</em> (see note below), and (3) the multi-band mitigation raster
     clipped to the study area.
@@ -1899,7 +1899,7 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
 
   <div style="border-left:4px solid #27ae60; background:#ecf9f1; padding:0.8em 1em; margin-top:0.8em;">
     <strong>Normally vs. best practice</strong> -
-    normally people scale hazards by <code>max()</code> and pick a fixed threshold (e.g., &ge; 0.7) for hotspots.
+    normally you can scale hazards by <code>max()</code> and pick a fixed threshold (e.g., &ge; 0.7) for hotspots.
     That works but is sensitive to outliers and regional differences. We use <em>positive-only percentiles</em>
     for scaling and thresholding so the method adapts to each study area’s distribution and remains reproducible.
   </div>
