@@ -815,7 +815,7 @@ Map.centerObject(cantabria, 10);</code></pre>
   <div style="border-left:4px solid #f39c12; padding:0.8em 1em; background:#fff6e6; margin-top:0.8em;">
     <strong>Performance note:</strong> Keep boundaries as simple as needed. Overly detailed geometries slow down
     reclassification and zonal stats later. Consider <a href="https://developers.google.com/earth-engine/guides/reducers_reduce_regions#geometry-simplification" target="_blank">simplifying geometries</a>
-    (carefully!) when working at continental scales.
+    (carefully!) when working at relatively larger regions or continental scales.
   </div>
 
   <h3>How this connects to ESS mapping</h3>
@@ -893,9 +893,9 @@ var corine = ee.Image('COPERNICUS/CORINE/V20/100m/2018').select('landcover').cli
 Map.addLayer(corine, {}, 'CORINE 2018 (raw)', false);
 </code></pre>
 
-  <h3 id="step-2c-scores">2c. Define 0–1 mitigation scores (your style)</h3>
+  <h3 id="step-2c-scores">2c. Define 0–1 mitigation scores (adjustable)</h3>
   <p>
-    We encode scores as JavaScript objects. Values reflect <em>potential</em> (not measured flow).
+    We are going to encode the scores as JavaScript objects. Every value you see reflect <em>potential</em> (not measured flow).
     Unlisted classes will be mapped to <code>0</code> by default to avoid accidental inflation.
     Use the official CLC code list to extend/refine (<a href="https://land.copernicus.eu/en/products/corine-land-cover/clc2018" target="_blank">reference</a>).
   </p>
@@ -990,7 +990,7 @@ var erosionMitigationScore = {
 
   <h3 id="step-2d-remap">2d. Remap helper & build multi-band mitigation image</h3>
   <p>
-    We convert the dictionaries to parallel lists and use <code><a href="https://developers.google.com/earth-engine/apidocs/ee-image-remap" target="_blank">image.remap()</a></code>.
+    We will now convert the dictionaries to parallel lists and use <code><a href="https://developers.google.com/earth-engine/apidocs/ee-image-remap" target="_blank">image.remap()</a></code>.
     Note the explicit default <code>0</code> for any classes not in the table (transparent and conservative).
   </p>
 
@@ -1046,18 +1046,17 @@ Map.addLayer(mitigationImage.select('Erosion_Mitigation'),  vis01, 'Mitigation �
   </div>
 
   <div style="border-left:4px solid #3498db; padding:0.8em 1em; background:#eaf4fb; margin-top:0.8em;">
-    <strong>Next:</strong> Add <em>confidence bands</em> per hazard (e.g., 0.33/0.67/1.0) and intersect with actual hazard layers
-    (flood extent/depth, heat anomaly, erosion susceptibility) to reveal <em>NbS hotspot potential</em>.
-    We’ll also show a CSV/asset-driven variant so teams can edit scores without changing code.
+    <strong>Optional:</strong> In remote sensing, there is an approach called active learning. You can apply that logic here. But we will not treat this topic in this guidline. Do it only if you are not sure if a certain LULC to ESS can mitgate a certain hazard, so what you will do is to include a prpoerty score or band for each LULC or ESS you will map.
+    So that even though certain multiple ESS can mitigate a particular hazard, you can determine which one will do the most for the same hazard. You can then add <em>confidence bands</em> per hazard (e.g., 0.33/0.67/1.0)
   </div>
 
   <details>
     <summary><strong>Glossary</strong> (click to expand)</summary>
     <ul>
       <li><strong>Matrix approach:</strong> A lookup between LULC classes and ecosystem service supply; see <a href="https://landscape-online.org/index.php/lo/article/view/LO.200915" target="_blank">Burkhard et&nbsp;al., 2009</a>.</li>
-      <li><strong>Potential vs. flow:</strong> Potential is capacity inferred from landscape traits; flow is realized service under demand/conditions.</li>
+      <li><strong>Potential vs. flow:</strong> Potential is capacity inferred from landscape unit/traits; flow is realized service under demand/conditions.</li>
       <li><code><a href="https://developers.google.com/earth-engine/apidocs/ee-image-remap" target="_blank">Image.remap</a></code>: Reclassifies pixel values using lists of <em>from</em> and <em>to</em> values.</li>
-      <li><code><a href="https://developers.google.com/earth-engine/guides/reducers_reduce_regions" target="_blank">Zonal statistics</a></code>: Aggregates pixel values over vector polygons (we’ll use this later).</li>
+      <li><code><a href="https://developers.google.com/earth-engine/guides/reducers_reduce_regions" target="_blank">Zonal statistics</a></code>: calculates statistics of a raster dataset within the boundaries of zones defined by another dataset (we’ll use this later).</li>
     </ul>
   </details>
 </section>
