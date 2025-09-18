@@ -1,10 +1,10 @@
 # nbs-workflow
 
-An introductory guide on implementing an impact chain assessment framework for geospatial analysis. This repository covers essential workflows, tools, and data layers to help users understand and apply the methodology effectively to their own regions. The guide uses Google Earth Engine (GEE), QGIS, ArcGIS Pro, and integrating multiple data sources to support risk assessment and regional resilience planning.
+This is a guide to implement technically most of the concepts developed under the various projects. This repository will cover essential workflows, tools, and data layers to help users understand and apply the methodology effectively to their own regions. We are mostly using cloud computing (Google Earth Engine (GEE), Geemap, LeafMap, etc for most analysis and complementing with Desktop GIS such QGIS, ArcGIS Pro.
 
-This repository will be maintained and updated collaboratively on GitHub to ensure that learners, researchers, and practitioners have access to the latest tools, resources, and workflows.
+This repository will be maintained and updated collaboratively on GitHub to ensure that learners, researchers, and practitioners have access to the latest tools, resources, workflows and results.
 
-If you have any questions, feel free to post them in the comment session of the website pages. Note that you will need to sign in a github
+If you have any questions, feel free to post them in the comment section at the end of every guide page. Note that you will need to sign in to GitHub
 
 A [workflowr][] project.
 
