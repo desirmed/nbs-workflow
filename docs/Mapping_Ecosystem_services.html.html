@@ -1718,9 +1718,6 @@ var burnBinary = burned.selfMask();
 // Logic per hazard: Priority = Hazard_Intensity × (1 − Mitigation_Capacity)
 // ======================================================
 
-// ======================================================
-// NBS HOTSPOT PRIORITIZATION - DISTINCT BY HAZARD (with prints)
-// ======================================================
 
 // Base map + boundary
 var hill = ee.Terrain.hillshade(srtm)
@@ -1939,6 +1936,10 @@ Map.addLayer(protectFire.visualize({palette:['#238b45'], opacity:0.85}).clip(can
   </div>
 </div>
 
+<p>This guide doesnt proceed from here to apply the functional Units. It will be later included to show how the concept of SPA & SBA described in the deliverable 
+  is applied here with the help of the functional units. For now, you can consult Appendix of the deliverable to know more about
+  how the functional units are defined and used.
+</p>
 
 <!-- ===================== STEP 6 · EXPORTS, MULTI-HAZARD INDEX & LOCAL DATA INTEGRATION ===================== -->
 <section id="step-6-exports-multihazard-local">
@@ -2000,7 +2001,7 @@ Export.image.toDrive({
   maxPixels: 1e13
 });
 
-// ---------- OPTIONAL: ZONAL STATS AS TABLE ----------
+<!-- // ---------- OPTIONAL: ZONAL STATS AS TABLE ----------
 var meanStats = prioStack.reduceRegion({
   reducer: ee.Reducer.mean(),
   geometry: cantabria.geometry(),
@@ -2015,10 +2016,10 @@ Export.table.toDrive({
   description: 'NbS_Priority_Means_Cantabria',
   folder: 'desirmed',
   fileFormat: 'CSV'
-});
+}); -->
 </code></pre>
 
-  <h3>6b. Build a Multi-Hazard NbS Index (weights & optional confidence)</h3>
+  <!-- <h3>6b. Build a Multi-Hazard NbS Index (weights & optional confidence)</h3>
   <p>
     Many planners prefer a single combined surface for screening. We build an index as a weighted sum of
     per-hazard priorities. Weights (<code>wFlood</code>, <code>wFire</code>) should sum to 1 (or we normalize them).
@@ -2133,24 +2134,24 @@ var mitLocalAdj = mitLocal
   .multiply(ee.Image(1).subtract(slope.divide(60).multiply(0.2))) // gentle slope penalty
   .clamp(0,1)
   .rename('mit_local_adj');
-</code></pre>
+</code></pre> -->
 
   <div style="border-left:4px solid #27ae60; background:#ecf9f1; padding:0.8em 1em; margin-top:0.8em;">
     <strong>Tip:</strong> When swapping in local data, always <em>harmonize scale &amp; CRS</em> and re-run the percentile
-    thresholds on the local distributions (don’t reuse thresholds calibrated for other regions).
+    thresholds on the local distributions (never reuse thresholds calibrated for other regions).
   </div>
 
   <h3>6e. Summary</h3>
   <p>
     We’ve taken you from <em>proxy-and-spatially-enriched mitigation layers</em> to <em>hazard-aware NbS prioritization</em>,
     then exported per-hazard priorities, hotspots, and a <strong>combined multi-hazard index</strong> suitable for decision
-    dashboards. The method remains explainable:
+    making. The method remains explainable:
     <code>Priority = Hazard × (1 − Mitigation)</code>, with adaptive thresholds (positive-only percentiles) and
     optional confidence bands for transparent uncertainty communication.
   </p>
 
   <div style="border-left:4px solid #3498db; background:#eaf4fb; padding:0.8em 1em;">
-    <strong>Where to go next:</strong> It is important to stress again that, where to put an NbS is quite complex and goes beyond, spatial aggreagtion to mitigate the risk.
+    <strong>It is important to stress again that,</strong> where to put an NbS is quite complex and goes beyond just a spatial aggreagtion/operations. It involves socio-economic, governance, technical, financial and many other parameters which are not spatially explicit and ridiculously difficult to map.
     Thus, consistent revision of the method we have presented here with local experts, local knowledge, socio-economic and governance parameters within the confinement of the associated risk(s) i think will make much more sense towards implementation.
   </div>
 </section>
