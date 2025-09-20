@@ -1286,7 +1286,7 @@ var cantabria = ee.Feature(
 );
 </code></pre>
 
-  <h3 id="step-4-2-mean-scores">4.2 Mean mitigation scores (per hazard)</h3>
+  <!-- <h3 id="step-4-2-mean-scores">4.2 Mean mitigation scores (per hazard)</h3>
   <p>
     We compute region-wide means for all mitigation bands using <code><a href="https://developers.google.com/earth-engine/apidocs/ee-image-reduceregion" target="_blank">reduceRegion</a></code>
     with <code>Reducer.mean()</code>.
@@ -1414,9 +1414,9 @@ function percentAreaAboveThreshold(region, hazardImage, bandName, thr) {
   return ee.Number(areaAbove).divide(ee.Number(areaAll)).multiply(100);
 }
 </code></pre>
-  </details>
+  </details> -->
 
-  <h3 id="step-4-6-export-rasters">4.6 Export the multiband mitigation map (GeoTIFF)</h3>
+  <h3 id="step-4-6-export-rasters">4.2 Export the multiband mitigation map (GeoTIFF)</h3>
   <p>
     Export the adjusted, multi-band mitigation image for use in GIS or modelling pipelines. You can
     include a CRS if you need a specific projection.
