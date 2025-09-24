@@ -372,6 +372,99 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
+
+<!-- ====================== changehistory (compact) ====================== -->
+<style>
+  .changelog-toggle .chev {
+    transition: transform 0.2s ease;
+    display: inline-block;
+    margin-left: 6px;
+  }
+  .changelog-toggle[aria-expanded="true"] .chev {
+    transform: rotate(180deg);
+  }
+  /* small tidy-ups */
+  .changelog-panel .nav-tabs>li>a { padding: 6px 10px; }
+  .changelog-panel .tab-content { padding: 10px 0; }
+</style>
+
+<p>
+  <button type="button"
+          class="btn btn-default changelog-toggle"
+          data-toggle="collapse"
+          data-target="#changehistory-report"
+          aria-expanded="false"
+          aria-controls="changehistory-report">
+    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+    changehistory
+    <span class="glyphicon glyphicon-chevron-down chev" aria-hidden="true"></span>
+  </button>
+</p>
+
+<div id="changehistory-report" class="collapse changelog-panel">
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#summary">Summary</a></li>
+    <li><a data-toggle="tab" href="#versions">Past versions</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <!-- Summary -->
+    <div id="summary" class="tab-pane fade in active">
+      <p><strong>Last updated:</strong> 2025-03-23</p>
+      <p><strong>Knit directory:</strong> <code>nbs-workflow/</code>
+        <span class="glyphicon glyphicon-question-sign"
+              title="Local directory where this page was rendered."></span>
+      </p>
+      <p>
+        This page is built with
+        <a href="https://rmarkdown.rstudio.com" target="_blank">R&nbsp;Markdown</a> and
+        <a href="https://www.rdocumentation.org/packages/workflowr/versions/1.7.1" target="_blank">workflowr&nbsp;1.7.1</a>.
+        See <em>Past versions</em> for the development history.
+      </p>
+      <hr>
+    </div>
+
+    <!-- Past versions -->
+    <div id="versions" class="tab-pane fade">
+
+      <div class="table-responsive">
+        <table class="table table-condensed table-hover">
+          <thead>
+            <tr>
+              <th>File</th><th>Version</th><th>Author</th><th>Date</th><th>Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rmd</td>
+              <td><a href="https://github.com/deltares-desirmed/nbs-workflow/blob/7226f266f0d70e428d0ba2ae91c9efa75f9290ab/docs/Mapping_Ecosystem_services.html" target="_blank">7226f26</a></td>
+              <td>Desmond Lartey</td>
+              <td>2025-03-23</td>
+              <td>wflow_publish("analysis/Mapping_Ecosystem_services.html.Rmd")</td>
+            </tr>
+            <tr>
+              <td>html</td>
+              <td><a href="https://rawcdn.githack.com/deltares-desirmed/nbs-workflow/76f52cea6899e3efcdc8fb5fb1389210be8d8324/docs/Mapping_Ecosystem_services.html" target="_blank">76f52ce</a></td>
+              <td>Desmond Lartey</td>
+              <td>2025-03-23</td>
+              <td>Build site.</td>
+            </tr>
+            <tr>
+              <td>Rmd</td>
+              <td><a href="https://github.com/deltares-desirmed/nbs-workflow/blob/0ce17c3b0a0f4d8d8ba3ef3ab45111635d366004/analysis/Mapping_Ecosystem_services.Rmd" target="_blank">0ce17c3</a></td>
+              <td>Desmond Lartey</td>
+              <td>2025-03-23</td>
+              <td>wflow_publish("analysis/Mapping_Ecosystem_services.html.Rmd")</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <hr>
+    </div>
+  </div>
+</div>
+
+
 <div id="header">
 
 
