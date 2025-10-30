@@ -6,7 +6,7 @@ This repository will be maintained and updated collaboratively on GitHub to ensu
 
 If you have any questions, feel free to post them in the comment section at the end of every guide page. Note that you will need to sign in to GitHub
 
-A [workflowr][] project.
+A [workflow][] project.
 
-[workflowr]: https://deltares-desirmed.github.io/nbs-workflow/
+[workflow]: https://desirmed.github.io/nbs-workflow/
 
