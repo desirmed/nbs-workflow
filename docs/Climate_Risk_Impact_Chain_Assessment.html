@@ -562,7 +562,7 @@ div.tocify {
     <h2>Step 6: Plan Responses and NbS-Based Adaptations</h2>
     <p>The final step involves generating key analysis outputs, including <strong>flood exposure assessments, resilience scores, and ecosystem contributions</strong>. We can then design NbS interventions targeted at mitigating climate risks, integrate governance frameworks for scalability, and establish monitoring mechanisms to track adaptation outcomes.</p>
 
-    <img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/15.gif" alt="Landscape Characterization" style="width: 100%; border-radius: 10px;">  
+    <img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/15.gif" alt="Landscape Characterization" style="width: 100%; border-radius: 10px;">  
 
 
     <h2>Step 1: Load Required Datasets</h2>
@@ -724,7 +724,7 @@ div.tocify {
         <li><code>map()</code> applies this function to <strong>all settlements</strong> in the dataset.</li>
         <li><code>Ecosystem_Class_Percentages</code> helps in <strong>comparing settlements</strong> based on their ecosystem support.</li>
     </ul>
-    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/55.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>    
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/55.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>    
     <p><strong>Next:</strong> We will proceed with <strong>Resilience Scoring and Risk Categorization</strong>.</p>
     <h2>Step 4: Resilience Scoring & Risk Categorization</h2>
     <p>Now that we have both <strong>flood exposure</strong> and <strong>ecosystem service metrics</strong>, we will compute a <strong>Resilience Score</strong> to evaluate the ability of each settlement to cope with floods.</p>
@@ -769,7 +769,7 @@ div.tocify {
         <li>The <strong>higher the resilience score</strong>, the better the ecosystem coverage compared to flood exposure.</li>
         <li>Settlements with <strong>low resilience scores</strong> will need urgent intervention.</li>
     </ul>
-    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/51.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/51.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 
         <h3>Resilience Score Option 2 </h3>
         <p>This method calculates a resilience score based on ecosystem contribution and hazard exposure. It integrates ecosystem services and flood risk exposure to estimate resilience levels.</p>
@@ -839,7 +839,7 @@ div.tocify {
             <li><strong>resilienceScore</strong>: Aggregates all ecosystem contributions based on their weight.</li>
             <li><strong>scaledScore</strong>: Normalizes the resilience score by dividing it by total flood exposure.</li>
         </ul>
-        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/52.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>        
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/52.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>        
         <h3>Why This is an Enhancement Over Option 1</h3>
         <p>Option 1 simply took the ratio of total ecosystem area to flood exposure area, which does not account for ecosystem diversity or weighting.</p>
         <p>This enhanced option improves upon that by:</p>
@@ -879,7 +879,7 @@ div.tocify {
         <li>Settlements below <strong>5 km²</strong> of flood exposure are classified as <strong>Low Risk</strong>.</li>
     </ul>
     
-    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/53.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/53.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 
     <h2>Impact Chain Assessment</h2>
     <p>This guide walks you through the **three-step process** of impact assessment using Google Earth Engine (GEE). We'll explore how to analyze **Points of Interest (POIs), Governance & Environmental Data, and Flood Impact Assessment**.</p>
@@ -905,7 +905,7 @@ var settlementsWithPOI = settlements.map(function(feature) {
         <li><code>aggregate_histogram('level2_cat')</code>: Counts the **number of POIs** in each **Level 2 category**.</li>
     </ul>
  
-    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/55.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/55.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 
     <h3>Step 2: Governance & Environmental Management Data Integration</h3>
     <p>We integrate additional **governance and environmental datasets** such as **sea outlets, hydro-rivers, and protected areas (Natura2000)**.</p>
@@ -933,7 +933,7 @@ var settlementsWithGovernance = settlementsWithPOI.map(function(feature) {
         <li><code>geometry().area().divide(1e6)</code>: Converts the area of protected sites from **square meters to square kilometers**.</li>
     </ul>
 
-    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/56.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/56.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
     <h3>Step 3: Impact Assessment (Flood Exposure, Ecosystem, Archetypes, EUNIS, Population, Age, and Sex)</h3>
     <p>Now we assess the impact of **flood hazards** on different settlements, integrating **demographics, ecosystems, and land classifications**.</p>
     <pre><code>// Load flood datasets
@@ -1055,10 +1055,10 @@ var settlementsWithGovernance = settlementsWithPOI.map(function(feature) {
         <li><code>proportionAffected = affectedArea.divide(settlementArea)</code>: Determines **how much of the settlement is affected**.</li>
         <li><code>affectedPopulation = totalPopulation.multiply(proportionAffected)</code>: Estimates **the number of affected people**.</li>
     </ul>
-    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/57.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/57.png" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 
     <p> We have integrated **spatial, demographic, and environmental data** to assess flood risk and how it relates to the various landscape characters.</p>
-    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/crics1.gif" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+    <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/crics1.gif" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 
 
     
@@ -1069,7 +1069,7 @@ var settlementsWithGovernance = settlementsWithPOI.map(function(feature) {
         <li>Assigned resilience scores to settlements.</li>
         <li>Classified settlements into <strong>High, Medium, and Low Risk</strong> zones per the 3 domains.</li>
         <li>Visualized the results</li>
-        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/blob/main/img/crics2.gif" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
+        <p style="border-left: 5px solid #ccc; padding-left: 10px;"><img src="https://raw.githubusercontent.com/desirmed/nbs-workflow/main/img/crics2.gif" alt="Inspecting Data in QGIS" style="display: block; margin: auto;" /></p>
 
     </ul>
     
